@@ -1,0 +1,23 @@
+{
+  "name": "saugradar",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "astro dev",
+    "demo": "node scripts/make-demo.mjs && DEMO=1 astro dev",
+    "live": "node scripts/fetch-live.mjs",
+    "discover": "node scripts/discover.mjs",
+    "build": "astro build && node scripts/og.mjs && node scripts/indexnow.mjs",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "8.0.2",
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.3.5",
+    "sharp": "^0.35.5"
+  }
+}

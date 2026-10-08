@@ -6,6 +6,7 @@ dist/
 !.env.example
 .DS_Store
 src/data/live.json
-src/data/demo.json
+src/data/demo/
 *.log
 .wrangler/
+package-lock.json
