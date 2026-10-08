@@ -1,12 +1,20 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
-interface Props { title: string; description: string; noindex?: boolean; wide?: boolean; schema?: Record<string, unknown>[] }
-const { title, description, noindex, wide = false, schema } = Astro.props;
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  wide?: boolean;
+  schema?: Record<string, unknown>[];
+  /** Zwischenstufen der Brotkrumen, z. B. [{ label: 'Rechner', href: '/rechner/' }] */
+  crumbs?: { label: string; href?: string }[];
+}
+const { title, description, noindex, wide = false, schema, crumbs = [] } = Astro.props;
 ---
 <BaseLayout title={title} description={description} noindex={noindex} schema={schema}>
   <div class="container">
-    <Breadcrumbs items={[{ label: title }]} />
+    <Breadcrumbs items={[...crumbs, { label: title }]} />
     <article class:list={[{ prose: !wide }]}>
       <h1>{title}</h1>
       <slot />

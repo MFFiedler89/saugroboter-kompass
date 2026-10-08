@@ -5,7 +5,7 @@ import ProductTeaser from '../../components/ProductTeaser.astro';
 import Disclosure from '../../components/Disclosure.astro';
 const schema = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Folgekostenrechner für Saugroboter', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' } }];
 ---
-<PageLayout title="Folgekosten eines Saugroboters" description="Rechner für die laufenden Kosten: Staubbeutel, Filter, Seitenbürsten, Hauptbürste, Wischpads und Strom pro Jahr, mit deinen eigenen Preisen." schema={schema}>
+<PageLayout crumbs={[{ label: 'Rechner', href: '/rechner/' }]} title="Folgekosten eines Saugroboters" description="Rechner für die laufenden Kosten: Staubbeutel, Filter, Seitenbürsten, Hauptbürste, Wischpads und Strom pro Jahr, mit deinen eigenen Preisen." schema={schema}>
   <p>Der Kaufpreis steht an jedem Produkt. Was danach kommt, steht nirgends. Trage deine eigenen Preise ein und sieh, was der Roboter im Jahr zusätzlich kostet.</p>
   <KostenCalculator />
 

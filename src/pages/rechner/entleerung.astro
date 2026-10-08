@@ -5,7 +5,7 @@ import ProductTeaser from '../../components/ProductTeaser.astro';
 import Disclosure from '../../components/Disclosure.astro';
 const schema = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Entleerungsrechner für Saugroboter', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' } }];
 ---
-<PageLayout title="Wie oft musst du den Saugroboter leeren?" description="Rechner: Entleerungsintervall des Staubbehälters, Beutelwechsel in der Absaugstation und ab wann sich eine Station im Alltag lohnt." schema={schema}>
+<PageLayout crumbs={[{ label: 'Rechner', href: '/rechner/' }]} title="Wie oft musst du den Saugroboter leeren?" description="Rechner: Entleerungsintervall des Staubbehälters, Beutelwechsel in der Absaugstation und ab wann sich eine Station im Alltag lohnt." schema={schema}>
   <p>Ein Saugroboter nimmt dir das Saugen ab, nicht das Ausleeren. Wie oft du dafür ran musst, hängt am Behältervolumen und daran, was bei dir anfällt.</p>
   <StationCalculator />
 

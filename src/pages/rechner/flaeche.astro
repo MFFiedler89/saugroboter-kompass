@@ -5,7 +5,7 @@ import ProductTeaser from '../../components/ProductTeaser.astro';
 import Disclosure from '../../components/Disclosure.astro';
 const schema = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Flächen- und Akkurechner für Saugroboter', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' } }];
 ---
-<PageLayout title="Reicht eine Akkuladung für deine Wohnung?" description="Rechner: geschätzte Reinigungsdauer für deine Wohnfläche und die Akkulaufzeit, die ein Saugroboter dafür mitbringen sollte." schema={schema}>
+<PageLayout crumbs={[{ label: 'Rechner', href: '/rechner/' }]} title="Reicht eine Akkuladung für deine Wohnung?" description="Rechner: geschätzte Reinigungsdauer für deine Wohnfläche und die Akkulaufzeit, die ein Saugroboter dafür mitbringen sollte." schema={schema}>
   <p>Hersteller geben die Akkulaufzeit in Minuten an, deine Wohnung aber in Quadratmetern. Dieser Rechner übersetzt das eine ins andere.</p>
   <FlaecheCalculator />
 
