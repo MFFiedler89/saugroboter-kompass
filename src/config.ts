@@ -30,7 +30,8 @@ export const SITE = {
 export const AMAZON = {
   // Eigene Tracking-ID für diese Seite, NICHT die von Ergo-Kompass.
   // Wird beim Build aus der Umgebungsvariable gelesen, Fallback hier.
-  partnerTag: import.meta.env.AMAZON_PARTNER_TAG || 'DEINTAG-21',
+  // Der Tag ist kein Geheimnis, er steht in jedem Affiliate-Link.
+  partnerTag: import.meta.env.AMAZON_PARTNER_TAG || 'saugradar-21',
   marketplace: 'www.amazon.de',
   // Pflichthinweis laut Amazon-Partnerprogramm-Vereinbarung
   disclosure: 'Als Amazon-Partner verdiene ich an qualifizierten Verkäufen.',
