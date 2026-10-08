@@ -116,9 +116,12 @@ Variation einer bestehenden.
       Claude-GitHub-Connector darf keine Workflows schreiben, deshalb fehlen
       sie im Repo und liegen separat bereit.
 - [ ] Domain saugradar.de bei STRATO registrieren, DNS auf Cloudflare
-- [ ] Neue Tracking-ID im Amazon PartnerNet anlegen und die Seite dort anmelden
+- [ ] Tracking-ID **saugradar-21** im Amazon PartnerNet anlegen und die Seite
+      dort anmelden. Eine ID staubradar-21 besteht bereits, wird aber nicht
+      verwendet, weil Domain und Marke Saugradar heißen.
 - [ ] Creators-API-Zugangsdaten erzeugen
-- [ ] Secrets und Variables im GitHub-Repo eintragen
+- [ ] Secrets und Variables im GitHub-Repo eintragen (`AMAZON_PARTNER_TAG`
+      bekommt `saugradar-21`)
 - [ ] `npm run discover` einmal laufen lassen, damit ASIN-Listen entstehen
 - [ ] Impressum und Datenschutz prüfen (Vorlagen, Betreiberangaben stehen in
       `src/config.ts`)
