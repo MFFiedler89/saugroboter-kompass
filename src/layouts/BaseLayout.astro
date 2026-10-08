@@ -1,0 +1,38 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ConsentBanner from '../components/ConsentBanner.astro';
+import { AMAZON } from '../config';
+
+type Props = Parameters<typeof BaseHead>[0];
+const props = Astro.props;
+---
+<!doctype html>
+<html lang="de">
+  <head>
+    <BaseHead {...props} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Zum Inhalt springen</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <ConsentBanner />
+    <script is:inline define:vars={{ maxAge: AMAZON.maxPriceAgeHours }}>
+      // Amazon-Regel: Preise nur zeigen, wenn sie aktuell sind (max. 24 h alt).
+      // Statische Seiten koennen aelter werden, wenn ein Build ausfaellt, dann Preis ausblenden.
+      document.querySelectorAll('[data-price-updated]').forEach(function (el) {
+        var t = Date.parse(el.getAttribute('data-price-updated'));
+        if (!t || Date.now() - t > maxAge * 3600 * 1000) el.setAttribute('data-stale', '');
+      });
+    </script>
+    <style>
+      .skip { position: absolute; left: -999px; top: 8px; background: #fff; padding: 8px 12px; z-index: 100; }
+      .skip:focus { left: 8px; }
+      main { min-height: 60vh; }
+    </style>
+  </body>
+</html>
