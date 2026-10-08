@@ -1,0 +1,20 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import StationCalculator from '../../components/StationCalculator.astro';
+import ProductTeaser from '../../components/ProductTeaser.astro';
+import Disclosure from '../../components/Disclosure.astro';
+const schema = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Entleerungsrechner für Saugroboter', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' } }];
+---
+<PageLayout title="Wie oft musst du den Saugroboter leeren?" description="Rechner: Entleerungsintervall des Staubbehälters, Beutelwechsel in der Absaugstation und ab wann sich eine Station im Alltag lohnt." schema={schema}>
+  <p>Ein Saugroboter nimmt dir das Saugen ab, nicht das Ausleeren. Wie oft du dafür ran musst, hängt am Behältervolumen und daran, was bei dir anfällt.</p>
+  <StationCalculator />
+
+  <h2>Was eine Absaugstation wirklich ändert</h2>
+  <p>Sie verschiebt den Handgriff, sie schafft ihn nicht ab. Statt alle paar Tage den kleinen Behälter auszuklopfen, wechselst du alle paar Wochen einen Beutel. Dafür brauchst du eine feste Stellfläche mit Steckdose, nimmst ein deutlich lauteres Absaugeräusch in Kauf und zahlst laufend Beutel. Für Allergiker ist der geschlossene Beutel ein echtes Argument, weil der Staub beim Wechsel nicht aufwirbelt.</p>
+
+  <h2>Beutel oder beutellos</h2>
+  <p>Beutellose Stationen schütten in einen festen Behälter, den du selbst ausleerst und ab und zu auswäschst. Das spart die laufenden Kosten, bringt aber genau den Staubkontakt zurück, den eine Station eigentlich vermeiden sollte. Welche Variante ein Gerät hat, steht meistens klar in den Produktangaben, deshalb kannst du in unseren Vergleichen danach filtern.</p>
+
+  <Disclosure />
+  <ProductTeaser sub="saugroboter-mit-absaugstation" title="Beliebte Modelle mit Absaugstation" />
+</PageLayout>

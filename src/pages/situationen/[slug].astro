@@ -1,0 +1,56 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import FAQ from '../../components/FAQ.astro';
+import TOC from '../../components/TOC.astro';
+import { mdxComponents } from '../../lib/mdx-components';
+import { subBySlug, subUrl, getProducts } from '../../lib/catalog';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('situationen', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const d = entry.data;
+const links = d.subs.filter((s) => subBySlug[s] && getProducts(s).length >= 3);
+const others = (await getCollection('situationen', ({ data }) => !data.draft)).filter((s) => s.id !== entry.id);
+const schema = [{
+  '@context': 'https://schema.org', '@type': 'Article', headline: d.h1, description: d.description,
+  datePublished: d.publishDate.toISOString(), dateModified: (d.updatedDate ?? d.publishDate).toISOString(),
+  author: { '@id': new URL('/#org', Astro.site).href }, publisher: { '@id': new URL('/#org', Astro.site).href }, inLanguage: 'de-DE',
+}];
+---
+<BaseLayout title={d.title} description={d.description} type="article" schema={schema} publishDate={d.publishDate} updatedDate={d.updatedDate}>
+  <div class="container">
+    <Breadcrumbs items={[{ label: 'Situationen', href: '/situationen/' }, { label: d.navLabel }]} />
+    <article class="prose">
+      <h1>{d.h1}</h1>
+      <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} compact />
+      <Disclosure />
+      <p class="lead">{d.intro}</p>
+      {links.length > 0 && (
+        <nav class="jump" aria-label="Passende Vergleiche">
+          <span class="small muted">Passende Vergleiche:</span>
+          {links.map((s) => <a href={subUrl(s)}>{subBySlug[s].label}</a>)}
+        </nav>
+      )}
+      <TOC headings={headings} />
+      <Content components={mdxComponents} />
+      <FAQ items={d.faq} />
+      <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} />
+      {others.length > 0 && (
+        <section><h2>Weitere Situationen</h2><div class="others">{others.map((s) => <a href={`/situationen/${s.id}/`}>{s.data.navLabel}</a>)}</div></section>
+      )}
+    </article>
+  </div>
+</BaseLayout>
+<style>
+  .lead { font-size: 1.12rem; }
+  .jump { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 14px 0; }
+  .jump a, .others a { padding: 5px 12px; border: 1px solid var(--border); border-radius: 999px; text-decoration: none; font-size: .88rem; background: var(--surface); }
+  .others { display: flex; flex-wrap: wrap; gap: 8px; }
+</style>

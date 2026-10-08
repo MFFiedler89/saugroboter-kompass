@@ -1,0 +1,39 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import Icon from '../../components/Icon.astro';
+const list = [
+  { href: '/rechner/flaeche/', t: 'Fläche und Akkulaufzeit', d: 'Wie lange braucht ein Roboter für deine Wohnung, und reicht eine Ladung?', icon: 'ruler' },
+  { href: '/rechner/entleerung/', t: 'Entleeren und Absaugstation', d: 'Wie oft musst du den Behälter leeren, und was ändert eine Station daran?', icon: 'box' },
+  { href: '/rechner/folgekosten/', t: 'Folgekosten im Jahr', d: 'Beutel, Filter, Bürsten, Wischpads und Strom zusammengerechnet.', icon: 'calc' },
+];
+---
+<PageLayout title="Rechner rund um den Saugroboter" description="Kostenlose Rechner: Reinigungsdauer und Akkulaufzeit für deine Wohnfläche, Entleerungsintervall mit und ohne Absaugstation sowie die Folgekosten pro Jahr.">
+  <p class="lead">Drei Fragen entscheiden darüber, ob ein Saugroboter im Alltag nervt oder nicht: Schafft er die Fläche in einem Rutsch, wie oft musst du selbst ran, und was kostet er dich nach dem Kauf noch. Alle drei lassen sich ausrechnen.</p>
+
+  <div class="list">
+    {list.map((r) => <a class="it card" href={r.href}><span class="ic"><Icon name={r.icon} size={28} /></span><span><strong>{r.t}</strong><span class="small muted">{r.d}</span></span></a>)}
+  </div>
+
+  <h2>Warum diese drei und nicht die Saugkraft</h2>
+  <p>Die Saugkraft in Pascal ist die Zahl, mit der am lautesten geworben wird, und zugleich die, die sich am schlechtesten ausrechnen lässt. Es gibt keine einheitliche Messnorm dafür, und der Wert gilt immer für die stärkste Stufe, die kaum jemand dauerhaft fährt. Was du vergleichen kannst, sind die Zahlen oben: Fläche, Zeit, Intervalle, Kosten. Die hängen nicht an einem Marketingversprechen, sondern an deiner Wohnung.</p>
+
+  <h2>Woher die Annahmen kommen</h2>
+  <p>Zwei der drei Rechner brauchen eine Annahme, die sich nicht aus Produktdaten ablesen lässt: wie viel Fläche ein Roboter pro Minute schafft und wie viel Schmutz pro Quadratmeter anfällt. Beide Werte stehen in keinem Datenblatt, weil sie von der Wohnung abhängen und nicht vom Gerät. Deshalb sind sie in den Rechnern offen genannt und einstellbar. Wir tun nicht so, als wären es Messwerte.</p>
+
+  <h2>In welcher Reihenfolge du vorgehst</h2>
+  <ol>
+    <li><strong>Fläche zuerst.</strong> Daraus ergibt sich, ob du überhaupt ein Gerät mit langer Laufzeit oder mit Wiederaufnahme nach dem Laden brauchst.</li>
+    <li><strong>Dann die Entleerung.</strong> Daraus ergibt sich, ob eine Absaugstation für dich Komfort oder Notwendigkeit ist.</li>
+    <li><strong>Zuletzt die Folgekosten.</strong> Ein günstiges Gerät mit teuren Beuteln kann über drei Jahre teurer sein als das Modell darüber.</li>
+  </ol>
+
+  <p>Welche Angaben wir aus den Amazon-Daten lesen und welche wir bewusst weglassen, steht unter <a href="/so-vergleichen-wir/">So vergleichen wir</a>.</p>
+</PageLayout>
+<style>
+  .lead { font-size: 1.1rem; }
+  .list { display: grid; gap: 14px; margin-top: 20px; }
+  .it { display: flex; gap: 16px; align-items: center; padding: 18px; text-decoration: none; color: var(--text); }
+  .it > span:last-child { display: flex; flex-direction: column; gap: 2px; }
+  .ic { width: 54px; height: 54px; border-radius: 14px; background: var(--accent-soft); color: var(--accent-ink); display: grid; place-items: center; flex: 0 0 auto; }
+  .it:hover strong { color: var(--brand); }
+</style>

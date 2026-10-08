@@ -1,0 +1,70 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import QuickAnswer from '../../components/QuickAnswer.astro';
+import FAQ from '../../components/FAQ.astro';
+import TOC from '../../components/TOC.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
+import { mdxComponents } from '../../lib/mdx-components';
+import { subUrl, subBySlug } from '../../lib/catalog';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('ratgeber', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const d = entry.data;
+const pillarEntry = d.pillar ? await getEntry('vergleiche', d.pillar) : undefined;
+const pillar = d.pillar && subBySlug[d.pillar] ? { url: subUrl(d.pillar), h1: pillarEntry?.data.h1 ?? `${subBySlug[d.pillar].label} im Vergleich` } : undefined;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: d.h1 ?? d.title,
+    description: d.description,
+    datePublished: d.publishDate.toISOString(),
+    dateModified: (d.updatedDate ?? d.publishDate).toISOString(),
+    author: { '@id': new URL('/#org', Astro.site).href },
+    publisher: { '@id': new URL('/#org', Astro.site).href },
+    mainEntityOfPage: url,
+    inLanguage: 'de-DE',
+  },
+];
+---
+<BaseLayout title={d.title} description={d.description} type="article" schema={schema} publishDate={d.publishDate} updatedDate={d.updatedDate}>
+  <div class="container">
+    <Breadcrumbs items={[{ label: 'Ratgeber', href: '/ratgeber/' }, { label: d.h1 ?? d.title }]} />
+    <article class="prose">
+      <h1>{d.h1 ?? d.title}</h1>
+      <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} compact />
+      <Disclosure />
+      {d.quickAnswer && <QuickAnswer text={d.quickAnswer} />}
+      <TOC headings={headings} />
+      <Content components={mdxComponents} />
+      <FAQ items={d.faq} />
+      {pillar && (
+        <aside class="pillar card">
+          <p class="small muted">Passender Vergleich</p>
+          <p class="pt">{pillar.h1}</p>
+          <a class="btn btn-ghost" href={pillar.url}>Zum Vergleich →</a>
+        </aside>
+      )}
+      <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} />
+    </article>
+    <div class="prose">
+      <RelatedPosts cluster={d.cluster} exclude={entry.id} />
+    </div>
+  </div>
+</BaseLayout>
+<style>
+  .pillar { padding: 18px 20px; margin: 36px 0; background: var(--brand-soft); border-color: #c3d3ed; }
+  .pillar p { margin: 0; }
+  .pt { font-weight: 800; font-size: 1.15rem; margin: 2px 0 12px !important; }
+</style>

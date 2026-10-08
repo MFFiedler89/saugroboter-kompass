@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+const terms = (await getCollection('lexikon')).sort((a, b) => a.data.term.localeCompare(b.data.term, 'de'));
+const groups = new Map<string, typeof terms>();
+for (const t of terms) {
+  const l = t.data.term[0].toUpperCase().replace('Ä', 'A').replace('Ö', 'O').replace('Ü', 'U');
+  if (!groups.has(l)) groups.set(l, []);
+  groups.get(l)!.push(t);
+}
+---
+<PageLayout title="Saugroboter-Lexikon" description="Begriffe rund um Saugroboter einfach erklärt: von Pascal und LiDAR über Anti-Tangle und Mopprolle bis Absaugstation, Schwellenhöhe und No-Go-Zone.">
+  <p>Kurz und verständlich erklärt: die Begriffe, die dir beim Vergleichen von Saugrobotern begegnen, und was sie im Alltag bedeuten.</p>
+  <nav class="az" aria-label="Alphabet">{[...groups.keys()].map((l) => <a href={`#l-${l}`}>{l}</a>)}</nav>
+  {[...groups.entries()].map(([l, list]) => (
+    <section id={`l-${l}`}>
+      <h2>{l}</h2>
+      <dl>{list.map((t) => <div class="t"><dt><a href={`/lexikon/${t.id}/`}>{t.data.term}</a></dt><dd>{t.data.short}</dd></div>)}</dl>
+    </section>
+  ))}
+</PageLayout>
+<style>
+  .az { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0; }
+  .az a { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; font-weight: 700; background: var(--surface); }
+  .t { padding: 10px 0; border-bottom: 1px solid var(--border); }
+  dt { font-weight: 700; }
+  dd { margin: 2px 0 0; color: #333c4c; }
+  h2 { margin-top: 1.4em; }
+</style>

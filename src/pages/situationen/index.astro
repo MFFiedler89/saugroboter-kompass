@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+const list = (await getCollection('situationen', ({ data }) => !data.draft)).sort((a, b) => a.data.navLabel.localeCompare(b.data.navLabel));
+---
+<PageLayout title="Situationen" description="Saugroboter nach Wohnsituation: Haustiere, Hochflorteppich, Türschwellen, Altbau, wenig Platz für eine Station und mehr, mit passenden Vergleichen." wide>
+  <p class="lead">Es gibt nicht den besten Saugroboter, es gibt nur den, der zu deiner Wohnung passt. Ein Gerät, das auf Fliesen im Neubau glänzt, scheitert im Altbau an der ersten Türschwelle. Wähle deine Lage und sieh, welches Merkmal dann wirklich zählt.</p>
+  <div class="sits">
+    {list.map((s) => (
+      <a class="sit card" href={`/situationen/${s.id}/`}>
+        <strong>{s.data.navLabel}</strong>
+        <span class="muted small">{s.data.teaser}</span>
+      </a>
+    ))}
+  </div>
+
+  <div class="prose">
+    <h2>Warum die Wohnung vor dem Gerät kommt</h2>
+    <p>Die meisten Kaufberatungen fangen beim Produkt an und fragen erst danach, für wen es passt. Das ist die falsche Richtung. Ob ein Saugroboter bei dir funktioniert, entscheidet selten die Saugkraft, sondern ob er unter dein Sofa passt, ob er über deine Türschwellen kommt und ob er mit dem Fell deiner Katze fertig wird. Keines dieser drei Dinge steht zuverlässig im Produkttitel.</p>
+
+    <h2>Die drei Fragen, die alles andere bestimmen</h2>
+    <ol>
+      <li><strong>Welcher Boden liegt bei dir?</strong> Hartboden, Kurzflor und Hochflor stellen völlig unterschiedliche Anforderungen. Hochflor ist der Punkt, an dem günstige Geräte aufgeben.</li>
+      <li><strong>Gibt es Tierhaare?</strong> Dann entscheidet die Bürste über den Alltag, nicht die Saugkraft. Eine Gummilippe oder eine Anti-Tangle-Bürste erspart dir das wöchentliche Freischneiden.</li>
+      <li><strong>Wie viel Platz hast du?</strong> Eine Komplettstation mit Wasser und Absaugung braucht eine feste Stellfläche und einen Stromanschluss, oft auch in Reichweite eines Wasseranschlusses.</li>
+    </ol>
+
+    <h2>Keine Situation dabei?</h2>
+    <p>Welche Angaben bei Saugrobotern überhaupt verlässlich sind und welche du ignorieren kannst, steht unter <a href="/so-vergleichen-wir/">So vergleichen wir</a>. Wenn du zuerst wissen willst, was ein brauchbares Gerät kostet, hilft die Auswertung unter <a href="/marktdaten/">Marktdaten</a>: dort stehen Medianpreise und Preisspannen für alle Gruppen.</p>
+  </div>
+</PageLayout>
+<style>
+  .lead { font-size: 1.1rem; }
+  .prose { margin-top: 38px; }
+  .sits { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 20px; }
+  .sit { display: flex; flex-direction: column; gap: 6px; padding: 18px; text-decoration: none; color: var(--text); }
+  .sit strong { font-size: 1.1rem; color: var(--brand); }
+</style>

@@ -1,0 +1,20 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import KostenCalculator from '../../components/KostenCalculator.astro';
+import ProductTeaser from '../../components/ProductTeaser.astro';
+import Disclosure from '../../components/Disclosure.astro';
+const schema = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Folgekostenrechner für Saugroboter', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' } }];
+---
+<PageLayout title="Folgekosten eines Saugroboters" description="Rechner für die laufenden Kosten: Staubbeutel, Filter, Seitenbürsten, Hauptbürste, Wischpads und Strom pro Jahr, mit deinen eigenen Preisen." schema={schema}>
+  <p>Der Kaufpreis steht an jedem Produkt. Was danach kommt, steht nirgends. Trage deine eigenen Preise ein und sieh, was der Roboter im Jahr zusätzlich kostet.</p>
+  <KostenCalculator />
+
+  <h2>Wo der Unterschied zwischen zwei Geräten liegt</h2>
+  <p>Verbrauchsmaterial ist der Posten, bei dem Hersteller unterschiedlich kalkulieren. Beutel für die Station sind je nach Marke ein Vielfaches voneinander entfernt, und manche Systeme passen nur zu einem einzigen Modell. Bevor du dich entscheidest, lohnt ein Blick darauf, was ein Nachfüllpack kostet und ob es ihn auch in drei Jahren noch gibt. Wir schreiben hier bewusst keine Preise hin, weil sie sich ständig ändern.</p>
+
+  <h2>Was du dir sparen kannst</h2>
+  <p>Filter und Bürsten lassen sich oft länger nutzen, als der Hersteller vorschlägt. Ein Filter, der sich ausklopfen und nach dem Trocknen weiterverwenden lässt, hält mehrere Zyklen. Umgekehrt ist eine verschlissene Hauptbürste der häufigste Grund für nachlassende Reinigungsleistung, dort zu sparen bringt nichts.</p>
+
+  <Disclosure />
+  <ProductTeaser sub="saugroboter-ohne-wischfunktion" title="Beliebte Saugroboter ohne Wischfunktion" />
+</PageLayout>

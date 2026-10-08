@@ -1,0 +1,48 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ProductTeaser from '../../components/ProductTeaser.astro';
+import { mdxComponents } from '../../lib/mdx-components';
+import { subBySlug, subUrl, getProducts } from '../../lib/catalog';
+
+export async function getStaticPaths() {
+  const all = await getCollection('lexikon');
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry, all } }));
+}
+const { entry, all } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const related = d.related.map((id) => all.find((t) => t.id === id)).filter(Boolean);
+const subs = d.subs.filter((s) => subBySlug[s] && getProducts(s).length >= 3);
+const schema = [{
+  '@context': 'https://schema.org', '@type': 'DefinedTerm', name: d.term, description: d.short,
+  inDefinedTermSet: { '@type': 'DefinedTermSet', name: 'Saugroboter-Lexikon', url: new URL('/lexikon/', Astro.site).href },
+}];
+---
+<BaseLayout title={`${d.term}: Bedeutung und Erklärung`} description={d.description} schema={schema}>
+  <div class="container">
+    <Breadcrumbs items={[{ label: 'Lexikon', href: '/lexikon/' }, { label: d.term }]} />
+    <article class="prose">
+      <h1>{d.term}</h1>
+      <p class="def"><strong>Kurz erklärt:</strong> {d.short}</p>
+      <Content components={mdxComponents} />
+      {subs.length > 0 && (
+        <>
+          <p class="cmp">Vergleiche dazu: {subs.map((s, i) => <>{i > 0 && ' · '}<a href={subUrl(s)}>{subBySlug[s].label}</a></>)}</p>
+          <ProductTeaser sub={subs[0]} />
+        </>
+      )}
+      {related.length > 0 && (
+        <section><h2>Verwandte Begriffe</h2><ul class="rel">{related.map((t) => <li><a href={`/lexikon/${t!.id}/`}>{t!.data.term}</a></li>)}</ul></section>
+      )}
+      <p><a href="/lexikon/">← Zum Lexikon</a></p>
+    </article>
+  </div>
+</BaseLayout>
+<style>
+  .def { background: var(--brand-soft); padding: 14px 18px; border-radius: var(--radius); }
+  .rel { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; }
+  .rel a { padding: 5px 12px; border: 1px solid var(--border); border-radius: 999px; text-decoration: none; background: var(--surface); }
+  .cmp { font-weight: 600; }
+</style>

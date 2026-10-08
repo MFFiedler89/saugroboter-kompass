@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { kategorien } from '../../lib/catalog';
+
+const posts = (await getCollection('ratgeber', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
+const clusters: Record<string, string> = { allgemein: 'Grundlagen', ...Object.fromEntries(kategorien.map((k: any) => [k.slug, k.label])) };
+const grouped = Object.entries(clusters)
+  .map(([key, label]) => ({ key, label, posts: posts.filter((p) => p.data.cluster === key) }))
+  .filter((g) => g.posts.length);
+---
+<BaseLayout title="Ratgeber" description="Ratgeber rund um Saugroboter: Saugkraft richtig einordnen, Wischsysteme unterscheiden, Tierhaare, Teppich, Türschwellen und Wartung, verständlich erklärt.">
+  <div class="container">
+    <Breadcrumbs items={[{ label: 'Ratgeber' }]} />
+    <h1>Ratgeber</h1>
+    <p class="prose">Hier steht, was die Angaben auf der Verpackung bedeuten und welche davon im Alltag wirklich etwas ändern.</p>
+    {grouped.map((g) => (
+      <section>
+        <h2>{g.label}</h2>
+        <ul class="posts">
+          {g.posts.map((p) => (
+            <li class="card"><a href={`/ratgeber/${p.id}/`}><strong>{p.data.h1 ?? p.data.title}</strong><span class="small muted">{p.data.description}</span></a></li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
+<style>
+  .posts { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .posts a { display: flex; flex-direction: column; gap: 6px; padding: 18px; text-decoration: none; color: var(--text); height: 100%; }
+  .posts a:hover strong { color: var(--brand); }
+</style>

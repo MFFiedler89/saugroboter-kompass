@@ -1,0 +1,20 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import FlaecheCalculator from '../../components/FlaecheCalculator.astro';
+import ProductTeaser from '../../components/ProductTeaser.astro';
+import Disclosure from '../../components/Disclosure.astro';
+const schema = [{ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Flächen- und Akkurechner für Saugroboter', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' } }];
+---
+<PageLayout title="Reicht eine Akkuladung für deine Wohnung?" description="Rechner: geschätzte Reinigungsdauer für deine Wohnfläche und die Akkulaufzeit, die ein Saugroboter dafür mitbringen sollte." schema={schema}>
+  <p>Hersteller geben die Akkulaufzeit in Minuten an, deine Wohnung aber in Quadratmetern. Dieser Rechner übersetzt das eine ins andere.</p>
+  <FlaecheCalculator />
+
+  <h2>Warum die Herstellerangabe fast immer zu optimistisch ist</h2>
+  <p>Die genannte Laufzeit gilt für die sparsamste Stufe auf freier Hartbodenfläche. Im Alltag kommen Teppichkanten, Stuhlbeine, Türschwellen und das wiederholte Anfahren derselben Stelle dazu. Außerdem fährt ein Roboter nicht die Fläche ab, sondern Bahnen mit Überlappung. Rechne deshalb mit Reserve, nicht mit der Zahl von der Verpackung.</p>
+
+  <h2>Was wichtiger ist als eine lange Laufzeit</h2>
+  <p>Ob ein Gerät nach dem Nachladen an der Stelle weitermacht, an der es aufgehört hat. Ohne diese Funktion beginnt der Roboter nach dem Laden von vorn, und große Wohnungen werden nie fertig. Die Funktion heißt je nach Hersteller Wiederaufnahme, Weiterreinigung oder Resume und steht selten im Produkttitel, sondern erst weiter unten in der Beschreibung. Deshalb taucht sie in unseren Tabellen auch nicht als Filter auf: Wir zeigen nur, was eindeutig in den Produktangaben steht.</p>
+
+  <Disclosure />
+  <ProductTeaser sub="saugroboter-mit-absaugstation" title="Beliebte Saugroboter mit Absaugstation" />
+</PageLayout>
