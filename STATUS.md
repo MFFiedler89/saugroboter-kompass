@@ -58,6 +58,29 @@ Dieselbe Logik gilt für die Wiederaufnahme nach dem Laden: im Alltag das
 wichtigste Merkmal bei großer Fläche, steht aber kaum je im Titel. Wird
 deshalb in Texten erklärt, nicht als Filter angeboten.
 
+Ebenso die Lautstärke: steht zu selten und zwischen Herstellern nicht
+vergleichbar in den Angaben. Eigener Ratgeber, kein Filter.
+
+## Umfang
+
+69 Seiten, davon rund 50 Inhaltsseiten:
+
+| Sammlung | Anzahl |
+|---|---|
+| Kategorie-Hubs | 2 |
+| Vergleichsseiten | 8 |
+| Situationen | 10 |
+| Ratgeber | 12 |
+| Lexikonbegriffe | 23 |
+| Rechner | 4 |
+
+Dazu Startseite, Marktdaten, Über uns, So vergleichen wir, Impressum,
+Datenschutz, 404.
+
+Ziel bleibt "lieber 100 wirklich sinnvolle Seiten als 1.000 automatisch
+generierte". Jede neue Seite braucht eine eigene Suchintention, keine
+Variation einer bestehenden.
+
 ## Technik
 
 - Astro 7.3.5, `trailingSlash: 'always'`, `build.format: 'directory'`
@@ -65,6 +88,10 @@ deshalb in Texten erklärt, nicht als Filter angeboten.
   `rehypePlugins` funktionieren mit Sätteri **nicht**. Erweiterungen laufen
   über die eigene hast-Plugin-API, siehe `src/lib/satteri-lexikon.mjs`.
 - Content Collections: kategorien, vergleiche, situationen, ratgeber, lexikon
+- **Lexikon ist reines Markdown (`*.md`), kein MDX.** Dort funktionieren die
+  Rechner-Komponenten nicht, stattdessen auf `/rechner/…/` verlinken.
+- **Doppelpunkte in Frontmatter-Werten gehören in Anführungszeichen**, sonst
+  bricht der Build mit "bad indentation of a mapping entry" ab.
 - Merkmalstypen in `src/data/taxonomy.mjs`: bool, enum, number, range, dims.
   Erweiterungen gegenüber der Blaupause: `thousands` (deutscher
   Tausenderpunkt), `convert` (Einheitenumrechnung mm zu cm), `reject`
