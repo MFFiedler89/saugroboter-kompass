@@ -1,0 +1,35 @@
+---
+/**
+ * Zeile bzw. Kasten unter einem Beitrag. Beiträge laufen bewusst unter der
+ * Redaktion und nicht unter einem Personennamen. Der Name der verantwortlichen
+ * Person steht im Impressum, wo ihn das Gesetz verlangt.
+ */
+import { SITE } from '../config';
+import Icon from './Icon.astro';
+interface Props { publishDate: Date; updatedDate?: Date; compact?: boolean }
+const { publishDate, updatedDate, compact = false } = Astro.props;
+const fmt = (d: Date) => new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' }).format(d);
+---
+{compact ? (
+  <p class="meta small muted">
+    <a href="/ueber-uns/" rel="author">{SITE.author.name}</a>{' · '}
+    {updatedDate ? <>Aktualisiert am <time datetime={updatedDate.toISOString()}>{fmt(updatedDate)}</time></> : <time datetime={publishDate.toISOString()}>{fmt(publishDate)}</time>}
+  </p>
+) : (
+  <aside class="author card">
+    <div class="av" aria-hidden="true"><Icon name="radar" size={26} /></div>
+    <div>
+      <p class="n"><a href="/ueber-uns/" rel="author">{SITE.author.name}</a></p>
+      <p class="small">{SITE.author.bio}</p>
+      <p class="small lnk"><a href="/so-vergleichen-wir/">So vergleichen wir</a></p>
+    </div>
+  </aside>
+)}
+<style>
+  .meta { margin: 0 0 1em; }
+  .author { display: flex; gap: 16px; padding: 18px; margin: 40px 0; align-items: flex-start; }
+  .av { flex: 0 0 52px; height: 52px; border-radius: 50%; background: var(--brand); color: var(--accent); display: grid; place-items: center; }
+  .n { margin: 0 0 4px; font-weight: 700; }
+  .author p:last-child { margin: 0; }
+  .lnk { margin-top: 8px !important; }
+</style>

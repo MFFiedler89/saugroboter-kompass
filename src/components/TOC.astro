@@ -1,0 +1,18 @@
+---
+interface Props { headings: { depth: number; slug: string; text: string }[] }
+const items = Astro.props.headings.filter((h) => h.depth === 2);
+---
+{items.length >= 3 && (
+  <nav class="toc" aria-label="Inhaltsverzeichnis">
+    <details open>
+      <summary>Inhalt</summary>
+      <ol>{items.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+    </details>
+  </nav>
+)}
+<style>
+  .toc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 18px; margin: 20px 0; }
+  summary { font-weight: 750; cursor: pointer; padding: 10px 0; }
+  ol { margin: 0 0 12px; padding-left: 1.3em; font-size: .95rem; }
+  li { margin: 4px 0; }
+</style>

@@ -1,0 +1,13 @@
+---
+interface Props { text: string; label?: string }
+const { text, label = 'Kurz und knapp' } = Astro.props;
+---
+<aside class="qa" aria-label={label}>
+  <p class="lbl">{label}</p>
+  <p set:html={text} />
+</aside>
+<style>
+  .qa { background: var(--brand-soft); border: 1px solid #c3d3ed; border-radius: var(--radius); padding: 16px 20px; margin: 24px 0; }
+  .lbl { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--brand); margin: 0 0 6px; }
+  .qa p:last-child { margin: 0; }
+</style>

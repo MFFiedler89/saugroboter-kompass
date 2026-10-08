@@ -1,0 +1,84 @@
+---
+import { SITE, NAV_SECONDARY } from '../config';
+import { kategorien, activeSubsOf, subUrl } from '../lib/catalog';
+import Icon from './Icon.astro';
+const path = Astro.url.pathname;
+const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
+---
+<header class="hdr">
+  <div class="container top">
+    <a href="/" class="logo" aria-label={`${SITE.name}, Startseite`}>
+      <img src="/logo.svg" alt="" width="38" height="38" />
+      <span class="wm">Saug<span class="wm-a">radar</span></span>
+    </a>
+    <nav class="sec" aria-label="Service">
+      {NAV_SECONDARY.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
+    </nav>
+    <details class="mob">
+      <summary aria-label="Menü öffnen"><Icon name="menu" /></summary>
+      <div class="mob-panel">
+        {kats.map((k: any) => (
+          <div class="mob-k">
+            <a href={`/${k.slug}/`} class="mk"><Icon name={k.icon} size={20} /> {k.label}</a>
+            {k.subs.length > 0 && <div class="ms">{k.subs.map((s: any) => <a href={subUrl(s.slug)}>{s.label}</a>)}</div>}
+          </div>
+        ))}
+        <div class="mob-sec">{NAV_SECONDARY.map((n) => <a href={n.href}>{n.label}</a>)}</div>
+      </div>
+    </details>
+  </div>
+  <nav class="cats" aria-label="Kategorien">
+    <ul class="container">
+      {kats.map((k: any) => (
+        <li class="ci">
+          <a href={`/${k.slug}/`} aria-current={path.startsWith(`/${k.slug}/`) ? 'page' : undefined}><Icon name={k.icon} size={18} /> {k.label}</a>
+          {k.subs.length > 0 && (
+            <div class="drop card">
+              {k.subs.map((s: any) => <a href={subUrl(s.slug)}>{s.label}</a>)}
+              <a href={`/${k.slug}/`} class="all">Alle {k.label} →</a>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+<style>
+  .hdr { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo img { height: 38px; width: 38px; display: block; }
+  .wm { font-weight: 800; font-size: 1.28rem; letter-spacing: -0.025em; color: var(--brand); }
+  .wm-a { color: var(--accent-ink); }
+  @media (max-width: 420px) { .logo img { height: 32px; width: 32px; } .wm { font-size: 1.12rem; } }
+  .sec { display: flex; gap: 22px; }
+  .sec a { color: var(--muted); text-decoration: none; font-size: .9rem; font-weight: 550; }
+  .sec a:hover, .sec a[aria-current='page'] { color: var(--brand); }
+  .cats { border-top: 1px solid var(--border); background: var(--surface); }
+  .cats ul { display: flex; list-style: none; margin: 0 auto; gap: 4px; }
+  .ci { position: relative; }
+  .ci > a { display: flex; align-items: center; gap: 7px; padding: 11px 12px; color: var(--text); text-decoration: none; font-weight: 600; font-size: .92rem; border-bottom: 2px solid transparent; }
+  .ci > a :global(svg) { color: var(--accent-ink); }
+  .ci > a:hover, .ci > a[aria-current='page'] { border-bottom-color: var(--accent); color: var(--brand); }
+  .drop { display: none; position: absolute; top: 100%; left: 0; min-width: 260px; padding: 8px; z-index: 60; flex-direction: column; }
+  .ci:hover .drop, .ci:focus-within .drop { display: flex; }
+  .drop a { padding: 8px 12px; border-radius: 8px; color: var(--text); text-decoration: none; font-size: .92rem; }
+  .drop a:hover { background: var(--brand-soft); color: var(--brand); }
+  .drop .all { color: var(--brand); font-weight: 600; border-top: 1px solid var(--border); margin-top: 4px; border-radius: 0 0 8px 8px; }
+  .mob { display: none; }
+  @media (max-width: 960px) {
+    .sec, .cats { display: none; }
+    .mob { display: block; }
+    .mob summary { list-style: none; cursor: pointer; padding: 8px; border-radius: 8px; }
+    .mob summary::-webkit-details-marker { display: none; }
+    .mob[open] summary { background: var(--surface-2); }
+    .mob-panel { position: absolute; left: 0; right: 0; top: 60px; background: var(--surface); border-bottom: 1px solid var(--border); max-height: calc(100vh - 60px); overflow-y: auto; padding: 8px 16px 20px; box-shadow: 0 12px 30px rgb(0 0 0 / .1); }
+    .mob-k { border-bottom: 1px solid var(--border); padding: 10px 0; }
+    .mk { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .mk :global(svg) { color: var(--accent-ink); }
+    .ms { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 6px 0 0 28px; }
+    .ms a { font-size: .9rem; color: var(--muted); text-decoration: none; }
+    .mob-sec { display: flex; flex-wrap: wrap; gap: 10px 20px; padding-top: 14px; }
+    .mob-sec a { font-weight: 600; text-decoration: none; }
+  }
+</style>

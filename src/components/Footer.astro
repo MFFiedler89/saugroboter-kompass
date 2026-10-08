@@ -1,0 +1,58 @@
+---
+import { SITE, AMAZON, NAV_SECONDARY, CONSENT } from '../config';
+import { kategorien, activeSubs, subUrl } from '../lib/catalog';
+const popular = activeSubs().slice(0, 8);
+const year = new Date().getFullYear();
+const consentActive = CONSENT.categories.some((c) => !c.required);
+---
+<footer class="ft">
+  <div class="container grid">
+    <div>
+      <p class="brand">{SITE.name}</p>
+      <p class="small muted">{SITE.tagline}. Preise mit Zeitstempel, Ausstattung laut Produktangaben, Preislage im Vergleich zur Kategorie.</p>
+    </div>
+    <div>
+      <p class="h">Kategorien</p>
+      <ul>{kategorien.map((k: any) => <li><a href={`/${k.slug}/`}>{k.label}</a></li>)}</ul>
+    </div>
+    <div>
+      <p class="h">Beliebte Vergleiche</p>
+      <ul>{popular.map((s: any) => <li><a href={subUrl(s.slug)}>{s.label}</a></li>)}</ul>
+    </div>
+    <div>
+      <p class="h">Planen und Wissen</p>
+      <ul>
+        {NAV_SECONDARY.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        <li><a href="/marktdaten/">Marktdaten</a></li>
+        <li><a href="/so-vergleichen-wir/">So vergleichen wir</a></li>
+        <li><a href="/ueber-uns/">Über uns</a></li>
+        <li><a href="/impressum/">Impressum</a></li>
+        <li><a href="/datenschutz/">Datenschutz</a></li>
+        {consentActive && <li><button type="button" class="linklike" onclick="window.consent && window.consent.open()">Cookie-Einstellungen</button></li>}
+      </ul>
+    </div>
+  </div>
+  <div class="container legal muted">
+    <p><strong>Werbehinweis:</strong> {AMAZON.disclosure} Links zu Amazon sind Affiliate-Links, gekennzeichnet mit „Anzeige“. Für dich ändert sich der Preis dadurch nicht.</p>
+    <p>Preise inkl. MwSt., zzgl. Versand, Stand der letzten Aktualisierung. Maßgeblich ist der Preis auf Amazon.de zum Kaufzeitpunkt.</p>
+    <p>© {year} {SITE.name}</p>
+  </div>
+</footer>
+<style>
+  .ft { margin-top: 80px; background: #121a28; color: #dbe2ee; padding: 48px 0 24px; }
+  .ft a { color: #dbe2ee; text-decoration: none; }
+  .ft a:hover { color: #fff; text-decoration: underline; }
+  .ft .muted { color: #a3aec2; }
+  .grid { display: grid; grid-template-columns: 1.6fr 1fr 1.2fr 1fr; gap: 32px; }
+  .brand { font-weight: 800; font-size: 1.2rem; color: #fff; margin-bottom: .4em; }
+  .h { font-weight: 700; color: #fff; margin-bottom: .5em; }
+  ul { list-style: none; padding: 0; margin: 0; font-size: .92rem; }
+  li { margin-bottom: .35em; }
+  .linklike { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+  .linklike:hover { color: #fff; text-decoration: underline; }
+  .legal { border-top: 1px solid #2b3647; margin-top: 32px; padding-top: 18px; font-size: .78rem; line-height: 1.55; }
+  .legal p { margin: 0 0 .5em; max-width: 92ch; }
+  .legal p:last-child { margin: 0; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr 1fr; gap: 24px; } }
+  @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+</style>

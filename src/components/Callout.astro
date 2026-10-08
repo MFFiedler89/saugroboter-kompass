@@ -1,0 +1,17 @@
+---
+interface Props { type?: 'tip' | 'warn' | 'info'; title?: string }
+const { type = 'tip', title } = Astro.props;
+const icons = { tip: '💡', warn: '⚠️', info: 'ℹ️' };
+---
+<aside class:list={['co', type]}>
+  {title && <p class="t"><span aria-hidden="true">{icons[type]}</span> {title}</p>}
+  <slot />
+</aside>
+<style>
+  .co { border-radius: var(--radius); padding: 14px 18px; margin: 22px 0; border: 1px solid; }
+  .tip { background: var(--accent-soft); border-color: var(--accent-pale); }
+  .warn { background: #fdeeec; border-color: #f0c3bd; }
+  .info { background: var(--brand-soft); border-color: #c3d3ed; }
+  .t { font-weight: 750; margin: 0 0 6px; }
+  .co :global(p:last-child) { margin-bottom: 0; }
+</style>

@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+interface Props { cluster?: string; pillar?: string; exclude?: string; limit?: number; title?: string }
+const { cluster, pillar, exclude, limit = 3, title = 'Passende Ratgeber' } = Astro.props;
+const all = await getCollection('ratgeber', ({ data }) => !data.draft);
+const list = all
+  .filter((p) => p.id !== exclude)
+  .filter((p) => (pillar ? p.data.pillar === pillar : cluster ? p.data.cluster === cluster : true))
+  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+  .slice(0, limit);
+---
+{list.length > 0 && (
+  <section class="rel">
+    <h2>{title}</h2>
+    <ul>
+      {list.map((p) => (
+        <li class="card"><a href={`/ratgeber/${p.id}/`}><strong>{p.data.h1 ?? p.data.title}</strong><span class="small muted">{p.data.description}</span></a></li>
+      ))}
+    </ul>
+  </section>
+)}
+<style>
+  ul { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+  li a { display: flex; flex-direction: column; gap: 6px; padding: 16px; text-decoration: none; color: var(--text); height: 100%; }
+  li a:hover strong { color: var(--brand); }
+</style>

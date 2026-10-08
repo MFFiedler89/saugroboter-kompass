@@ -1,0 +1,29 @@
+---
+interface Props { items: { q: string; a: string }[]; title?: string }
+const { items, title = 'Häufige Fragen' } = Astro.props;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((i) => ({ '@type': 'Question', name: i.q, acceptedAnswer: { '@type': 'Answer', text: i.a } })),
+};
+---
+{items.length > 0 && (
+  <section class="faq" aria-labelledby="faq-h">
+    <h2 id="faq-h">{title}</h2>
+    {items.map((i) => (
+      <details>
+        <summary>{i.q}</summary>
+        <p>{i.a}</p>
+      </details>
+    ))}
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </section>
+)}
+<style>
+  details { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin: 10px 0; padding: 0 16px; }
+  summary { cursor: pointer; font-weight: 650; padding: 14px 0; list-style: none; position: relative; padding-right: 28px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; position: absolute; right: 0; top: 12px; font-size: 1.3rem; color: var(--accent-ink); }
+  details[open] summary::after { content: '−'; }
+  details p { margin: 0 0 16px; }
+</style>
