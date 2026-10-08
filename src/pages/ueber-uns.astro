@@ -1,0 +1,26 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { SITE } from '../config';
+const o = SITE.operator;
+---
+<PageLayout title="Über uns" description={`Wer hinter ${SITE.name} steht, warum es die Seite gibt und nach welchen Regeln hier verglichen wird.`}>
+  <p>{SITE.name} ist eine unabhängige Vergleichsseite für Saugroboter. Betrieben wird sie privat aus {o.city.replace(/^\d+\s*/, '')}, nicht von einem Verlag und nicht von einem Händler. Wer verantwortlich ist, steht vollständig im <a href="/impressum/">Impressum</a>.</p>
+
+  <h2>Warum es diese Seite gibt</h2>
+  <p>Saugroboter sehen in der Auflistung alle gleich aus: eine runde Scheibe, eine große Zahl mit Pa dahinter, ein Foto von einer makellosen Wohnung. Die Unterschiede, die im Alltag zählen, stecken woanders. Ob die Bürste sich mit langen Haaren zusetzt. Ob das Gerät über eine Türschwelle kommt. Ob die Station Wasser nachfüllt oder nur Staub absaugt. Diese Angaben stehen verstreut in Titel und Produktbeschreibung, jede Marke formuliert sie anders. {SITE.name} bringt sie in eine vergleichbare Form.</p>
+
+  <h2>Wie hier verglichen wird</h2>
+  <p>Preise, Bilder und Produktmerkmale kommen direkt von Amazon und werden mehrmals täglich neu abgerufen. Jeder Preis trägt einen Zeitstempel; ist er zu alt, blenden wir ihn aus, statt eine veraltete Zahl zu zeigen. Die Ausstattung lesen wir aus den Herstellerangaben. Was dort nicht eindeutig steht, erscheint als „k. A.“.</p>
+  <p>Bevor eine Vergleichsseite entsteht, zählen wir an echten Produktlisten aus, ob das jeweilige Merkmal überhaupt verlässlich angegeben wird. Merkmale, die zu selten oder zu missverständlich dastehen, werden kein Filter. Ausführlich erklärt ist das unter <a href="/so-vergleichen-wir/">So vergleichen wir</a>.</p>
+
+  <h2>Was du hier nicht findest</h2>
+  <ul>
+    <li><strong>Keine erfundenen Tests.</strong> Wir behaupten keine Messungen und keine Testsieger, die es nicht gegeben hat.</li>
+    <li><strong>Keine erfundenen Erfahrungsberichte.</strong> Wo wir keine eigene Praxis haben, schreiben wir keine hin.</li>
+    <li><strong>Keine gekauften Platzierungen.</strong> Hersteller können sich bei uns keine Position erkaufen.</li>
+    <li><strong>Keine geratenen Daten.</strong> Fehlt eine Angabe beim Hersteller, bleibt sie leer.</li>
+  </ul>
+
+  <h2>Fehler gefunden?</h2>
+  <p>Wenn dir eine falsche Angabe auffällt, schreib uns über die Adresse im <a href="/impressum/">Impressum</a>. Wir prüfen und korrigieren das.</p>
+</PageLayout>

@@ -1,0 +1,241 @@
+---
+// Marktdaten: die Auswertung über alle Produkte, die wir ohnehin mehrmals
+// täglich abrufen. Zweck ist, eine Zahl zu liefern, die es sonst nirgends gibt
+// und die man zitieren kann. Entsteht komplett automatisch beim Build.
+import PageLayout from '../layouts/PageLayout.astro';
+import { subStats, gesamt, euro, prozent } from '../lib/marktdaten';
+import { subUrl, katUrl, updatedAt, formatDateTime, kategorien } from '../lib/catalog';
+import { SITE } from '../config';
+
+const stats = subStats();
+const g = gesamt(stats);
+const hatDaten = stats.length > 0 && g.mitPreis > 0;
+const stand = formatDateTime(updatedAt);
+const standTag = updatedAt ? new Date(updatedAt).toISOString().slice(0, 10) : '';
+const url = new URL('/marktdaten/', Astro.site).href;
+
+const maxMedian = Math.max(...stats.map((s) => s.median ?? 0), 1);
+const proKategorie = kategorien
+  .map((k: any) => ({ ...k, items: stats.filter((s) => s.kategorie === k.slug).sort((a, b) => (b.median ?? 0) - (a.median ?? 0)) }))
+  .filter((k: any) => k.items.length);
+
+const guenstigste = [...stats].sort((a, b) => (a.median ?? 1e9) - (b.median ?? 1e9)).slice(0, 3);
+const teuerste = [...stats].sort((a, b) => (b.median ?? 0) - (a.median ?? 0)).slice(0, 3);
+const breiteste = [...stats].sort((a, b) => (b.max ?? 0) / (b.min || 1) - (a.max ?? 0) / (a.min || 1))[0];
+
+const titel = 'Marktdaten Saugroboter';
+const beschreibung = `Preise und Ausstattung von ${g.produkte} Saugrobotern aus ${g.vergleiche} Vergleichen, ausgewertet nach Median, Preisspanne und Ausstattungsanteil. Mehrmals täglich aktualisiert.`;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name: `${titel} (${SITE.name})`,
+    description: beschreibung,
+    url,
+    license: 'https://creativecommons.org/licenses/by/4.0/',
+    creator: { '@id': new URL('/#org', Astro.site).href },
+    inLanguage: 'de-DE',
+    spatialCoverage: 'Deutschland',
+    ...(standTag ? { dateModified: standTag, temporalCoverage: standTag } : {}),
+    variableMeasured: [
+      { '@type': 'PropertyValue', name: 'Medianpreis', unitText: 'EUR' },
+      { '@type': 'PropertyValue', name: 'Preisspanne', unitText: 'EUR' },
+      { '@type': 'PropertyValue', name: 'Ausstattungsanteil', unitText: 'Prozent' },
+      { '@type': 'PropertyValue', name: 'Anbietervielfalt', unitText: 'Anzahl Marken' },
+    ],
+  },
+];
+---
+<PageLayout title={titel} description={beschreibung} wide schema={schema}>
+  <div class="intro">
+    <p>
+      Für die Vergleiche auf {SITE.name} rufen wir mehrmals täglich Preise und Produktangaben ab. Diese Seite
+      wertet den gesamten Bestand aus: Was kostet ein Saugroboter wirklich, wie weit liegen günstigste und
+      teuerste Angebote auseinander, und wie verbreitet einzelne Merkmale sind. Die Zahlen aktualisieren sich
+      automatisch mit jeder Datenaktualisierung.
+    </p>
+    {stand && <p class="stand">Stand: {stand}. Datenbasis: Amazon.de, Marktplatz Deutschland.</p>}
+  </div>
+
+  {hatDaten && (
+  <>
+  <ul class="kpis">
+    <li><b>{g.produkte}</b><span>ausgewertete Produkte</span></li>
+    <li><b>{g.marken}</b><span>Marken</span></li>
+    <li><b>{g.vergleiche}</b><span>Produktgruppen</span></li>
+    <li><b>{euro(g.guenstigster)} bis {euro(g.teuerster)}</b><span>Spanne über alles</span></li>
+  </ul>
+
+  <h2>Was die Zahlen zeigen</h2>
+  <ul class="findings">
+    <li>
+      Am günstigsten startet man bei {guenstigste.map((s, i) => <>{i > 0 && (i === guenstigste.length - 1 ? ' und ' : ', ')}<a href={subUrl(s.slug)}>{s.label}</a> ({euro(s.median)} im Mittel)</>)}.
+    </li>
+    <li>
+      Am meisten kosten {teuerste.map((s, i) => <>{i > 0 && (i === teuerste.length - 1 ? ' und ' : ', ')}<a href={subUrl(s.slug)}>{s.label}</a> ({euro(s.median)})</>)}.
+    </li>
+    {breiteste && breiteste.min && breiteste.max && (
+      <li>
+        Die größte Preisspreizung hat <a href={subUrl(breiteste.slug)}>{breiteste.label}</a>: vom günstigsten
+        Angebot mit {euro(breiteste.min)} bis {euro(breiteste.max)} liegt der Faktor bei
+        {' '}{(breiteste.max / breiteste.min).toFixed(1).replace('.', ',')}.
+        Der Produktname allein sagt in solchen Gruppen also wenig über die Ausstattung.
+      </li>
+    )}
+    <li>
+      In der Hälfte aller Produktgruppen liegt das mittlere Angebot unter {euro(stats.map((s) => s.median ?? 0).sort((a, b) => a - b)[Math.floor(stats.length / 2)])}.
+    </li>
+  </ul>
+
+  <h2>Preise je Produktgruppe</h2>
+  <p class="hint">
+    Der Balken zeigt die mittleren 50 Prozent der Angebote, der Strich den Median. Alles links und rechts
+    davon gibt es auch, ist aber die Ausnahme.
+  </p>
+
+  {proKategorie.map((k: any) => (
+    <section class="kat">
+      <h3><a href={katUrl(k.slug)}>{k.label}</a></h3>
+      <table class="tab">
+        <thead>
+          <tr>
+            <th scope="col">Produktgruppe</th>
+            <th scope="col" class="n">Produkte</th>
+            <th scope="col" class="n">Günstigstes</th>
+            <th scope="col" class="n">Median</th>
+            <th scope="col" class="n">Teuerstes</th>
+            <th scope="col" class="n">Marken</th>
+            <th scope="col" class="bar-h">Mittlere Preislage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {k.items.map((s: any) => (
+            <tr>
+              <th scope="row"><a href={subUrl(s.slug)}>{s.label}</a></th>
+              <td class="n">{s.anzahl}</td>
+              <td class="n">{euro(s.min)}</td>
+              <td class="n med">{euro(s.median)}</td>
+              <td class="n">{euro(s.max)}</td>
+              <td class="n">{s.marken}</td>
+              <td class="bar-c">
+                <span class="track">
+                  <span
+                    class="box"
+                    style={`left:${((s.q1 ?? 0) / maxMedian) * 100}%;width:${Math.max(2, (((s.q3 ?? 0) - (s.q1 ?? 0)) / maxMedian) * 100)}%`}
+                  ></span>
+                  <span class="tick" style={`left:${((s.median ?? 0) / maxMedian) * 100}%`}></span>
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  ))}
+
+  <h2>Wie verbreitet einzelne Merkmale sind</h2>
+  <p class="hint">
+    Anteil der Angebote in der jeweiligen Gruppe, bei denen das Merkmal in den Herstellerangaben eindeutig
+    genannt ist. Fehlende Angaben zählen nicht mit, der Anteil ist also eher vorsichtig gerechnet.
+  </p>
+  <div class="grid">
+    {stats.filter((s) => s.merkmale.length).map((s) => (
+      <div class="card m">
+        <p class="mt"><a href={subUrl(s.slug)}>{s.label}</a> <span class="muted small">({s.anzahl} Produkte)</span></p>
+        <ul class="bars">
+          {s.merkmale.map((m) => (
+            <li>
+              <span class="bl">{m.label}</span>
+              <span class="bt"><span class="bf" style={`width:${Math.round(m.anteil * 100)}%`}></span></span>
+              <span class="bv">{prozent(m.anteil)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  </>
+  )}
+
+  {!hatDaten && (
+    <p class="hint">Die Auswertung wird gerade aufgebaut und steht in Kürze hier. Die Methodik unten gilt unverändert.</p>
+  )}
+
+  <h2>Methodik</h2>
+  <ul class="meth">
+    <li><strong>Grundgesamtheit:</strong> {hatDaten ? `${g.produkte} Produkte in ${g.vergleiche} Produktgruppen` : 'alle Produkte unserer Vergleiche'}, ausgewählt über die Amazon-Suche nach festen Suchbegriffen und Preisgrenzen je Gruppe. Keine Zufallsstichprobe des Gesamtmarkts, sondern der Ausschnitt, der auf Amazon.de tatsächlich auffindbar ist.</li>
+    <li><strong>Preise:</strong> jeweils der aktuell über die Amazon Creators API gemeldete Preis inklusive Mehrwertsteuer, ohne Versand.{hatDaten ? ` ${g.mitPreis} der ${g.produkte} Produkte hatten zum Stichtag einen Preis.` : ''}</li>
+    <li><strong>Median statt Durchschnitt:</strong> einzelne sehr teure Angebote würden einen Durchschnitt verzerren. Der Median zeigt, was ein Angebot in der Mitte kostet.</li>
+    <li><strong>Ausstattung:</strong> aus Titel und Herstellerangaben gelesen, nicht nachgemessen. Was dort nicht eindeutig steht, zählt als fehlende Angabe. Für die Saugkraft in Pascal gibt es keine verbindliche Messnorm, die Werte sind deshalb zwischen Marken nur eingeschränkt vergleichbar.</li>
+    <li><strong>Marken:</strong> gezählt nach Herstellerangabe. Handelsnamen desselben Anbieters werden nicht zusammengefasst.</li>
+    <li>Mehr dazu unter <a href="/so-vergleichen-wir/">So vergleichen wir</a>.</li>
+  </ul>
+
+  <div class="zit">
+    <p class="zt">Zahlen übernehmen</p>
+    <p>
+      Du darfst die Zahlen dieser Seite frei verwenden, auch gewerblich, wenn du die Quelle nennst und verlinkst
+      (CC BY 4.0). Vorschlag für die Quellenangabe:
+    </p>
+    <p class="code">{SITE.name}, Marktdaten Saugroboter{stand ? `, Stand ${stand}` : ''}, {url}</p>
+    <p class="small muted">
+      Für Presseanfragen oder eine Auswertung nach anderen Kriterien schreib an die Adresse im <a href="/impressum/">Impressum</a>.
+    </p>
+  </div>
+</PageLayout>
+
+<style>
+  .intro p { max-width: 70ch; }
+  .stand { color: var(--muted); font-size: .9rem; }
+
+  .kpis { list-style: none; padding: 0; margin: 26px 0 8px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .kpis li { background: var(--brand-soft); border: 1px solid #c3d3ed; border-radius: var(--radius); padding: 14px 16px; }
+  .kpis b { display: block; font-size: 1.5rem; line-height: 1.15; font-weight: 800; color: var(--brand); }
+  .kpis span { display: block; font-size: .82rem; color: var(--muted); margin-top: 3px; }
+
+  .findings, .meth { max-width: 78ch; }
+  .findings li, .meth li { margin-bottom: .5em; }
+  .hint { color: var(--muted); font-size: .9rem; max-width: 72ch; }
+
+  .kat { margin: 26px 0 34px; }
+  .kat h3 { margin-bottom: 10px; }
+  .kat h3 a { color: inherit; text-decoration: none; }
+  .kat h3 a:hover { color: var(--brand); }
+
+  .tab { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  .tab th, .tab td { padding: 9px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+  .tab thead th { font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); border-bottom-width: 2px; }
+  .tab tbody th { font-weight: 650; }
+  .tab .n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .tab .med { font-weight: 750; }
+  .bar-h { width: 30%; min-width: 150px; }
+  .bar-c { padding-right: 2px; }
+
+  .track { display: block; position: relative; height: 12px; background: var(--surface-2); border-radius: 6px; }
+  .box { position: absolute; top: 0; bottom: 0; background: var(--brand); opacity: .28; border-radius: 6px; }
+  .tick { position: absolute; top: -2px; bottom: -2px; width: 3px; background: var(--accent); border-radius: 2px; }
+
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); margin: 18px 0 8px; }
+  .m { padding: 16px 18px; }
+  .mt { margin: 0 0 10px; font-weight: 700; }
+  .bars { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .bars li { display: grid; grid-template-columns: 1fr 72px 50px; align-items: center; gap: 9px; font-size: .84rem; }
+  .bl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bt { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .bf { display: block; height: 100%; background: var(--brand); border-radius: 4px; }
+  .bv { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .zit { margin: 34px 0 0; padding: 18px 20px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); max-width: 78ch; }
+  .zt { font-weight: 800; margin: 0 0 8px; }
+  .zit p { margin: 0 0 .7em; }
+  .zit p:last-child { margin: 0; }
+  .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .82rem; background: var(--surface-2); padding: 10px 12px; border-radius: 8px; overflow-wrap: anywhere; }
+
+  @media (max-width: 760px) {
+    .bar-h, .bar-c { display: none; }
+    .tab { font-size: .84rem; }
+    .tab th, .tab td { padding: 8px 6px; }
+  }
+</style>

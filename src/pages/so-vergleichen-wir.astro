@@ -1,0 +1,45 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { AMAZON, SITE } from '../config';
+---
+<PageLayout title="So vergleichen wir" description="Transparente Methodik: Woher Preise und Ausstattung stammen, welche Angaben wir bewusst weglassen, wie Empfehlungen entstehen und wie wir uns finanzieren.">
+  <p>Ein Vergleich ist nur so gut wie seine Regeln. Hier steht, wie {SITE.name} funktioniert und wie diese Seite Geld verdient.</p>
+
+  <h2>Woher die Daten kommen</h2>
+  <ul>
+    <li><strong>Preis, Bild, Titel und Produktmerkmale</strong> stammen direkt von Amazon (Amazon Creators API). Sie werden bei jeder Aktualisierung neu abgerufen, mehrmals täglich.</li>
+    <li><strong>Jeder Preis hat einen Zeitstempel.</strong> Ist ein Preis älter als {AMAZON.maxPriceAgeHours} Stunden, blenden wir ihn automatisch aus.</li>
+    <li><strong>Ausstattung laut Produktangaben:</strong> Merkmale wie Saugkraft, Wischsystem oder Station lesen wir aus Titel und Produktbeschreibung des Herstellers. Was dort nicht eindeutig steht, zeigen wir als „k. A.“ (keine Angabe). Wir raten nichts dazu.</li>
+  </ul>
+
+  <h2>Welche Merkmale wir zeigen und warum nicht mehr</h2>
+  <p>Bevor diese Seite entstand, haben wir an echten Produktlisten ausgezählt, welche Angaben überhaupt in Titel und Produktmerkmalen stehen. Nur was dort verlässlich auftaucht, wird bei uns zum Filter. Der Rest steht höchstens als Spalte in der Tabelle, oder gar nicht.</p>
+  <p>Ein Beispiel für etwas, das wir deshalb weglassen: die Bauhöhe. Sie wäre für die Frage „passt er unter mein Sofa“ die wichtigste Zahl überhaupt, steht aber nur bei einer Minderheit der Geräte eindeutig in den Produktangaben. Und wo eine Zahl steht, meint sie oft etwas anderes, nämlich die Höhe der Lücke, unter die das Gerät noch fährt. Ein Filter auf dieser Grundlage würde falsche Ergebnisse liefern, also gibt es ihn nicht.</p>
+
+  <h2>Was die Saugkraft in Pascal aussagt</h2>
+  <p>Weniger, als die Zahl vermuten lässt. Es gibt für Saugroboter keine verbindliche Messnorm für Pascal, die Werte verschiedener Hersteller sind deshalb nicht sauber vergleichbar. Außerdem gilt der genannte Wert immer für die stärkste Stufe. Wir zeigen die Zahl, weil sie in fast jedem Produkttitel steht und innerhalb einer Marke eine Rangfolge ergibt. Wir behaupten nicht, dass mehr Pascal automatisch sauberer heißt.</p>
+
+  <h2>Preislage</h2>
+  <p>Die Preislage zeigt, wo ein Angebot preislich innerhalb seiner Vergleichsseite liegt, in fünf Stufen von „günstig“ bis „teuer“. Sie sagt nichts über die Qualität, hilft aber beim Einordnen.</p>
+
+  <h2>Beliebtheit</h2>
+  <p>Die Standard-Sortierung „Beliebtheit“ basiert auf dem Verkaufsrang bei Amazon. Viel gekaufte Produkte stehen weiter oben. Du kannst jederzeit nach Preis oder Ausstattung umsortieren.</p>
+
+  <h2>Wie Empfehlungen entstehen</h2>
+  <p>Auf jeder Vergleichsseite zeigen wir Empfehlungen je Anwendungsfall, zum Beispiel „Für Tierhaare“ oder „Preis-Tipp“. Diese entstehen nach festen, sichtbaren Regeln: Wir filtern alle Angebote nach den Merkmalen, die für diesen Fall wichtig sind, und wählen daraus das beliebteste oder günstigste. Die Regel steht jeweils unter „Warum“ direkt an der Empfehlung.</p>
+  <p>Wo wir ein Produkt bewusst auswählen, kennzeichnen wir das als „Redaktionstipp“. Wir behaupten keine Labortests, die wir nicht gemacht haben.</p>
+
+  <h2>Was du hier nicht findest</h2>
+  <ul>
+    <li><strong>Keine erfundenen Tests.</strong> Wir haben kein Labor und keine Teststrecke, und wir tun auch nicht so.</li>
+    <li><strong>Keine Testsieger-Siegel</strong> und keine zusammengeschriebenen Erfahrungsberichte.</li>
+    <li><strong>Keine gekauften Platzierungen.</strong> Hersteller können sich bei uns keine Position erkaufen.</li>
+    <li><strong>Keine geratenen Daten.</strong> Fehlt eine Angabe beim Hersteller, bleibt sie leer.</li>
+  </ul>
+
+  <h2>Wie wir uns finanzieren</h2>
+  <p>{AMAZON.disclosure} Links zu Amazon sind Affiliate-Links und mit „Anzeige“ gekennzeichnet. Kaufst du darüber, erhalten wir eine Provision. Für dich ändert sich der Preis nicht.</p>
+
+  <h2>Fehler gefunden?</h2>
+  <p>Wenn dir eine falsche Angabe auffällt, schreib uns über die Adresse im <a href="/impressum/">Impressum</a>. Wir prüfen und korrigieren das schnell.</p>
+</PageLayout>
