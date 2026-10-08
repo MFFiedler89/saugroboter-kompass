@@ -1,0 +1,104 @@
+---
+/**
+ * Rechner: Wie oft musst du den Staubbehaelter leeren, und was aendert eine
+ * Absaugstation daran?
+ *
+ * Die Staubmenge je Quadratmeter ist eine Annahme, kein Messwert, und
+ * deshalb einstellbar.
+ */
+---
+<section class="calc card" data-station aria-labelledby="st-h">
+  <h2 id="st-h" class="t">Rechner: Wie oft musst du leeren?</h2>
+
+  <div class="items">
+    <label class="it"><span>Fläche je Durchgang <small class="muted">in m²</small></span>
+      <input type="number" min="5" max="400" value="70" data-qm inputmode="numeric" />
+    </label>
+    <label class="it"><span>Durchgänge pro Woche</span>
+      <input type="number" min="1" max="21" value="4" data-pro-woche inputmode="numeric" />
+    </label>
+    <label class="it"><span>Staubbehälter im Roboter <small class="muted">in ml laut Hersteller</small></span>
+      <input type="number" min="100" max="1200" value="350" data-behaelter inputmode="numeric" />
+    </label>
+    <label class="it"><span>Schmutzaufkommen <small class="muted">Annahme, anpassbar</small></span>
+      <select data-last>
+        <option value="0.9">wenig, keine Tiere, Hartboden</option>
+        <option value="1.8" selected>normal, Haushalt mit Teppich</option>
+        <option value="3.2">viel, Haustier mit Fellwechsel</option>
+      </select>
+    </label>
+    <label class="it"><span>Beutel in der Absaugstation <small class="muted">in Litern, 0 wenn beutellos</small></span>
+      <input type="number" min="0" max="8" step="0.1" value="2.5" data-beutel inputmode="decimal" />
+    </label>
+  </div>
+
+  <dl class="res">
+    <div><dt>Ohne Station: leeren</dt><dd data-ohne></dd></div>
+    <div><dt>Mit Station: Beutel wechseln</dt><dd data-mit></dd></div>
+  </dl>
+  <p class="small" data-hint></p>
+
+  <p class="small muted note">
+    Das Schmutzaufkommen je Quadratmeter lässt sich nicht aus Produktdaten ablesen, es ist hier eine
+    Rechenannahme und oben umstellbar. Der Rechner zeigt die Größenordnung, nicht den exakten Tag.
+    Beutellose Stationen schütten in einen festen Behälter, der sich ähnlich oft füllt wie ein kleiner Beutel.
+  </p>
+  <a class="btn btn-ghost" href="/saugroboter/saugroboter-mit-absaugstation/">Modelle mit Absaugstation vergleichen →</a>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-station]').forEach((r) => {
+    const qm = r.querySelector<HTMLInputElement>('[data-qm]')!;
+    const proWoche = r.querySelector<HTMLInputElement>('[data-pro-woche]')!;
+    const behaelter = r.querySelector<HTMLInputElement>('[data-behaelter]')!;
+    const last = r.querySelector<HTMLSelectElement>('[data-last]')!;
+    const beutel = r.querySelector<HTMLInputElement>('[data-beutel]')!;
+
+    const tage = (n: number) => {
+      if (!Number.isFinite(n) || n <= 0) return 'k. A.';
+      if (n < 1) return 'täglich';
+      if (n >= 60) return 'seltener als alle zwei Monate';
+      return `alle ${Math.round(n)} Tage`;
+    };
+
+    const up = () => {
+      const flaeche = Math.max(0, Number(qm.value) || 0);
+      const laeufe = Math.max(0, Number(proWoche.value) || 0);
+      const ml = Math.max(1, Number(behaelter.value) || 1);
+      const proQm = Number(last.value); // ml Schmutz je m² und Durchgang
+      const beutelL = Math.max(0, Number(beutel.value) || 0);
+
+      const mlProTag = (flaeche * proQm * laeufe) / 7;
+      const ohne = mlProTag > 0 ? (ml * 0.8) / mlProTag : Infinity;
+      const mit = mlProTag > 0 && beutelL > 0 ? (beutelL * 1000 * 0.85) / mlProTag : Infinity;
+
+      r.querySelector('[data-ohne]')!.textContent = tage(ohne);
+      r.querySelector('[data-mit]')!.textContent = beutelL > 0 ? tage(mit) : 'beutellos';
+      r.querySelector('[data-hint]')!.textContent =
+        ohne < 4
+          ? 'Bei diesem Aufkommen stündest du fast täglich am Mülleimer. Eine Absaugstation nimmt dir genau diesen Schritt ab, kostet aber Platz und laufende Beutel.'
+          : ohne < 10
+          ? 'Eine Absaugstation ist hier eine Bequemlichkeitsfrage, keine Notwendigkeit. Rechne die Beutelkosten gegen den gesparten Handgriff.'
+          : 'Bei diesem Aufkommen reicht der Behälter im Roboter lange. Eine Station lohnt sich vor allem, wenn du den Staub aus anderen Gründen nicht anfassen willst.';
+    };
+
+    [qm, proWoche, behaelter, beutel].forEach((el) => el.addEventListener('input', up));
+    last.addEventListener('change', up);
+    up();
+  });
+</script>
+
+<style>
+  .calc { padding: 20px; margin: 24px 0; }
+  .t { margin: 0 0 14px; font-size: 1.25rem; }
+  label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; }
+  select, input[type='number'] { font: inherit; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+  .items { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .it input[type='number'] { max-width: 140px; }
+  .res { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0 0 10px; }
+  .res div { background: var(--brand-soft); border-radius: 10px; padding: 12px; }
+  dt { font-size: .78rem; color: var(--muted); }
+  dd { margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--brand); }
+  .note { margin: 10px 0 16px; max-width: 72ch; }
+  @media (max-width: 600px) { .res { grid-template-columns: 1fr; } }
+</style>

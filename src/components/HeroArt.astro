@@ -1,0 +1,63 @@
+---
+// Eigene Illustration: Grundriss mit Saugroboter und Radar-Sweep (SVG, keine Fremdbilder).
+// Die Drehung respektiert die Systemeinstellung "Bewegung reduzieren".
+---
+<div class="wrap">
+  <div class="sweep" aria-hidden="true"></div>
+  <svg viewBox="0 0 440 340" class="art" role="img" aria-label="Illustration eines Wohnraums von oben mit einem Saugroboter, der die Fläche abfährt">
+    <!-- Raumgrundriss -->
+    <rect x="24" y="24" width="392" height="292" rx="18" fill="#ffffff" fill-opacity=".07" stroke="#8fb0e0" stroke-opacity=".55" stroke-width="2"/>
+    <path d="M24 196h150M258 24v96" stroke="#8fb0e0" stroke-opacity=".4" stroke-width="2"/>
+
+    <!-- Teppich -->
+    <rect x="60" y="222" width="118" height="68" rx="8" fill="#e89d24" fill-opacity=".22" stroke="#e89d24" stroke-opacity=".5" stroke-dasharray="6 5"/>
+    <text x="119" y="262" text-anchor="middle" font-size="13" fill="#f2c87e" font-family="ui-sans-serif, system-ui, sans-serif">Teppich</text>
+
+    <!-- Sofa -->
+    <rect x="296" y="46" width="94" height="36" rx="8" fill="#ffffff" fill-opacity=".14"/>
+    <rect x="296" y="82" width="94" height="14" rx="6" fill="#ffffff" fill-opacity=".2"/>
+    <!-- Tisch -->
+    <rect x="286" y="150" width="76" height="52" rx="6" fill="#ffffff" fill-opacity=".12"/>
+    <!-- Stuhlbeine, die typischen Hindernisse -->
+    <circle cx="272" cy="236" r="7" fill="#ffffff" fill-opacity=".18"/>
+    <circle cx="316" cy="258" r="7" fill="#ffffff" fill-opacity=".18"/>
+    <circle cx="358" cy="232" r="7" fill="#ffffff" fill-opacity=".18"/>
+
+    <!-- Abgefahrene Bahn -->
+    <path d="M96 76h236M332 76v26M332 102H96M96 102v26M96 128h236" fill="none" stroke="#f2c87e" stroke-opacity=".5" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 9"/>
+
+    <!-- Station -->
+    <rect x="58" y="52" width="34" height="46" rx="7" fill="#e89d24" fill-opacity=".9"/>
+    <rect x="65" y="60" width="20" height="8" rx="3" fill="#3a2400" fill-opacity=".45"/>
+    <path d="M62 98h26" stroke="#3a2400" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Roboter -->
+    <g transform="translate(222 182)">
+      <circle r="42" fill="#0e1c33" stroke="#e89d24" stroke-width="2.5"/>
+      <circle r="30" fill="none" stroke="#5e82bd" stroke-width="1.6" stroke-opacity=".7"/>
+      <circle r="17" fill="none" stroke="#5e82bd" stroke-width="1.6" stroke-opacity=".5"/>
+      <circle cy="-42" r="7" fill="#e89d24"/>
+      <circle r="5" fill="#e89d24"/>
+      <path d="M-30 30 L-9 9" stroke="#e89d24" stroke-width="2.4" stroke-linecap="round"/>
+    </g>
+  </svg>
+</div>
+<style>
+  .wrap { position: relative; width: 100%; max-width: 520px; margin: 0 auto; }
+  .art { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
+  /* Radar-Sweep hinter der Zeichnung, zentriert auf den Roboter */
+  .sweep {
+    position: absolute;
+    left: 50.5%; top: 53.5%;
+    width: 78%; aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, rgb(var(--accent-rgb) / .34), rgb(var(--accent-rgb) / 0) 42%, rgb(var(--accent-rgb) / 0) 100%);
+    mask-image: radial-gradient(circle, #000 18%, rgb(0 0 0 / .35) 62%, transparent 72%);
+    -webkit-mask-image: radial-gradient(circle, #000 18%, rgb(0 0 0 / .35) 62%, transparent 72%);
+    animation: sweep 5.5s linear infinite;
+    z-index: 0;
+  }
+  @keyframes sweep { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .sweep { animation: none; } }
+</style>

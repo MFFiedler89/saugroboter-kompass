@@ -1,0 +1,167 @@
+---
+/**
+ * Einwilligungs-Banner. Erscheint nur, wenn in src/config.ts mindestens eine
+ * einwilligungspflichtige Kategorie aktiviert ist (CONSENT.categories).
+ * Solange die Seite keine Cookies und kein Tracking nutzt, wird gar nichts
+ * gerendert, weil ein Banner ohne Zweck nur Besucher kostet.
+ *
+ * Skripte gibst du so frei:
+ *   if (window.consent?.has('analytics')) { ... }
+ *   window.addEventListener('consent-change', (e) => { ... e.detail ... });
+ */
+import { CONSENT, SITE } from '../config';
+const cats = CONSENT.categories.filter((c) => !c.required);
+const active = cats.length > 0;
+---
+{active && (
+  <div class="cb" data-consent hidden role="dialog" aria-modal="false" aria-labelledby="cb-t" aria-describedby="cb-d">
+    <div class="box">
+      <div class="txt">
+        <p class="t" id="cb-t">Deine Entscheidung über Cookies</p>
+        <p class="d" id="cb-d">
+          {SITE.name} nutzt technisch notwendige Funktionen, die immer aktiv sind. Zusätzlich möchten wir
+          die unten aufgeführten Dienste einsetzen. Du kannst frei wählen und deine Entscheidung jederzeit
+          über den Link <strong>Cookie-Einstellungen</strong> im Fußbereich ändern. Mehr dazu in der
+          <a href="/datenschutz/">Datenschutzerklärung</a>.
+        </p>
+        <ul class="cats">
+          <li><label><input type="checkbox" checked disabled /> <span><strong>Notwendig.</strong> Auslieferung und Sicherheit der Seite. Ohne diese Funktionen geht es nicht.</span></label></li>
+          {cats.map((c) => (
+            <li><label><input type="checkbox" data-cat={c.key} /> <span><strong>{c.label}.</strong> {c.description}</span></label></li>
+          ))}
+        </ul>
+      </div>
+      <div class="btns">
+        <button type="button" class="b primary" data-all>Alle akzeptieren</button>
+        <button type="button" class="b primary" data-none>Nur notwendige</button>
+        <button type="button" class="b ghost" data-save>Auswahl speichern</button>
+      </div>
+    </div>
+  </div>
+)}
+
+<script is:inline define:vars={{ keys: cats.map((c) => c.key), version: CONSENT.version, enabled: active }}>
+  (function () {
+    var STORE = 'sr-consent';
+    var state = {};
+
+    function read() {
+      try {
+        var raw = window.localStorage.getItem(STORE);
+        if (!raw) return null;
+        var saved = JSON.parse(raw);
+        if (saved.v !== version) return null;
+        return saved.c || {};
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function write(c) {
+      try {
+        window.localStorage.setItem(STORE, JSON.stringify({ v: version, c: c, t: new Date().toISOString() }));
+      } catch (e) {
+        /* Privatmodus: Entscheidung gilt dann nur für diesen Besuch */
+      }
+    }
+
+    function apply(c, persist) {
+      state = c;
+      if (persist) write(c);
+      window.dispatchEvent(new CustomEvent('consent-change', { detail: c }));
+    }
+
+    window.consent = {
+      has: function (key) { return state[key] === true; },
+      all: function () { return state; },
+      open: function () { show(); },
+      reset: function () {
+        try { window.localStorage.removeItem(STORE); } catch (e) {}
+        apply({}, false);
+        show();
+      },
+    };
+
+    if (!enabled) { apply({}, false); return; }
+
+    var box = document.querySelector('[data-consent]');
+    if (!box) return;
+    var boxes = box.querySelectorAll('[data-cat]');
+    var lastFocus = null;
+
+    function show() {
+      lastFocus = document.activeElement;
+      boxes.forEach(function (el) { el.checked = state[el.dataset.cat] === true; });
+      box.hidden = false;
+      var first = box.querySelector('button');
+      if (first) first.focus();
+    }
+
+    function hide() {
+      box.hidden = true;
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    function decide(c) { apply(c, true); hide(); }
+
+    box.querySelector('[data-all]').addEventListener('click', function () {
+      var c = {};
+      keys.forEach(function (k) { c[k] = true; });
+      decide(c);
+    });
+
+    box.querySelector('[data-none]').addEventListener('click', function () {
+      var c = {};
+      keys.forEach(function (k) { c[k] = false; });
+      decide(c);
+    });
+
+    box.querySelector('[data-save]').addEventListener('click', function () {
+      var c = {};
+      boxes.forEach(function (el) { c[el.dataset.cat] = el.checked; });
+      decide(c);
+    });
+
+    box.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        var c = {};
+        keys.forEach(function (k) { c[k] = false; });
+        apply(c, false);
+        hide();
+      }
+    });
+
+    var saved = read();
+    if (saved) {
+      apply(saved, false);
+    } else {
+      apply({}, false);
+      show();
+    }
+  })();
+</script>
+
+<style>
+  .cb { position: fixed; inset: auto 0 0 0; z-index: 200; padding: 0 16px 16px; }
+  .cb[hidden] { display: none; }
+  .box {
+    max-width: 760px; margin: 0 auto; background: var(--surface, #fff); color: var(--text, #141a26);
+    border: 1px solid var(--border, #dce1ec); border-radius: 16px; padding: 20px 22px;
+    box-shadow: 0 16px 50px rgb(0 0 0 / .22);
+  }
+  .t { margin: 0 0 6px; font-weight: 800; font-size: 1.05rem; }
+  .d { margin: 0 0 12px; font-size: .88rem; line-height: 1.5; color: #4a5365; }
+  .cats { list-style: none; padding: 0; margin: 0 0 16px; display: grid; gap: 8px; font-size: .85rem; }
+  .cats label { display: flex; gap: 9px; align-items: flex-start; cursor: pointer; }
+  .cats input { margin-top: 3px; accent-color: var(--brand, #1b3a6b); flex: 0 0 auto; }
+  .cats input:disabled { cursor: default; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .b { font: inherit; font-size: .9rem; font-weight: 650; padding: .62em 1.1em; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
+  /* Ablehnen muss genauso leicht sein wie Annehmen, daher gleiche Gestaltung. */
+  .b.primary { background: var(--brand, #1b3a6b); color: #fff; flex: 1 1 180px; }
+  .b.primary:hover { filter: brightness(1.12); }
+  .b.ghost { background: transparent; color: var(--brand, #1b3a6b); border-color: var(--border, #dce1ec); }
+  .b.ghost:hover { border-color: var(--brand, #1b3a6b); }
+  .b:focus-visible { outline: 2px solid var(--brand, #1b3a6b); outline-offset: 2px; }
+  @media (max-width: 520px) { .b.primary { flex: 1 1 100%; } .b.ghost { flex: 1 1 100%; } }
+</style>

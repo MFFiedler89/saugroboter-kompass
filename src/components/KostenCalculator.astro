@@ -1,0 +1,94 @@
+---
+/**
+ * Rechner: laufende Kosten eines Saugroboters im Jahr.
+ *
+ * Reine Rechnung aus den Werten, die der Besucher selbst eintraegt. Es
+ * stecken keine geschaetzten Produktdaten darin, nur seine eigenen Preise.
+ */
+const posten = [
+  { k: 'beutel', l: 'Staubbeutel für die Station', preis: 5, proJahr: 8, hint: 'Stück pro Jahr' },
+  { k: 'filter', l: 'Filter', preis: 9, proJahr: 4, hint: 'Stück pro Jahr' },
+  { k: 'seite', l: 'Seitenbürsten', preis: 7, proJahr: 3, hint: 'Stück pro Jahr' },
+  { k: 'haupt', l: 'Hauptbürste oder Mopprolle', preis: 18, proJahr: 1, hint: 'Stück pro Jahr' },
+  { k: 'mopp', l: 'Wischpads oder Mopps', preis: 12, proJahr: 2, hint: 'Sets pro Jahr' },
+];
+---
+<section class="calc card" data-kosten aria-labelledby="ko-h">
+  <h2 id="ko-h" class="t">Rechner: Was kostet der Roboter im Jahr?</h2>
+  <p class="small muted lead">Trage ein, was du tatsächlich zahlst. Die Voreinstellungen sind nur Startwerte, keine Preisangabe.</p>
+
+  <table class="tab">
+    <thead><tr><th scope="col">Posten</th><th scope="col" class="n">Preis (€)</th><th scope="col" class="n">Menge pro Jahr</th><th scope="col" class="n">Summe</th></tr></thead>
+    <tbody>
+      {posten.map((p) => (
+        <tr data-row>
+          <th scope="row">{p.l}</th>
+          <td class="n"><input type="number" min="0" step="0.5" value={p.preis} data-preis inputmode="decimal" aria-label={`Preis ${p.l}`} /></td>
+          <td class="n"><input type="number" min="0" step="1" value={p.proJahr} data-menge inputmode="numeric" aria-label={`Menge ${p.l}`} /></td>
+          <td class="n sum" data-sum></td>
+        </tr>
+      ))}
+      <tr data-row>
+        <th scope="row">Strom <small class="muted">kWh pro Jahr × Preis</small></th>
+        <td class="n"><input type="number" min="0" step="0.01" value="0.35" data-preis inputmode="decimal" aria-label="Strompreis je kWh" /></td>
+        <td class="n"><input type="number" min="0" step="1" value="60" data-menge inputmode="numeric" aria-label="kWh pro Jahr" /></td>
+        <td class="n sum" data-sum></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <dl class="res">
+    <div><dt>Folgekosten pro Jahr</dt><dd data-jahr></dd></div>
+    <div><dt>Pro Monat</dt><dd data-monat></dd></div>
+  </dl>
+
+  <p class="small muted note">
+    Anschaffungspreis ist hier nicht enthalten, der steht an jedem Produkt. Verbrauchsmaterial hält je nach
+    Haushalt unterschiedlich lange, deshalb sind Menge und Preis frei einstellbar. Beutellose Stationen
+    sparen die Beutel, dafür fällt dort mehr Reinigungsaufwand an.
+  </p>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-kosten]').forEach((r) => {
+    const rows = [...r.querySelectorAll<HTMLElement>('[data-row]')];
+    const eur = (n: number) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n);
+    const up = () => {
+      let total = 0;
+      rows.forEach((row) => {
+        const preis = Number(row.querySelector<HTMLInputElement>('[data-preis]')!.value) || 0;
+        const menge = Number(row.querySelector<HTMLInputElement>('[data-menge]')!.value) || 0;
+        const s = preis * menge;
+        total += s;
+        row.querySelector('[data-sum]')!.textContent = eur(s);
+      });
+      r.querySelector('[data-jahr]')!.textContent = eur(total);
+      r.querySelector('[data-monat]')!.textContent = eur(total / 12);
+    };
+    r.querySelectorAll('input').forEach((el) => el.addEventListener('input', up));
+    up();
+  });
+</script>
+
+<style>
+  .calc { padding: 20px; margin: 24px 0; }
+  .t { margin: 0 0 6px; font-size: 1.25rem; }
+  .lead { margin: 0 0 14px; }
+  .tab { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  .tab th, .tab td { padding: 8px 8px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+  .tab thead th { font-size: .76rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+  .tab .n { text-align: right; white-space: nowrap; }
+  .tab tbody th { font-weight: 600; }
+  .tab input { font: inherit; width: 90px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; text-align: right; background: #fff; }
+  .sum { font-variant-numeric: tabular-nums; font-weight: 650; }
+  .res { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 16px 0 10px; }
+  .res div { background: var(--accent-soft); border-radius: 10px; padding: 12px; }
+  dt { font-size: .78rem; color: var(--accent-ink); }
+  dd { margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--accent-text); }
+  .note { margin: 10px 0 0; max-width: 72ch; }
+  @media (max-width: 600px) {
+    .res { grid-template-columns: 1fr; }
+    .tab input { width: 72px; }
+    .tab th, .tab td { padding: 7px 4px; }
+  }
+</style>
