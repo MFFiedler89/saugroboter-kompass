@@ -211,7 +211,10 @@ export const subs = [
     picks: [
       { label: 'Für die meisten', why: 'beliebtestes Modell mit Absaugstation und Anti-Tangle-Bürste', filter: and(has('anti_tangle'), not('station', null)) },
       { label: 'Preis-Tipp', why: 'günstigstes Modell mit Absaugstation', filter: not('station', null), sort: 'price' },
-      { label: 'Stärkste Saugkraft', why: 'beliebtestes Modell ab 20.000 Pa', filter: min('saugkraft', 20000) },
+      // Label bewusst nicht „Stärkste Saugkraft“: Die Regel wählt das
+      // beliebteste Modell oberhalb der Schwelle, nicht das mit dem
+      // höchsten Wert. Das Label darf nicht mehr versprechen als die Regel.
+      { label: 'Für Hochflorteppich', why: 'beliebtestes Modell ab 20.000 Pa, dort zählt Reserve', filter: min('saugkraft', 20000) },
     ],
   },
   {
