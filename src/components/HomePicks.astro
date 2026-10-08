@@ -1,0 +1,99 @@
+---
+/**
+ * Produktreihe fuer die Startseite: je Kategorie ein Angebot aus der
+ * wichtigsten Produktgruppe. Bevorzugt eine Empfehlung mit Begruendung,
+ * sonst das beliebteste Produkt der Gruppe.
+ */
+import { kategorien, subsOf, subBySlug, subUrl, getProducts, shortTitle, type Product } from '../lib/catalog';
+import PriceBlock from './PriceBlock.astro';
+import ProductImg from './ProductImg.astro';
+import Icon from './Icon.astro';
+
+interface Props { title?: string }
+const { title = 'Direkt loslegen' } = Astro.props;
+
+type Karte = { sub: string; label: string; icon: string; anzahl: number; p: Product };
+
+const karten: Karte[] = [];
+for (const k of kategorien as any[]) {
+  for (const s of subsOf(k.slug) as any[]) {
+    const liste = getProducts(s.slug);
+    if (liste.length < 3) continue;
+    const p = liste.find((x) => x.pick) ?? liste.find((x) => x.amount !== null);
+    if (!p) continue;
+    karten.push({ sub: s.slug, label: subBySlug[s.slug].label, icon: k.icon, anzahl: liste.length, p });
+    break;
+  }
+}
+---
+{karten.length >= 2 && (
+  <section class="hp" aria-label={title}>
+    <div class="head">
+      <h2>{title}</h2>
+      <p class="muted">Aus jeder Kategorie ein Angebot, das unseren Kriterien entspricht. Preise mit Zeitstempel, Ausstattung laut Produktangaben.</p>
+    </div>
+
+    <div class="grid">
+      {karten.map((c, i) => (
+        <article class="c card">
+          <p class="kat"><Icon name={c.icon} size={15} /> {c.label}</p>
+          <div class="img"><ProductImg product={c.p} size={128} eager={i < 3} /></div>
+          <div class="txt">
+            {c.p.pick && <p class="lbl">{c.p.pick.label}</p>}
+            <p class="brand">{c.p.brand}</p>
+            <p class="t">
+              <a href={c.p.url} rel="sponsored nofollow noopener" target="_blank">{shortTitle(c.p.title, 60)}</a>
+            </p>
+            {c.p.pick && <p class="why">{c.p.pick.why}</p>}
+          </div>
+          <div class="bottom">
+            <PriceBlock product={c.p} compact showTier={false} />
+            <div class="acts">
+              <a class="btn btn-amazon" href={c.p.url} rel="sponsored nofollow noopener" target="_blank">Zu Amazon <span class="ad">Anzeige</span></a>
+              <a class="cmp" href={subUrl(c.sub)}>Alle {c.anzahl} vergleichen →</a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p class="note small muted">
+      Links zu Amazon sind Affiliate-Links (Anzeige). Für dich ändert sich der Preis nicht.
+      Wie diese Auswahl zustande kommt, steht unter <a href="/so-vergleichen-wir/">So vergleichen wir</a>.
+    </p>
+  </section>
+)}
+
+<style>
+  .hp { margin: 8px 0 4px; }
+  .head h2 { margin-bottom: .2em; }
+  .head p { margin: 0 0 16px; max-width: 70ch; font-size: .95rem; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
+  .c { padding: 16px; display: flex; flex-direction: column; }
+  .kat { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .kat :global(svg) { color: var(--accent-ink); flex: 0 0 auto; }
+  .img { margin-bottom: 10px; }
+  .txt { display: contents; }
+  .lbl { margin: 0 0 4px; font-weight: 800; color: var(--brand); font-size: .9rem; }
+  .brand { font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; margin: 0; }
+  .t { margin: 2px 0 7px; font-weight: 650; font-size: .9rem; line-height: 1.35; }
+  .t a { color: var(--text); text-decoration: none; }
+  .t a:hover { color: var(--brand); }
+  .why { font-size: .8rem; margin: 0 0 10px; color: #333c4c; }
+  .bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+  .acts { display: flex; flex-direction: column; gap: 8px; }
+  .cmp { font-size: .85rem; font-weight: 600; text-align: center; }
+  .ad { font-size: .62rem; font-weight: 600; opacity: .7; margin-left: 4px; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; }
+  .note { margin: 14px 0 0; }
+  @media (max-width: 620px) {
+    .c { display: grid; grid-template-columns: 104px 1fr; grid-template-areas: 'kat kat' 'img txt' 'bot bot'; column-gap: 14px; align-items: start; }
+    .kat { grid-area: kat; }
+    .img { grid-area: img; margin-bottom: 0; }
+    .txt { display: block; grid-area: txt; }
+    .bottom { grid-area: bot; margin-top: 14px; }
+    .acts { flex-direction: row; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .acts .btn { flex: 0 1 auto; white-space: nowrap; }
+    .cmp { text-align: left; }
+  }
+</style>

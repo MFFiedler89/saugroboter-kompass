@@ -1,0 +1,338 @@
+---
+/**
+ * Vergleichsansicht einer Unterkategorie: Filter (Preis, Marke, Ausstattung), Sortierung,
+ * Produktkacheln, Direktvergleich (max. 3) und große Vergleichstabelle.
+ */
+import { getProducts, subBySlug, formatSpec, updatedAt, formatDateTime, shortTitle, type SpecDef } from '../lib/catalog';
+import ProductTile from './ProductTile.astro';
+import PriceBlock from './PriceBlock.astro';
+import ProductImg from './ProductImg.astro';
+import Icon from './Icon.astro';
+
+interface Props { sub: string }
+const sub = subBySlug[Astro.props.sub];
+const products = getProducts(sub.slug);
+const specs: SpecDef[] = sub.specs;
+const prices = products.map((p) => p.amount).filter((x): x is number => x !== null);
+const pMin = prices.length ? Math.floor(Math.min(...prices)) : 0;
+const pMax = prices.length ? Math.ceil(Math.max(...prices)) : 0;
+
+const brandCounts = new Map<string, number>();
+products.forEach((p) => brandCounts.set(p.brand, (brandCounts.get(p.brand) ?? 0) + 1));
+const brands = [...brandCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+const filters = specs.filter((d) => d.filter).map((d) => {
+  if (d.filter === 'select') {
+    const vals = [...new Set(products.map((p) => p.specs[d.key]).filter((v) => v !== null && v !== undefined))] as (string | number)[];
+    return { ...d, values: vals.sort() };
+  }
+  if (d.filter === 'min') {
+    const vals = [...new Set(products.map((p) => p.specs[d.key]).filter((v): v is number => typeof v === 'number'))].sort((a, b) => a - b);
+    return { ...d, values: vals };
+  }
+  return { ...d, values: [] as (string | number)[] };
+}).filter((f) => f.filter === 'bool' ? products.some((p) => p.specs[f.key] === true) : f.values.length > 1);
+
+const sorts = specs.filter((d) => d.sort);
+const uid = `cv-${sub.slug}`;
+
+const compareData = products.map((p) => ({
+  asin: p.asin, title: shortTitle(p.title, 70), brand: p.brand, url: p.url, img: p.image?.url ?? null, price: p.display, amount: p.amount,
+  specs: Object.fromEntries(specs.map((d) => [d.key, { t: formatSpec(d, p.specs[d.key]), v: typeof p.specs[d.key] === 'number' ? p.specs[d.key] : Array.isArray(p.specs[d.key]) ? (p.specs[d.key] as number[])[1] : p.specs[d.key] === true ? 1 : null }])),
+}));
+---
+<section class="cv" id={uid} data-cv>
+  <div class="toolbar">
+    <details class="fpanel card" open>
+      <summary><Icon name="filter" size={18} /> Filter <span class="active-n" data-active-n></span></summary>
+      <div class="fgrid">
+        {prices.length > 1 && (
+          <fieldset>
+            <legend>Preis (€)</legend>
+            <div class="price-in">
+              <input type="number" inputmode="numeric" min={pMin} max={pMax} placeholder={`ab ${pMin}`} data-pmin aria-label="Preis von" />
+              <span class="sep">bis</span>
+              <input type="number" inputmode="numeric" min={pMin} max={pMax} placeholder={`bis ${pMax}`} data-pmax aria-label="Preis bis" />
+            </div>
+          </fieldset>
+        )}
+        {brands.length > 1 && (
+          <fieldset class="brands">
+            <legend>Marke</legend>
+            <div class="chips">
+              {brands.slice(0, 14).map(([b, n]) => (
+                <label class="chip"><input type="checkbox" data-brand-f value={b} /> {b} <small>{n}</small></label>
+              ))}
+            </div>
+          </fieldset>
+        )}
+        {filters.map((f) => (
+          <fieldset>
+            <legend>{f.label}</legend>
+            {f.filter === 'bool' && <label class="chip"><input type="checkbox" data-f={f.key} data-mode="bool" /> ja</label>}
+            {f.filter === 'select' && (
+              <div class="chips">
+                {f.values.map((v) => <label class="chip"><input type="checkbox" data-f={f.key} data-mode="select" value={String(v)} /> {formatSpec(f, v)}</label>)}
+              </div>
+            )}
+            {f.filter === 'min' && (
+              <select data-f={f.key} data-mode="min">
+                <option value="">egal</option>
+                {f.values.map((v) => <option value={String(v)}>mind. {formatSpec(f, v).replace('bis ', '')}</option>)}
+              </select>
+            )}
+          </fieldset>
+        ))}
+      </div>
+      <button type="button" class="reset" data-reset>Alle Filter zurücksetzen</button>
+    </details>
+
+    <div class="sortbar">
+      <p class="count" data-count aria-live="polite"><strong>{products.length}</strong> Angebote</p>
+      <label class="sortl">Sortieren:
+        <select data-sort>
+          <option value="rank:asc">Beliebtheit</option>
+          {prices.length > 1 && <option value="price:asc">Preis aufsteigend</option>}
+          {prices.length > 1 && <option value="price:desc">Preis absteigend</option>}
+          {sorts.map((d) => <option value={`${d.key}:desc`}>{d.label}</option>)}
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="grid" data-grid>
+    {products.map((p, i) => <ProductTile product={p} selectable eager={i < 4} />)}
+  </div>
+  <p class="empty" data-empty hidden>Keine Angebote passen zu deinen Filtern. <button type="button" class="linkbtn" data-reset>Filter zurücksetzen</button></p>
+  {updatedAt && <p class="small muted note">* Preise inkl. MwSt., zzgl. Versand, Stand {formatDateTime(updatedAt)}. Preise und Verfügbarkeit können sich seitdem geändert haben. „Beliebtheit“ basiert auf dem Amazon-Verkaufsrang. Ausstattung laut Produktangaben, „k. A.“ = nicht angegeben.</p>}
+
+  <h2 id="tabelle">Vergleichstabelle: {sub.label}</h2>
+  <div class="tablewrap card">
+    <table class="ct">
+      <thead>
+        <tr>
+          <th scope="row" class="sticky">Produkt</th>
+          {products.map((p) => (
+            <th scope="col" data-col={p.asin}>
+              <a href={p.url} rel="sponsored nofollow noopener" target="_blank" class="th-p">
+                <ProductImg product={p} size={90} />
+                <span class="b">{p.brand}</span>
+                <span class="tt">{shortTitle(p.title, 55)}</span>
+              </a>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row" class="sticky">Preis</th>{products.map((p) => <td data-col={p.asin}><PriceBlock product={p} compact showTier={false} /></td>)}</tr>
+        <tr><th scope="row" class="sticky">Preislage</th>{products.map((p) => <td data-col={p.asin}>{p.tier ? ['','günstig','eher günstig','mittel','eher teuer','teuer'][p.tier] : 'k. A.'}</td>)}</tr>
+        {specs.map((d) => (
+          <tr><th scope="row" class="sticky">{d.label}</th>{products.map((p) => <td data-col={p.asin} class:list={{ unk: p.specs[d.key] === null }}>{formatSpec(d, p.specs[d.key])}</td>)}</tr>
+        ))}
+        <tr><th scope="row" class="sticky"></th>{products.map((p) => <td data-col={p.asin}><a class="btn btn-amazon sm" href={p.url} rel="sponsored nofollow noopener" target="_blank">Zu Amazon</a></td>)}</tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cmpbar" data-bar hidden>
+    <span data-bar-text></span>
+    <button type="button" class="btn btn-ghost light" data-clear>Leeren</button>
+    <button type="button" class="btn btn-amazon" data-open>Direkt vergleichen</button>
+  </div>
+  <dialog class="dlg" data-dialog aria-label="Direktvergleich">
+    <div class="dlg-head"><h2>Direktvergleich</h2><button type="button" class="close" data-close aria-label="Schließen">✕</button></div>
+    <div class="dlg-body" data-dialog-body></div>
+  </dialog>
+  <script type="application/json" data-json set:html={JSON.stringify({ products: compareData, specs: specs.map((d) => ({ key: d.key, label: d.label, higher: d.sort === 'desc' || d.sort === 'max' || d.type === 'bool' })) })} />
+</section>
+
+<script>
+  type Item = { asin: string; title: string; brand: string; url: string; img: string | null; price: string | null; amount: number | null; specs: Record<string, { t: string; v: number | null }> };
+  const MAX = 3;
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+
+  document.querySelectorAll<HTMLElement>('[data-cv]').forEach((root) => {
+    const grid = root.querySelector<HTMLElement>('[data-grid]')!;
+    const tiles = [...root.querySelectorAll<HTMLElement>('[data-tile]')];
+    const sortSel = root.querySelector<HTMLSelectElement>('[data-sort]')!;
+    const pmin = root.querySelector<HTMLInputElement>('[data-pmin]');
+    const pmax = root.querySelector<HTMLInputElement>('[data-pmax]');
+    const brandEls = [...root.querySelectorAll<HTMLInputElement>('[data-brand-f]')];
+    const fEls = [...root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-f]')];
+    const count = root.querySelector('[data-count]')!;
+    const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+    const activeN = root.querySelector('[data-active-n]')!;
+    const cols = [...root.querySelectorAll<HTMLElement>('[data-col]')];
+    const data = JSON.parse(root.querySelector('[data-json]')!.textContent || '{}') as { products: Item[]; specs: { key: string; label: string; higher: boolean }[] };
+
+    // Filter auf Mobilgeräten eingeklappt starten
+    if (window.matchMedia('(max-width: 760px)').matches) root.querySelector('details.fpanel')?.removeAttribute('open');
+
+    const val = (t: HTMLElement, k: string) => JSON.parse(t.getAttribute('data-s-' + k) ?? 'null');
+    const num = (s: string | undefined) => (s === undefined || s === '' ? NaN : Number(s));
+
+    function apply() {
+      const lo = pmin?.value ? Number(pmin.value) : -Infinity;
+      const hi = pmax?.value ? Number(pmax.value) : Infinity;
+      const brands = brandEls.filter((b) => b.checked).map((b) => b.value);
+      const sel: Record<string, string[]> = {};
+      let active = (pmin?.value ? 1 : 0) + (pmax?.value ? 1 : 0) + brands.length;
+      fEls.forEach((el) => {
+        const k = el.dataset.f!;
+        if (el.dataset.mode === 'select' && (el as HTMLInputElement).checked) (sel[k] ??= []).push(el.value);
+      });
+      let visible = 0;
+      const shown = new Set<string>();
+      tiles.forEach((t) => {
+        const price = num(t.dataset.price);
+        let ok = (isNaN(price) ? lo === -Infinity && hi === Infinity : price >= lo && price <= hi);
+        if (ok && brands.length) ok = brands.includes(t.dataset.brand!);
+        if (ok) for (const [k, vs] of Object.entries(sel)) if (!vs.includes(String(val(t, k)))) { ok = false; break; }
+        if (ok) for (const el of fEls) {
+          const k = el.dataset.f!, mode = el.dataset.mode, v = val(t, k);
+          if (mode === 'bool' && (el as HTMLInputElement).checked && v !== 1) { ok = false; break; }
+          if (mode === 'min' && el.value && !(typeof v === 'number' && v >= Number(el.value))) { ok = false; break; }
+        }
+        t.hidden = !ok;
+        if (ok) { visible++; shown.add(t.dataset.asin!); }
+      });
+      fEls.forEach((el) => { if ((el as HTMLInputElement).checked || (el.tagName === 'SELECT' && el.value)) active++; });
+      activeN.textContent = active ? `(${active} aktiv)` : '';
+
+      const [key, dir] = sortSel.value.split(':');
+      const sk = (t: HTMLElement) => key === 'rank' ? num(t.dataset.rank) : key === 'price' ? num(t.dataset.price) : (typeof val(t, key) === 'number' ? val(t, key) : NaN);
+      [...tiles].sort((a, b) => {
+        const x = sk(a), y = sk(b);
+        if (isNaN(x) && isNaN(y)) return 0; if (isNaN(x)) return 1; if (isNaN(y)) return -1;
+        return dir === 'asc' ? x - y : y - x;
+      }).forEach((t) => grid.appendChild(t));
+
+      cols.forEach((c) => (c.hidden = !shown.has(c.dataset.col!)));
+      count.innerHTML = visible === tiles.length ? `<strong>${tiles.length}</strong> Angebote` : `<strong>${visible}</strong> von ${tiles.length} Angeboten`;
+      empty.hidden = visible > 0;
+    }
+
+    [sortSel, pmin, pmax, ...brandEls, ...fEls].forEach((el) => el?.addEventListener(el instanceof HTMLInputElement && el.type === 'number' ? 'input' : 'change', apply));
+    root.querySelectorAll('[data-reset]').forEach((b) => b.addEventListener('click', () => {
+      if (pmin) pmin.value = ''; if (pmax) pmax.value = '';
+      [...brandEls, ...fEls].forEach((el) => (el instanceof HTMLInputElement ? (el.checked = false) : (el.selectedIndex = 0)));
+      sortSel.selectedIndex = 0; apply();
+    }));
+
+    // Direktvergleich
+    const bar = root.querySelector<HTMLElement>('[data-bar]')!;
+    const barText = root.querySelector('[data-bar-text]')!;
+    const openBtn = root.querySelector<HTMLButtonElement>('[data-open]')!;
+    const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]')!;
+    const body = root.querySelector('[data-dialog-body]')!;
+    const picks = [...root.querySelectorAll<HTMLInputElement>('[data-pick]')];
+    const upd = () => {
+      const n = picks.filter((p) => p.checked).length;
+      picks.forEach((p) => (p.disabled = !p.checked && n >= MAX));
+      bar.hidden = n === 0;
+      barText.textContent = n < 2 ? `${n} ausgewählt, noch ${2 - n} wählen` : `${n} von max. ${MAX} ausgewählt`;
+      openBtn.disabled = n < 2;
+    };
+    picks.forEach((p) => p.addEventListener('change', upd));
+    root.querySelector('[data-clear]')!.addEventListener('click', () => { picks.forEach((p) => (p.checked = false)); upd(); });
+    openBtn.addEventListener('click', () => {
+      const items = picks.filter((p) => p.checked).map((p) => data.products.find((x) => x.asin === p.value)!).filter(Boolean);
+      const best = (k: string, higher: boolean) => {
+        const v = items.map((i) => i.specs[k]?.v).filter((x): x is number => typeof x === 'number');
+        if (v.length < 2 || new Set(v).size < 2) return null;
+        return higher ? Math.max(...v) : Math.min(...v);
+      };
+      const amounts = items.map((i) => i.amount).filter((x): x is number => x !== null);
+      const cheapest = amounts.length > 1 && new Set(amounts).size > 1 ? Math.min(...amounts) : null;
+      let h = `<div class="g" style="--n:${items.length}"><div class="c l"></div>`;
+      items.forEach((i) => (h += `<div class="c hd">${i.img ? `<img src="${esc(i.img)}" alt="" width="90" height="90">` : ''}<small>${esc(i.brand)}</small><strong>${esc(i.title)}</strong></div>`));
+      h += `<div class="c l">Preis</div>`;
+      items.forEach((i) => (h += `<div class="c ${cheapest !== null && i.amount === cheapest ? 'win' : ''}">${i.price ? esc(i.price) + '*' : 'bei Amazon prüfen'}</div>`));
+      data.specs.forEach((s) => {
+        const b = best(s.key, s.higher);
+        h += `<div class="c l">${esc(s.label)}</div>`;
+        items.forEach((i) => (h += `<div class="c ${b !== null && i.specs[s.key]?.v === b ? 'win' : ''}">${esc(i.specs[s.key]?.t ?? 'k. A.')}</div>`));
+      });
+      h += `<div class="c l"></div>`;
+      items.forEach((i) => (h += `<div class="c"><a class="btn btn-amazon" href="${esc(i.url)}" rel="sponsored nofollow noopener" target="_blank">Zu Amazon</a></div>`));
+      h += `</div><p class="nt">Grün = bester Wert dieser Auswahl (bzw. günstigster Preis). Angaben laut Produktbeschreibung. * Preis zum Zeitpunkt der letzten Aktualisierung.</p>`;
+      body.innerHTML = h;
+      dialog.showModal();
+    });
+    root.querySelector('[data-close]')!.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+
+    apply(); upd();
+  });
+</script>
+
+<style>
+  .cv { margin: 8px 0 40px; }
+  .toolbar { display: grid; gap: 12px; margin-bottom: 16px; }
+  .fpanel { padding: 0 16px; }
+  .fpanel summary { cursor: pointer; font-weight: 700; padding: 14px 0; display: flex; align-items: center; gap: 8px; list-style: none; }
+  .fpanel summary::-webkit-details-marker { display: none; }
+  .fpanel summary::after { content: '▾'; margin-left: auto; color: var(--muted); }
+  .fpanel[open] summary::after { content: '▴'; }
+  .active-n { color: var(--brand); font-weight: 600; font-size: .85rem; }
+  .fgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px 20px; padding-bottom: 8px; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .brands { grid-column: 1 / -1; }
+  legend { font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; padding: 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-size: .85rem; padding: 5px 10px; border: 1px solid var(--border); border-radius: 999px; cursor: pointer; background: #fff; user-select: none; }
+  .chip:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); font-weight: 600; }
+  .chip input { accent-color: var(--brand); margin: 0; }
+  .chip small { color: var(--muted); font-size: .72rem; }
+  .price-in { display: flex; align-items: center; gap: 8px; }
+  .price-in .sep { color: var(--muted); font-size: .85rem; }
+  .price-in input, select { font: inherit; font-size: .9rem; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; background: #fff; width: 100%; min-width: 0; }
+  .reset, .linkbtn { background: none; border: 0; color: var(--brand); text-decoration: underline; cursor: pointer; font: inherit; font-size: .85rem; padding: 4px 0 14px; }
+  .sortbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .count { margin: 0; color: var(--muted); }
+  .count :global(strong) { color: var(--text); }
+  .sortl { display: flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--muted); }
+  .sortl select { width: auto; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .empty { padding: 30px; text-align: center; color: var(--muted); }
+  .note { margin-top: 14px; }
+
+  .tablewrap { overflow-x: auto; margin-top: 10px; }
+  .ct { font-size: .85rem; border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; }
+  .ct th, .ct td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; width: 170px; max-width: 170px; }
+  .ct [hidden] { display: none; }
+  .ct .sticky { position: sticky; left: 0; background: var(--surface-2); z-index: 1; width: 140px; min-width: 140px; font-weight: 700; color: var(--muted); font-size: .78rem; }
+  .ct thead th { background: #fff; }
+  .ct thead .sticky { background: var(--surface-2); }
+  .th-p { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: var(--text); }
+  .th-p .b { font-size: .7rem; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .th-p .tt { font-weight: 600; font-size: .8rem; line-height: 1.3; }
+  .ct td.unk { color: #a0a8b6; }
+  .btn.sm { padding: .5em .8em; font-size: .8rem; }
+
+  .cmpbar { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 60; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; background: #121a28; color: #fff; padding: 10px 14px; border-radius: 16px; box-shadow: 0 8px 30px rgb(0 0 0 / .25); max-width: calc(100% - 32px); font-size: .9rem; }
+  .cmpbar[hidden] { display: none; }
+  .btn-ghost.light { color: #fff; border-color: #5d6d88; }
+  .cmpbar .btn { padding: .5em .9em; font-size: .85rem; }
+  .cmpbar .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .dlg { border: 0; border-radius: 16px; padding: 0; width: min(980px, calc(100% - 24px)); max-height: 90vh; box-shadow: 0 20px 60px rgb(0 0 0 / .3); }
+  .dlg::backdrop { background: rgb(10 16 28 / .55); }
+  .dlg-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: #fff; z-index: 2; }
+  .dlg-head h2 { margin: 0; font-size: 1.2rem; }
+  .close { background: var(--surface-2); border: 0; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; }
+  .dlg-body { padding: 12px 20px 20px; overflow: auto; }
+  .dlg-body :global(.g) { display: grid; grid-template-columns: minmax(100px, .7fr) repeat(var(--n), minmax(130px, 1fr)); font-size: .88rem; }
+  .dlg-body :global(.c) { padding: 9px 10px; border-bottom: 1px solid var(--border); }
+  .dlg-body :global(.l) { color: var(--muted); font-weight: 600; font-size: .78rem; }
+  .dlg-body :global(.hd) { display: flex; flex-direction: column; gap: 4px; }
+  .dlg-body :global(.hd img) { width: 90px; height: 90px; object-fit: contain; }
+  .dlg-body :global(.hd small) { color: var(--muted); text-transform: uppercase; font-size: .68rem; font-weight: 700; }
+  .dlg-body :global(.win) { background: #e4f3e8; color: var(--good); font-weight: 700; }
+  .dlg-body :global(.nt) { font-size: .78rem; color: var(--muted); margin-top: 12px; }
+  .dlg-body :global(.btn) { padding: .5em .8em; font-size: .8rem; }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .dlg-body :global(.g) { grid-template-columns: 80px repeat(var(--n), minmax(105px, 1fr)); font-size: .78rem; }
+  }
+</style>
