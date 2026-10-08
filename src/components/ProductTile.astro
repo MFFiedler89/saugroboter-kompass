@@ -1,0 +1,70 @@
+---
+import { cardSpecs, shortTitle, specSortValue, subBySlug, type Product } from '../lib/catalog';
+import PriceBlock from './PriceBlock.astro';
+import ProductImg from './ProductImg.astro';
+interface Props { product: Product; selectable?: boolean; eager?: boolean }
+const { product: p, selectable = false, eager = false } = Astro.props;
+const sub = subBySlug[p.sub];
+const specs = cardSpecs(p.sub, p);
+const data: Record<string, string> = {
+  'data-asin': p.asin,
+  'data-price': p.amount?.toString() ?? '',
+  'data-rank': p.salesRank?.toString() ?? '',
+  'data-brand': p.brand,
+};
+for (const d of sub.specs) data[`data-s-${d.key}`] = JSON.stringify(specSortValue(d, p.specs[d.key]) ?? (d.type === 'enum' ? p.specs[d.key] : null));
+for (const d of sub.specs.filter((d: any) => d.type === 'enum')) data[`data-s-${d.key}`] = JSON.stringify(p.specs[d.key] ?? null);
+---
+<article class="tile card" {...data} data-tile>
+  {p.pick && <span class="pick">{p.pick.label}</span>}
+  <a href={p.url} rel="sponsored nofollow noopener" target="_blank" class="imgwrap" tabindex="-1" aria-hidden="true"><ProductImg product={p} eager={eager} /></a>
+  <div class="body">
+    <p class="brand">{p.brand}</p>
+    <h3 class="t"><a href={p.url} rel="sponsored nofollow noopener" target="_blank" title={p.title}>{shortTitle(p.title, 90)}</a></h3>
+    <ul class="specs">
+      {specs.map((s: any) => <li class:list={{ unk: !s.known }}><span>{s.label}</span><b>{s.text}</b></li>)}
+    </ul>
+    <div class="bottom">
+      <PriceBlock product={p} />
+      <a class="btn btn-amazon" href={p.url} rel="sponsored nofollow noopener" target="_blank">Zu Amazon <span class="ad">Anzeige</span></a>
+      {selectable && (
+        <label class="cmp"><input type="checkbox" data-pick value={p.asin} /> Vergleichen</label>
+      )}
+    </div>
+  </div>
+</article>
+<style>
+  .tile { position: relative; display: flex; flex-direction: column; overflow: hidden; transition: box-shadow .15s, transform .15s; }
+  .tile:hover { box-shadow: 0 10px 30px rgb(20 26 38 / .08); }
+  .tile[hidden] { display: none; }
+  .pick { position: absolute; top: 10px; left: 10px; z-index: 1; background: var(--brand); color: #fff; font-size: .7rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+  .imgwrap { display: block; padding: 18px 18px 6px; background: #fff; }
+  .body { padding: 6px 16px 16px; display: flex; flex-direction: column; flex: 1; }
+  .brand { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; margin: 0 0 2px; }
+  .t { font-size: .92rem; line-height: 1.35; margin: 0 0 10px; font-weight: 650; }
+  .t a { color: var(--text); text-decoration: none; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .t a:hover { color: var(--brand); }
+  .specs { list-style: none; padding: 0; margin: 0 0 12px; font-size: .8rem; display: grid; gap: 3px; }
+  .specs li { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dashed var(--border); padding-bottom: 3px; }
+  .specs span { color: var(--muted); }
+  .specs b { font-weight: 650; text-align: right; }
+  .specs .unk b { color: #a0a8b6; font-weight: 500; }
+  .bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+  .btn { width: 100%; }
+  .ad { font-size: .62rem; font-weight: 600; opacity: .7; margin-left: 4px; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; }
+  .cmp { font-size: .8rem; color: var(--muted); display: flex; gap: 6px; align-items: center; cursor: pointer; }
+  .cmp input { accent-color: var(--brand); width: 16px; height: 16px; }
+</style>
+<style>
+  @media (max-width: 560px) {
+    .imgwrap { padding: 12px 12px 4px; }
+    .body { padding: 4px 10px 12px; }
+    .t { font-size: .85rem; }
+    .specs { font-size: .74rem; }
+    .specs li { flex-direction: column; gap: 0; }
+    .specs b { text-align: left; }
+    .btn { font-size: .82rem; padding: .6em .4em; flex-wrap: wrap; gap: 2px 4px; }
+    .tile :global(.tl) { display: none; }
+    .tile :global(.amount) { font-size: 1.1rem; }
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import Icon from './Icon.astro';
+import { activeSubsOf, getProducts, subUrl } from '../lib/catalog';
+import { tint } from '../lib/ui';
+interface Props { kat: { slug: string; label: string; short: string; icon: string } }
+const { kat } = Astro.props;
+const subs = activeSubsOf(kat.slug);
+const count = subs.reduce((n: number, s: any) => n + getProducts(s.slug).length, 0);
+const t = tint[kat.slug];
+---
+<article class="cc card">
+  <a href={`/${kat.slug}/`} class="vis" style={`--from:${t.from};--to:${t.to};--ink:${t.ink}`} aria-hidden="true" tabindex="-1">
+    <span class="big"><Icon name={kat.icon} size={84} /></span>
+    {count > 0 && <span class="cnt">{count} Angebote</span>}
+  </a>
+  <div class="body">
+    <h3><a href={`/${kat.slug}/`}>{kat.label}</a></h3>
+    <p class="small muted">{kat.short}</p>
+    {subs.length > 0 && <ul>{subs.map((s: any) => <li><a href={subUrl(s.slug)}>{s.label}</a></li>)}</ul>}
+  </div>
+</article>
+<style>
+  .cc { overflow: hidden; display: flex; flex-direction: column; }
+  .vis { position: relative; display: grid; place-items: center; height: 150px; background: radial-gradient(circle at 70% 30%, var(--from), var(--to)); color: var(--ink); }
+  .big :global(svg) { stroke-width: 1.2; opacity: .9; }
+  .cnt { position: absolute; left: 12px; bottom: 10px; background: rgb(255 255 255 / .85); color: var(--ink); font-size: .75rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+  .body { padding: 16px 18px 18px; }
+  h3 { margin: 0 0 4px; font-size: 1.2rem; }
+  h3 a { color: var(--text); text-decoration: none; }
+  h3 a:hover { color: var(--brand); }
+  .body p { margin: 0 0 10px; }
+  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; font-size: .92rem; }
+  li a { text-decoration: none; }
+  li a::before { content: '›'; margin-right: 6px; color: var(--muted); }
+  li a:hover { text-decoration: underline; }
+</style>

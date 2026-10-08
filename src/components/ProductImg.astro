@@ -1,0 +1,16 @@
+---
+import Icon from './Icon.astro';
+import { subBySlug, katBySlug, type Product } from '../lib/catalog';
+interface Props { product: Product; size?: number; eager?: boolean }
+const { product: p, size = 180, eager = false } = Astro.props;
+const icon = katBySlug[subBySlug[p.sub].kategorie].icon;
+---
+{p.image ? (
+  <img src={p.image.url} width={p.image.width} height={p.image.height} alt={p.title} loading={eager ? 'eager' : 'lazy'} decoding="async" referrerpolicy="no-referrer" class="pimg" style={`max-height:${size}px`} />
+) : (
+  <div class="ph" style={`height:${size}px`} aria-hidden="true"><Icon name={icon} size={Math.round(size / 3)} /></div>
+)}
+<style>
+  .pimg { width: 100%; object-fit: contain; aspect-ratio: 1; margin: 0 auto; }
+  .ph { width: 100%; display: grid; place-items: center; color: #b4bed0; background: linear-gradient(135deg, #eef1f7, #e2e7f1); border-radius: 10px; }
+</style>

@@ -1,0 +1,47 @@
+---
+import { updatedAt, formatDateTime, type Product } from '../lib/catalog';
+interface Props { product: Product; compact?: boolean; showTier?: boolean }
+const { product: p, compact = false, showTier = true } = Astro.props;
+const has = p.display && updatedAt;
+const tierLabel = ['', 'günstig', 'eher günstig', 'mittel', 'eher teuer', 'teuer'][p.tier];
+---
+<div class:list={['pb', { compact }]} data-price-updated={has ? updatedAt : undefined}>
+  {has ? (
+    <>
+      <div class="row">
+        <span class="amount">{p.display}</span>
+        {p.savingsPercent ? <span class="save">−{p.savingsPercent} %</span> : null}
+      </div>
+      <span class="stamp">Stand: {formatDateTime(updatedAt)}*</span>
+      <span class="fallback">Aktuellen Preis bei Amazon prüfen</span>
+    </>
+  ) : (
+    <span class="fallback show">Aktuellen Preis bei Amazon prüfen</span>
+  )}
+  {showTier && p.tier > 0 && (
+    <div class="tier" title={`Preislage in dieser Kategorie: ${tierLabel}`}>
+      <span class="tl">Preislage</span>
+      <span class="bars" aria-label={`Preislage: ${tierLabel}`}>
+        {[1, 2, 3, 4, 5].map((i) => <i class:list={{ on: i <= p.tier }} />)}
+      </span>
+      <span class="tv">{tierLabel}</span>
+    </div>
+  )}
+</div>
+<style>
+  .pb { display: flex; flex-direction: column; gap: 2px; }
+  .row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .amount { font-weight: 800; font-size: 1.3rem; letter-spacing: -0.01em; }
+  .compact .amount { font-size: 1.1rem; }
+  .save { font-size: .75rem; font-weight: 700; color: var(--good); background: #e4f3e8; padding: 1px 6px; border-radius: 6px; }
+  .stamp { font-size: .7rem; color: var(--muted); }
+  .fallback { display: none; font-size: .85rem; color: var(--muted); }
+  .fallback.show { display: inline; }
+  .pb[data-stale] .row, .pb[data-stale] .stamp { display: none; }
+  .pb[data-stale] .fallback { display: inline; }
+  .tier { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: .72rem; color: var(--muted); }
+  .bars { display: inline-flex; gap: 2px; }
+  .bars i { width: 10px; height: 6px; border-radius: 2px; background: var(--border); }
+  .bars i.on { background: var(--brand-2); }
+  .tv { font-weight: 600; color: var(--text); }
+</style>

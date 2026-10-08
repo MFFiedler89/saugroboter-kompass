@@ -1,0 +1,47 @@
+---
+/** Empfehlungen je Anwendungsfall, nach offengelegten Regeln, kein Test-Urteil */
+import { getPicks, shortTitle, cardSpecs } from '../lib/catalog';
+import PriceBlock from './PriceBlock.astro';
+import ProductImg from './ProductImg.astro';
+interface Props { sub: string; title?: string }
+const { sub, title = 'Unsere Empfehlungen je Anwendungsfall' } = Astro.props;
+const picks = getPicks(sub).slice(0, 3);
+---
+{picks.length > 0 && (
+  <section class="picks" aria-label={title}>
+    <h2 class="h">{title}</h2>
+    <div class="grid">
+      {picks.map((p, i) => (
+        <article class="pk card">
+          <p class="lbl">{p.pick!.label}</p>
+          <div class="img"><ProductImg product={p} size={120} eager={i === 0} /></div>
+          <p class="brand">{p.brand}</p>
+          <p class="t"><a href={p.url} rel="sponsored nofollow noopener" target="_blank">{shortTitle(p.title, 70)}</a></p>
+          <p class="why"><strong>Warum:</strong> {p.pick!.why}.</p>
+          <ul class="specs">{cardSpecs(sub, p).filter((s: any) => s.known).map((s: any) => <li>{s.label}: <b>{s.text}</b></li>)}</ul>
+          <div class="bottom">
+            <PriceBlock product={p} compact />
+            <a class="btn btn-amazon" href={p.url} rel="sponsored nofollow noopener" target="_blank">Zu Amazon <span class="ad">Anzeige</span></a>
+          </div>
+        </article>
+      ))}
+    </div>
+    <p class="small muted">So entstehen die Empfehlungen: Wir filtern alle Angebote nach den genannten Ausstattungsmerkmalen (laut Produktangaben) und wählen daraus das beliebteste bzw. günstigste Modell. Mehr dazu unter <a href="/so-vergleichen-wir/">So vergleichen wir</a>.</p>
+  </section>
+)}
+<style>
+  .picks { margin: 28px 0 36px; }
+  .h { margin: 0 0 14px; font-size: 1.35rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .pk { padding: 16px; display: flex; flex-direction: column; border-top: 4px solid var(--accent); }
+  .lbl { margin: 0 0 8px; font-weight: 800; color: var(--brand); font-size: .95rem; }
+  .img { margin-bottom: 8px; }
+  .brand { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; margin: 0; }
+  .t { margin: 2px 0 8px; font-weight: 650; font-size: .92rem; line-height: 1.35; }
+  .t a { color: var(--text); text-decoration: none; }
+  .why { font-size: .82rem; margin: 0 0 8px; color: #333c4c; }
+  .specs { list-style: none; padding: 0; margin: 0 0 12px; font-size: .8rem; color: var(--muted); }
+  .specs b { color: var(--text); font-weight: 650; }
+  .bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+  .ad { font-size: .62rem; font-weight: 600; opacity: .7; margin-left: 4px; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; }
+</style>
