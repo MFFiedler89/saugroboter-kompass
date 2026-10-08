@@ -1,0 +1,100 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import PicksBox from '../../components/PicksBox.astro';
+import ComparisonView from '../../components/ComparisonView.astro';
+import FAQ from '../../components/FAQ.astro';
+import TOC from '../../components/TOC.astro';
+import { mdxComponents } from '../../lib/mdx-components';
+import { activeSubs, getProducts, hasProducts, katBySlug, subsOf, subUrl, DEMO } from '../../lib/catalog';
+
+export function getStaticPaths() {
+  return activeSubs().map((s: any) => ({ params: { kat: s.kategorie, sub: s.slug }, props: { sub: s } }));
+}
+const { sub } = Astro.props as { sub: any };
+const kat = katBySlug[sub.kategorie];
+const entry = await getEntry('vergleiche', sub.slug);
+const r = entry ? await render(entry) : null;
+const products = getProducts(sub.slug);
+const d = entry?.data;
+const h1 = d?.h1 ?? `${sub.label} im Vergleich`;
+const title = d?.title ?? `${sub.label} im Vergleich`;
+const description = d?.description ?? `${sub.label} im Vergleich: nach Preis, Preislage und Ausstattung. Mit Filter und Direktvergleich.`;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const showProducts = hasProducts(sub.slug);
+
+const siblings = subsOf(sub.kategorie).filter((s: any) => s.slug !== sub.slug);
+const guides = await getCollection('ratgeber', ({ data }) => !data.draft && data.pillar === sub.slug);
+const sits = await getCollection('situationen', ({ data }) => !data.draft && data.subs.includes(sub.slug));
+const terms = await getCollection('lexikon', ({ data }) => data.subs.includes(sub.slug));
+
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'Article', headline: h1, description,
+    datePublished: (d?.publishDate ?? new Date()).toISOString(), dateModified: (d?.updatedDate ?? d?.publishDate ?? new Date()).toISOString(),
+    author: { '@id': new URL('/#org', Astro.site).href },
+    publisher: { '@id': new URL('/#org', Astro.site).href }, mainEntityOfPage: url, inLanguage: 'de-DE',
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'ItemList', name: h1, numberOfItems: products.length,
+    itemListElement: products.slice(0, 20).map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: p.title, url: p.url })),
+  },
+];
+---
+<BaseLayout title={title} description={description} type="article" schema={schema} publishDate={d?.publishDate} updatedDate={d?.updatedDate} noindex={DEMO || !showProducts}>
+  <div class="container">
+    <Breadcrumbs items={[{ label: kat.label, href: `/${kat.slug}/` }, { label: sub.label }]} />
+    <header class="head">
+      <h1>{h1}</h1>
+      <p class="lead">{d?.intro ?? `Hier vergleichst du ${sub.label} nach Preis, Preislage und Ausstattung laut Produktangaben.`}</p>
+      {d && <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} compact />}
+      <Disclosure />
+      {DEMO && <p class="notice"><strong>Vorschau mit Beispieldaten.</strong> Im Live-Betrieb stehen hier echte Amazon-Angebote.</p>}
+    </header>
+
+    {showProducts ? (
+      <>
+        <PicksBox sub={sub.slug} />
+        <h2 class="vh">Alle {products.length} Angebote</h2>
+        <ComparisonView sub={sub.slug} />
+      </>
+    ) : (
+      <p class="notice soon"><strong>Die Angebotsliste folgt in Kürze.</strong> Wir zeigen Preise und Ausstattung ausschließlich aus den offiziellen Amazon-Produktdaten und erfinden nichts dazu. Bis diese Anbindung steht, findest du hier die Kaufkriterien für {sub.label}.</p>
+    )}
+
+    {r && (
+      <div class="prose">
+        <TOC headings={r.headings} />
+        <r.Content components={mdxComponents} />
+      </div>
+    )}
+    <div class="prose">
+      {d && <FAQ items={d.faq} />}
+
+      {(guides.length > 0 || sits.length > 0 || terms.length > 0 || siblings.length > 0) && (
+        <section class="rel">
+          <h2>Weiterlesen</h2>
+          <div class="relg">
+            {guides.length > 0 && <div><p class="rh">Ratgeber</p><ul>{guides.map((g) => <li><a href={`/ratgeber/${g.id}/`}>{g.data.h1 ?? g.data.title}</a></li>)}</ul></div>}
+            {sits.length > 0 && <div><p class="rh">Passende Situationen</p><ul>{sits.map((s) => <li><a href={`/situationen/${s.id}/`}>{s.data.navLabel}</a></li>)}</ul></div>}
+            {siblings.length > 0 && <div><p class="rh">Mehr aus {kat.label}</p><ul>{siblings.map((s: any) => <li><a href={subUrl(s.slug)}>{s.label}</a></li>)}</ul></div>}
+            {terms.length > 0 && <div><p class="rh">Begriffe erklärt</p><ul>{terms.map((t) => <li><a href={`/lexikon/${t.id}/`}>{t.data.term}</a></li>)}</ul></div>}
+          </div>
+        </section>
+      )}
+      {d && <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} />}
+    </div>
+  </div>
+</BaseLayout>
+<style>
+  .head { max-width: var(--prose); }
+  .lead { font-size: 1.12rem; color: #333c4c; }
+  .vh { margin-top: 1.2em; }
+  .soon { max-width: var(--prose); margin: 18px 0 8px; }
+  .relg { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
+  .rh { font-weight: 700; margin: 0 0 6px; }
+  .rel ul { padding-left: 1.1em; margin: 0; font-size: .95rem; }
+</style>

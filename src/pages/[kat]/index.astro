@@ -1,0 +1,93 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Icon from '../../components/Icon.astro';
+import ProductTile from '../../components/ProductTile.astro';
+import { mdxComponents } from '../../lib/mdx-components';
+import { kategorien, activeSubsOf, getProducts, subUrl } from '../../lib/catalog';
+import { tint } from '../../lib/ui';
+
+export function getStaticPaths() {
+  return kategorien.map((k: any) => ({ params: { kat: k.slug }, props: { kat: k } }));
+}
+const { kat } = Astro.props as { kat: any };
+const entry = await getEntry('kategorien', kat.slug);
+const rendered = entry ? await render(entry) : null;
+const subs = activeSubsOf(kat.slug);
+const t = tint[kat.slug];
+const featured = subs.map((s: any) => getProducts(s.slug)[0]).filter(Boolean).slice(0, 8);
+const guides = (await getCollection('ratgeber', ({ data }) => !data.draft && data.cluster === kat.slug)).slice(0, 6);
+const title = entry?.data.title ?? `${kat.label} im Vergleich`;
+const description = entry?.data.description ?? `${kat.label} vergleichen: ${kat.short}.`;
+const schema = [{
+  '@context': 'https://schema.org', '@type': 'CollectionPage', name: entry?.data.h1 ?? kat.label, description,
+  hasPart: subs.map((s: any) => ({ '@type': 'WebPage', name: s.label, url: new URL(subUrl(s.slug), Astro.site).href })),
+}];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="khero" style={`--from:${t.from};--to:${t.to};--ink:${t.ink}`}>
+    <div class="container">
+      <Breadcrumbs items={[{ label: kat.label }]} />
+      <div class="kh">
+        <div>
+          <h1>{entry?.data.h1 ?? kat.label}</h1>
+          <p class="lead">{entry?.data.intro ?? kat.short}</p>
+        </div>
+        <span class="kicon"><Icon name={kat.icon} size={110} /></span>
+      </div>
+    </div>
+  </section>
+  <div class="container">
+    {subs.length > 0 ? (
+      <section>
+        <h2>Vergleiche in {kat.label}</h2>
+        <div class="subs">
+          {subs.map((s: any) => (
+            <a class="sub card" href={subUrl(s.slug)}>
+              <strong>{s.label}</strong>
+              <span class="small muted">{getProducts(s.slug).length} Angebote im Vergleich</span>
+              <span class="go">Vergleichen <Icon name="arrow" size={16} /></span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ) : (
+      <p class="notice">Die Vergleiche dieser Kategorie werden gerade aufgebaut.</p>
+    )}
+
+    {featured.length > 0 && (
+      <section>
+        <h2>Beliebte Angebote</h2>
+        <div class="grid">{featured.map((p: any, i: number) => <ProductTile product={p} eager={i < 2} />)}</div>
+      </section>
+    )}
+
+    {rendered && <div class="prose text"><rendered.Content components={mdxComponents} /></div>}
+
+    {guides.length > 0 && (
+      <section>
+        <h2>Ratgeber zu {kat.label}</h2>
+        <ul class="guides">{guides.map((g) => <li><a href={`/ratgeber/${g.id}/`}>{g.data.h1 ?? g.data.title}</a></li>)}</ul>
+      </section>
+    )}
+  </div>
+</BaseLayout>
+<style>
+  .khero { background: radial-gradient(ellipse at 85% 30%, var(--from), var(--to)); color: var(--ink); padding: 4px 0 30px; }
+  .khero :global(.crumbs a), .khero :global(.crumbs) { color: var(--ink); opacity: .85; }
+  .kh { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+  .khero h1 { color: #141a26; margin-top: .5em; }
+  .lead { font-size: 1.12rem; max-width: 680px; color: #333c4c; margin: 0; }
+  .kicon :global(svg) { stroke-width: 1.1; opacity: .8; }
+  .subs { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .sub { display: flex; flex-direction: column; gap: 6px; padding: 18px; text-decoration: none; color: var(--text); }
+  .sub strong { font-size: 1.1rem; }
+  .go { display: inline-flex; align-items: center; gap: 4px; color: var(--brand); font-weight: 650; font-size: .9rem; margin-top: 6px; }
+  .sub:hover strong { color: var(--brand); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .text { margin-top: 30px; }
+  .guides { columns: 2; padding-left: 1.2em; }
+  .guides li { margin-bottom: 6px; break-inside: avoid; }
+  @media (max-width: 640px) { .kicon { display: none; } .guides { columns: 1; } .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+</style>

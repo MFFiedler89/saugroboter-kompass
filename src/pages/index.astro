@@ -1,0 +1,143 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import HeroArt from '../components/HeroArt.astro';
+import Icon from '../components/Icon.astro';
+import HomePicks from '../components/HomePicks.astro';
+import { SITE } from '../config';
+import { kategorien, totalProducts, activeSubs, subUrl, DEMO } from '../lib/catalog';
+import { tint } from '../lib/ui';
+
+const total = totalProducts();
+const nSubs = activeSubs().length;
+const situationen = (await getCollection('situationen', ({ data }) => !data.draft)).sort((a, b) => a.data.navLabel.localeCompare(b.data.navLabel));
+const posts = (await getCollection('ratgeber', ({ data }) => !data.draft)).sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()).slice(0, 6);
+const katLabel = Object.fromEntries([...kategorien.map((k: any) => [k.slug, k.label]), ['allgemein', 'Grundlagen']]);
+const rechner = [
+  { href: '/rechner/flaeche/', t: 'Fläche und Akku', d: 'Reicht eine Ladung für deine Wohnung?', icon: 'ruler' },
+  { href: '/rechner/entleerung/', t: 'Entleeren', d: 'Wie oft musst du den Behälter leeren?', icon: 'box' },
+  { href: '/rechner/folgekosten/', t: 'Folgekosten', d: 'Beutel, Filter, Bürsten und Strom im Jahr', icon: 'calc' },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Saugroboter nach Bauart und Ausstattung',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    numberOfItems: kategorien.length,
+    itemListElement: kategorien.map((k: any, i: number) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: k.label,
+      url: new URL(`/${k.slug}/`, Astro.site).href,
+    })),
+  },
+];
+---
+<BaseLayout title={SITE.name} description={SITE.description} schema={schema}>
+  <section class="hero">
+    <div class="container hgrid">
+      <div>
+        <p class="kicker">Dein Zuhause putzt sich selbst</p>
+        <h1>Finde deinen <em>perfekten</em> Saugroboter.</h1>
+        <p class="sub">Sag uns, wie du wohnst. Wir zeigen dir die Geräte, die dazu passen, {total > 0 ? <>aus <strong>{total} Angeboten</strong> in {nSubs} Vergleichen</> : <>sobald die Angebotslisten stehen</>}.</p>
+        <p class="trust"><Icon name="check" size={18} /> Saugkraft, Wischsystem und Station kommen aus den Amazon-Produktangaben, nicht aus einem Werbetext. Was dort nicht steht, bleibt leer.</p>
+        <div class="cta">
+          <a class="btn btn-amazon" href="/saugroboter/">Saugroboter vergleichen</a>
+          <a class="btn btn-ghost light" href="/rechner/flaeche/">Passt eine Akkuladung?</a>
+        </div>
+      </div>
+      <div class="art"><HeroArt /></div>
+    </div>
+  </section>
+  {DEMO && <p class="demo">Vorschau mit Beispieldaten, keine echten Produkte.</p>}
+
+  <div class="container">
+    <HomePicks />
+
+    <section>
+      <h2>Was suchst du?</h2>
+      <div class="cats">{kategorien.map((k: any) => <CategoryCard kat={k} />)}</div>
+    </section>
+
+    {situationen.length > 0 && (
+      <section>
+        <h2>Für welche Wohnung?</h2>
+        <p class="muted">Katze im Haus, Hochflorteppich, Altbau mit Türschwellen oder einfach wenig Platz für eine Station: Hier findest du, was in deiner Lage zählt.</p>
+        <div class="sits">
+          {situationen.map((s) => <a class="sit" href={`/situationen/${s.id}/`}><strong>{s.data.navLabel}</strong><span class="small muted">{s.data.teaser}</span></a>)}
+        </div>
+      </section>
+    )}
+
+    <section>
+      <h2>Rechner</h2>
+      <div class="calcs">
+        {rechner.map((r) => <a class="calc card" href={r.href}><span class="ic"><Icon name={r.icon} size={26} /></span><span><strong>{r.t}</strong><span class="small muted">{r.d}</span></span></a>)}
+      </div>
+    </section>
+
+    {posts.length > 0 && (
+      <section>
+        <h2>Ratgeber</h2>
+        <div class="posts">
+          {posts.map((p) => {
+            const t = tint[p.data.cluster];
+            return (
+              <a class="post card" href={`/ratgeber/${p.id}/`}>
+                <span class="tag" style={`background:${t.from};color:${t.ink}`}>{katLabel[p.data.cluster] ?? 'Grundlagen'}</span>
+                <strong>{p.data.h1 ?? p.data.title}</strong>
+                <span class="small muted">{p.data.description}</span>
+              </a>
+            );
+          })}
+        </div>
+        <p><a href="/ratgeber/">Alle Ratgeber →</a></p>
+      </section>
+    )}
+
+    <section class="quick">
+      <h2>Schnellzugriff</h2>
+      <div class="ql">
+        {activeSubs().map((s: any) => <a href={subUrl(s.slug)}>{s.label}</a>)}
+        <a href="/lexikon/">Lexikon</a>
+        <a href="/marktdaten/">Marktdaten</a>
+        <a href="/so-vergleichen-wir/">So vergleichen wir</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+<style>
+  .hero { background: radial-gradient(ellipse at 78% 22%, #2a5699 0%, #1b3a6b 48%, #0e1c33 100%); color: #fff; padding: 56px 0 48px; overflow: hidden; }
+  .hgrid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 32px; align-items: center; }
+  .kicker { text-transform: uppercase; letter-spacing: .12em; font-weight: 700; font-size: .8rem; color: var(--accent-pale); margin: 0; }
+  .hero h1 { color: #fff; font-size: clamp(2.1rem, 5vw, 3.4rem); margin: .3em 0 .35em; }
+  .hero h1 em { font-style: normal; color: var(--accent-hover); }
+  .sub { font-size: 1.15rem; color: #d3dcee; max-width: 560px; }
+  .sub strong { color: #fff; }
+  .trust { display: flex; gap: 8px; align-items: flex-start; font-size: .92rem; color: #c3cfe6; max-width: 560px; }
+  .trust :global(svg) { flex: 0 0 auto; color: var(--accent); margin-top: 3px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+  .btn-ghost.light { color: #fff; border-color: #7e9bc9; }
+  .demo { background: var(--accent-soft); color: var(--accent-ink); text-align: center; padding: 8px; margin: 0; font-size: .9rem; font-weight: 600; }
+  .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+  .sits { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .sit { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); text-decoration: none; color: var(--text); transition: border-color .15s; }
+  .sit:hover { border-color: var(--accent); }
+  .sit strong { color: var(--brand); }
+  .calcs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .calc { display: flex; gap: 14px; align-items: center; padding: 16px 18px; text-decoration: none; color: var(--text); }
+  .calc > span:last-child { display: flex; flex-direction: column; }
+  .ic { width: 48px; height: 48px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-ink); display: grid; place-items: center; flex: 0 0 auto; }
+  .calc:hover strong { color: var(--brand); }
+  .posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+  .post { display: flex; flex-direction: column; gap: 8px; padding: 18px; text-decoration: none; color: var(--text); }
+  .post:hover strong { color: var(--brand); }
+  .tag { align-self: flex-start; font-size: .72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+  .ql { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ql a { padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px; text-decoration: none; font-size: .88rem; background: var(--surface); }
+  .ql a:hover { border-color: var(--accent); }
+  @media (max-width: 860px) { .hgrid { grid-template-columns: 1fr; } .art { max-width: 420px; } .hero { padding: 36px 0; } }
+</style>
