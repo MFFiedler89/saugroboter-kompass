@@ -63,15 +63,15 @@ vergleichbar in den Angaben. Eigener Ratgeber, kein Filter.
 
 ## Umfang
 
-69 Seiten, davon rund 50 Inhaltsseiten:
+83 Seiten, davon rund 65 Inhaltsseiten:
 
 | Sammlung | Anzahl |
 |---|---|
 | Kategorie-Hubs | 2 |
 | Vergleichsseiten | 8 |
-| Situationen | 10 |
-| Ratgeber | 12 |
-| Lexikonbegriffe | 23 |
+| Situationen | 13 |
+| Ratgeber | 15 |
+| Lexikonbegriffe | 31 |
 | Rechner | 4 |
 
 Dazu Startseite, Marktdaten, Über uns, So vergleichen wir, Impressum,
