@@ -93,3 +93,39 @@ for (const k of KANDIDATEN) {
   console.log(`  ${k.key}: …${aus}…`);
 }
 console.log('');
+
+// ---------------------------------------------------------------------------
+// Datenfelder statt Freitext.
+//
+// Marke und Preis kommen als eigene Felder aus der API, nicht aus dem
+// Beschreibungstext. Sie sind deshalb die einzigen Kandidaten fuer
+// Seitenfamilien, die nicht an unsauberen Produktangaben scheitern.
+// Long-Tail-Suchen wie "roborock saugroboter vergleich" laufen genau darauf.
+
+const felder = [
+  { key: 'Marke', hat: (p) => Boolean(p.brand && String(p.brand).trim()) },
+  { key: 'Preis', hat: (p) => typeof p.amount === 'number' },
+  { key: 'Bild', hat: (p) => Boolean(p.image?.url) },
+  { key: 'Verkaufsrang', hat: (p) => typeof p.salesRank === 'number' },
+];
+
+console.log('Datenfelder aus der API (nicht aus dem Beschreibungstext)');
+console.log('');
+for (const f of felder) {
+  const treffer = items.filter(f.hat).length;
+  const pct = ((treffer / n) * 100).toFixed(0).padStart(3);
+  console.log(`${f.key.padEnd(breite)}  ${String(treffer).padStart(3)}/${n}  ${pct} %`);
+}
+
+// Markenverteilung: zeigt, ob sich eigene Markenseiten ueberhaupt lohnen.
+// Unter MIN_PRODUCTS Geraeten je Marke waere eine Seite zu duenn.
+const marken = new Map();
+for (const p of items) {
+  const m = (p.brand ?? '').trim();
+  if (m) marken.set(m, (marken.get(m) ?? 0) + 1);
+}
+const sortiert = [...marken.entries()].sort((a, b) => b[1] - a[1]);
+console.log('');
+console.log(`Marken: ${sortiert.length} verschiedene, davon ${sortiert.filter(([, c]) => c >= 5).length} mit mindestens 5 Geraeten`);
+for (const [m, c] of sortiert) console.log(`  ${String(c).padStart(3)}  ${m}`);
+console.log('');
