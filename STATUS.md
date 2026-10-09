@@ -110,21 +110,48 @@ Variation einer bestehenden.
 `AMAZON_PARTNER_TAG`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
 **Variables:** `SITE_URL`, `CF_PAGES_PROJECT`
 
-## Offen, bevor die Seite live geht
+## Stand
 
-- [ ] Die beiden Workflow-Dateien unter `.github/workflows/` einspielen. Der
-      Claude-GitHub-Connector darf keine Workflows schreiben, deshalb fehlen
-      sie im Repo und liegen separat bereit.
-- [ ] Domain saugradar.de bei STRATO registrieren, DNS auf Cloudflare
-- [ ] Tracking-ID **saugradar-21** im Amazon PartnerNet anlegen und die Seite
-      dort anmelden. Eine ID staubradar-21 besteht bereits, wird aber nicht
-      verwendet, weil Domain und Marke Saugradar heißen.
-- [ ] Creators-API-Zugangsdaten erzeugen
-- [ ] Secrets und Variables im GitHub-Repo eintragen (`AMAZON_PARTNER_TAG`
-      bekommt `saugradar-21`)
-- [ ] `npm run discover` einmal laufen lassen, damit ASIN-Listen entstehen
-- [ ] Impressum und Datenschutz prüfen (Vorlagen, Betreiberangaben stehen in
-      `src/config.ts`)
-- [ ] Kontaktadresse einrichten (Cloudflare Email Routing)
+Die Seite ist live unter **saugradar.pages.dev**. Beide Workflows laufen,
+der Deploy ist grün, die Produktsuche hat 107 ASINs über die acht
+Vergleichsseiten gefunden. Alle Amazon-Links tragen `tag=saugradar-21`.
+
+## Erledigt
+
+- [x] Workflow-Dateien eingespielt (von Hand über die GitHub-Oberfläche, der
+      Claude-Connector darf keine Workflows schreiben)
+- [x] Workflow permissions im Repo auf "Read and write" (discover committet selbst)
+- [x] Domain saugradar.de bei STRATO registriert
+- [x] Tracking-ID `saugradar-21` im PartnerNet angelegt
+- [x] Creators-API-Zugangsdaten (dieselben wie Ergo-Kompass, Amazon verlangt
+      die Zugangsdaten des Hauptkontos, der Partner-Tag trennt die Seiten)
+- [x] Secrets und Variables im Repo eingetragen
+- [x] Cloudflare-Pages-Projekt `saugradar` angelegt (vom Workflow selbst)
+- [x] Zone saugradar.de in Cloudflare angelegt (Free), Nameserver
+      `bradley.ns.cloudflare.com` und `fiona.ns.cloudflare.com`
+- [x] Nameserver bei STRATO auf Cloudflare umgestellt (09.10.2026)
+- [x] `npm run discover` einmal gelaufen, ASIN-Listen gefüllt
+
+## Offen
+
+- [ ] Warten, bis die Zone in Cloudflare auf "active" springt (bis zu 24 Stunden)
+- [ ] Danach in Cloudflare Pages unter Custom domains `saugradar.de` und
+      `www.saugradar.de` hinzufügen. Vorher lehnt Pages es ab, die Zone muss
+      aktiv sein.
+- [ ] Impressum und Datenschutz prüfen (Betreiberangaben in `src/config.ts`)
+- [ ] Kontaktadresse einrichten (Cloudflare Email Routing). Achtung: STRATO
+      stellt für diese Domain keine E-Mail mehr bereit, seit eigene
+      Nameserver gesetzt sind.
 - [ ] Search Console und Bing Webmaster Tools
 - [ ] Optional: Repo von `saugroboter-kompass` nach `saugradar` umbenennen
+
+## Für die nächsten Nischenseiten
+
+- Jede Seite bekommt eine **eigene Cron-Minute** in `deploy.yml`. Saugradar
+  läuft auf `17 */6 * * *`. Die Creators API erlaubt am Anfang nur eine
+  Anfrage pro Sekunde, und das Limit gilt pro Konto, nicht pro Anwendung.
+- Startkontingent: 1 TPS und 8.640 Anfragen pro Tag. Wächst mit dem
+  versandten Umsatz der letzten 30 Tage, gedeckelt bei 10 TPS.
+- Der API-Zugang erlischt, wenn 30 Tage am Stück kein qualifizierter Verkauf
+  zustande kommt, und kommt zwei Tage nach dem nächsten Versand zurück. Das
+  gilt für alle Seiten des Kontos gemeinsam.
