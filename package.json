@@ -3,15 +3,18 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "engines": { "node": ">=22.12.0" },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "demo": "node scripts/make-demo.mjs && DEMO=1 astro dev",
     "live": "node scripts/fetch-live.mjs",
     "discover": "node scripts/discover.mjs",
-    "build": "astro build && node scripts/og.mjs && node scripts/indexnow.mjs",
+    "build": "astro build && node scripts/og.mjs && node scripts/indexnow.mjs && node scripts/measure.mjs",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "measure": "node scripts/measure.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "8.0.2",
