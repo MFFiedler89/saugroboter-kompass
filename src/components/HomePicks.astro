@@ -15,12 +15,14 @@ const { title = 'Direkt loslegen' } = Astro.props;
 type Karte = { sub: string; label: string; icon: string; anzahl: number; p: Product };
 
 const karten: Karte[] = [];
+const usedAsins = new Set<string>();
 for (const k of kategorien as any[]) {
   for (const s of subsOf(k.slug) as any[]) {
     const liste = getProducts(s.slug);
     if (liste.length < 3) continue;
-    const p = liste.find((x) => x.pick) ?? liste.find((x) => x.amount !== null);
+    const p = liste.find((x) => x.pick && !usedAsins.has(x.asin)) ?? liste.find((x) => x.amount !== null && !usedAsins.has(x.asin));
     if (!p) continue;
+    usedAsins.add(p.asin);
     karten.push({ sub: s.slug, label: subBySlug[s.slug].label, icon: k.icon, anzahl: liste.length, p });
     break;
   }
