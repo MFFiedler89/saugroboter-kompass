@@ -1,17 +1,18 @@
 ---
 import Icon from './Icon.astro';
-import { activeSubsOf, getProducts, subUrl } from '../lib/catalog';
+import { activeSubsOf, productsOf, subUrl } from '../lib/catalog';
 import { tint } from '../lib/ui';
 interface Props { kat: { slug: string; label: string; short: string; icon: string } }
 const { kat } = Astro.props;
 const subs = activeSubsOf(kat.slug);
-const count = subs.reduce((n: number, s: any) => n + getProducts(s.slug).length, 0);
+// Geraete, nicht Listenplaetze: ein Modell kann in mehreren Vergleichen stehen.
+const count = productsOf(kat.slug);
 const t = tint[kat.slug];
 ---
 <article class="cc card">
   <a href={`/${kat.slug}/`} class="vis" style={`--from:${t.from};--to:${t.to};--ink:${t.ink}`} aria-hidden="true" tabindex="-1">
     <span class="big"><Icon name={kat.icon} size={84} /></span>
-    {count > 0 && <span class="cnt">{count} Angebote</span>}
+    {count > 0 && <span class="cnt">{count} Geräte</span>}
   </a>
   <div class="body">
     <h3><a href={`/${kat.slug}/`}>{kat.label}</a></h3>
