@@ -12,7 +12,7 @@ const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
       <span class="wm">Saug<span class="wm-a">radar</span></span>
     </a>
     <nav class="sec" aria-label="Service">
-      {NAV_SECONDARY.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
+      {NAV_SECONDARY.map((n) => <a class:list={{ "deal-link": n.href === "/deals/" }} href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
     </nav>
     <details class="mob">
       <summary aria-label="Menü öffnen"><Icon name="menu" /></summary>
@@ -23,7 +23,7 @@ const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
             {k.subs.length > 0 && <div class="ms">{k.subs.map((s: any) => <a href={subUrl(s.slug)}>{s.label}</a>)}</div>}
           </div>
         ))}
-        <div class="mob-sec">{NAV_SECONDARY.map((n) => <a href={n.href}>{n.label}</a>)}</div>
+        <div class="mob-sec">{NAV_SECONDARY.map((n) => <a class:list={{ "deal-link": n.href === "/deals/" }} href={n.href}>{n.label}</a>)}</div>
       </div>
     </details>
   </div>
@@ -53,6 +53,7 @@ const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
   @media (max-width: 420px) { .logo img { height: 32px; width: 32px; } .wm { font-size: 1.12rem; } }
   .sec { display: flex; gap: 22px; }
   .sec a { color: var(--muted); text-decoration: none; font-size: .9rem; font-weight: 550; }
+  .sec a.deal-link { color: var(--brand); font-weight: 750; }
   .sec a:hover, .sec a[aria-current='page'] { color: var(--brand); }
   .cats { border-top: 1px solid var(--border); background: var(--surface); }
   .cats ul { display: flex; list-style: none; margin: 0 auto; gap: 4px; }

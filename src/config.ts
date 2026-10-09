@@ -51,6 +51,7 @@ export const CONSENT = {
 };
 
 export const NAV_SECONDARY = [
+  { href: '/deals/', label: 'Aktuelle Deals %' },
   { href: '/situationen/', label: 'Situationen' },
   { href: '/rechner/', label: 'Rechner' },
   { href: '/ratgeber/', label: 'Ratgeber' },

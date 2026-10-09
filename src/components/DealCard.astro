@@ -1,0 +1,51 @@
+---
+import { subBySlug, subUrl, shortTitle, formatDateTime, type Product } from '../lib/catalog';
+import ProductImg from './ProductImg.astro';
+import PriceBlock from './PriceBlock.astro';
+interface Props { product: Product; eager?: boolean }
+const { product: p, eager = false } = Astro.props;
+const sub = subBySlug[p.sub];
+const access = p.deal?.accessType?.replaceAll('_', '');
+const restricted = access === 'PRIMEEXCLUSIVE' || access === 'PRIMEEARLYACCESS';
+const otherRestriction = access && access !== 'ALL' && !restricted;
+---
+<article class="deal card" data-deal data-category={sub.kategorie} data-discount={p.savingsPercent} data-amount={p.amount} data-deal-access={p.deal?.accessType} data-deal-early={p.deal?.earlyAccessDurationInMilliseconds} data-deal-start={p.deal?.startTime} data-deal-end={p.deal?.endTime}>
+  <div class="deal-top">
+    <span class="discount">−{p.savingsPercent} %</span>
+    <span class="kind">{p.deal ? 'Amazon-Aktion' : 'Preisreduzierung'}</span>
+  </div>
+  <a href={p.url} rel="sponsored nofollow noopener" target="_blank" class="image" aria-label={p.title}>
+    <ProductImg product={p} eager={eager} size={200} />
+  </a>
+  <div class="body">
+    <a href={subUrl(p.sub)} class="category">{sub.label}</a>
+    <h2><a href={p.url} rel="sponsored nofollow noopener" target="_blank" title={p.title}>{shortTitle(p.title, 100)}</a></h2>
+    {restricted && <p class="restriction">{access === 'PRIMEEXCLUSIVE' ? 'Nur für Prime-Mitglieder' : 'Prime-Vorabzugang möglich – Teilnahme bei Amazon prüfen'}</p>}
+    {otherRestriction && <p class="restriction">Teilnahmebedingungen bei Amazon prüfen</p>}
+    <div class="bottom">
+      <PriceBlock product={p} showTier={false} />
+      {p.referencePrice && p.referencePriceLabel && <p class="reference">Vergleichspreis ({p.referencePriceLabel}): {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(p.referencePrice)}</p>}
+      {p.deal?.endTime && <p class="ends">Aktion bis {formatDateTime(p.deal.endTime)} – solange verfügbar</p>}
+      <a class="btn btn-amazon" href={p.url} rel="sponsored nofollow noopener" target="_blank">Angebot bei Amazon prüfen <span class="ad">Anzeige</span></a>
+    </div>
+  </div>
+</article>
+<style>
+  .deal { display: flex; flex-direction: column; overflow: hidden; }
+  .deal[hidden] { display: none; }
+  .deal-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 16px 0; }
+  .discount { font-size: 1rem; font-weight: 800; background: var(--brand); color: white; border-radius: 999px; padding: 4px 12px; }
+  .kind { font-size: .73rem; color: var(--muted); }
+  .image { background: white; padding: 16px; }
+  .body { display: flex; flex-direction: column; flex: 1; padding: 4px 16px 18px; }
+  .category { font-size: .8rem; font-weight: 600; text-decoration: none; }
+  h2 { margin: 8px 0 12px; font-size: 1rem; line-height: 1.4; }
+  h2 a { color: var(--text); text-decoration: none; }
+  h2 a:hover { color: var(--brand); }
+  .bottom { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+  .restriction, .ends, .reference { font-size: .76rem; color: var(--muted); margin: 0; }
+  .restriction { margin-bottom: 12px; font-weight: 600; }
+  .btn { font-size: .84rem; width: 100%; flex-wrap: wrap; }
+  .ad { font-size: .65rem; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; }
+</style>
+

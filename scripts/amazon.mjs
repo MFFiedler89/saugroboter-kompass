@@ -111,6 +111,7 @@ const RESOURCES = [
   'itemInfo.byLineInfo',
   'images.primary.large',
   'offersV2.listings.price',
+  'offersV2.listings.dealDetails',
   'offersV2.listings.availability',
   'offersV2.listings.isBuyBoxWinner',
   'browseNodeInfo.websiteSalesRank',
@@ -152,6 +153,14 @@ export function normalize(item) {
     display: money?.displayAmount ?? (typeof money?.amount === 'number' ? new Intl.NumberFormat('de-DE', { style: 'currency', currency: money.currency || 'EUR' }).format(money.amount) : undefined),
     savingsPercent: offer?.price?.savings?.percentage || undefined,
     availability: offer?.availability?.type,
+    referencePrice: offer?.price?.savingBasis?.money?.amount,
+    referencePriceLabel: offer?.price?.savingBasis?.savingBasisTypeLabel,
+    deal: offer?.dealDetails ? {
+      startTime: offer.dealDetails.startTime,
+      endTime: offer.dealDetails.endTime,
+      accessType: offer.dealDetails.accessType,
+      earlyAccessDurationInMilliseconds: offer.dealDetails.earlyAccessDurationInMilliseconds,
+    } : undefined,
     image: img?.url ? { url: img.url, width: img.width, height: img.height } : undefined,
     url: item.detailPageURL,
   };
