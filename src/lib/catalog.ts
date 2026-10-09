@@ -124,7 +124,20 @@ export const hasProducts = (subSlug: string) => getProducts(subSlug).length >= M
  */
 export const activeSubs = () => subs;
 export const activeSubsOf = (kat: string) => subsOf(kat);
-export const totalProducts = () => subs.reduce((n, s) => n + getProducts(s.slug).length, 0);
+
+/**
+ * Zaehlt Geraete, nicht Listenplaetze.
+ *
+ * Ein Geraet steht oft in mehreren Vergleichen, etwa mit Absaugstation und
+ * mit Wischfunktion zugleich. Wuerde man die Listen einfach addieren, stuende
+ * auf der Startseite eine Auswahl, die es so nicht gibt. Deshalb wird nach
+ * ASIN entdoppelt.
+ */
+const countUnique = (list: { slug: string }[]) =>
+  new Set(list.flatMap((s) => getProducts(s.slug).map((p) => p.asin))).size;
+
+export const totalProducts = () => countUnique(subs);
+export const productsOf = (kat: string) => countUnique(subsOf(kat));
 
 export function cardSpecs(subSlug: string, p: Product) {
   const sub = subBySlug[subSlug];
