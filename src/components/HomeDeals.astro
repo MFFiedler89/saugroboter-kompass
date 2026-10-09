@@ -1,0 +1,62 @@
+---
+import DealCard from './DealCard.astro';
+import { getDeals, updatedAt } from '../lib/catalog';
+import { AMAZON } from '../config';
+interface Props { title: string; description: string; prominent?: boolean }
+const { title, description, prominent = false } = Astro.props;
+const deals = getDeals().slice(0, 4);
+---
+{deals.length > 0 && (
+  <section class:list={['home-deals', { prominent }]} data-home-deals data-updated={updatedAt} data-max-age={AMAZON.maxPriceAgeHours} aria-labelledby="home-deals-heading">
+    <div class="heading">
+      <div>
+        <p class="eyebrow"><span aria-hidden="true">%</span> Angebote bei Amazon</p>
+        <h2 id="home-deals-heading">{title}</h2>
+        <p class="description">{description}</p>
+      </div>
+      <a class="all" href="/deals/">Alle aktuellen Deals ansehen <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="grid">
+      {deals.map((product) => <DealCard product={product} headingLevel="h3" />)}
+    </div>
+    <p class="note">Rabatte gegenüber dem von Amazon angegebenen Vergleichspreis. Preise und Aktionsbedingungen bitte bei Amazon prüfen. {AMAZON.disclosure}</p>
+  </section>
+)}
+<script>
+  import { isFreshSnapshot, isCurrentOffer } from '../lib/deals.mjs';
+  document.querySelectorAll<HTMLElement>('[data-home-deals]').forEach((section) => {
+    const cards = [...section.querySelectorAll<HTMLElement>('[data-deal]')];
+    function update() {
+      const now = Date.now();
+      const fresh = isFreshSnapshot(section.dataset.updated, Number(section.dataset.maxAge), now);
+      for (const card of cards) {
+        card.hidden = !fresh || !isCurrentOffer({
+          availability: 'IN_STOCK', amount: Number(card.dataset.amount), display: 'present',
+          savingsPercent: Number(card.dataset.discount),
+          deal: { startTime: card.dataset.dealStart, endTime: card.dataset.dealEnd,
+            accessType: card.dataset.dealAccess, earlyAccessDurationInMilliseconds: Number(card.dataset.dealEarly) },
+        }, now);
+      }
+      section.hidden = cards.every((card) => card.hidden);
+    }
+    window.addEventListener('pageshow', update);
+    document.addEventListener('visibilitychange', update);
+    window.setInterval(update, 60000);
+    update();
+  });
+</script>
+<style>
+  .home-deals { margin: 32px 0; }
+  .home-deals[hidden] { display: none; }
+  .prominent { padding: 24px; background: var(--accent-soft, var(--brand-soft)); border: 1px solid var(--border); border-radius: var(--radius); }
+  .heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+  .eyebrow { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: .78rem; font-weight: 750; color: var(--brand); }
+  .eyebrow span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: #fff; font-size: 1rem; }
+  h2 { margin: 0 0 8px; }
+  .description { margin: 0; font-size: .92rem; color: var(--muted); max-width: 620px; }
+  .all { font-size: .9rem; font-weight: 700; flex-shrink: 0; text-underline-offset: 4px; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .note { color: var(--muted); font-size: .76rem; margin: 14px 0 0; }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .heading { align-items: flex-start; flex-direction: column; gap: 12px; } }
+  @media (max-width: 540px) { .grid { grid-template-columns: minmax(0, 1fr); } .prominent { padding: 16px; } }
+</style>

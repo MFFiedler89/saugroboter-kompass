@@ -2,10 +2,13 @@
 import { subs, subBySlug, katBySlug, subsOf, kategorien } from '../data/taxonomy.mjs';
 import { extractAll, formatSpec, specSortValue } from './extract.mjs';
 import { AMAZON } from '../config';
+import { selectDeals } from './deals.mjs';
 
 export const DEMO = process.env.DEMO === '1';
 
 type Live = {
+  referencePrice?: number; referencePriceLabel?: string;
+  deal?: { startTime?: string; endTime?: string; accessType?: string; earlyAccessDurationInMilliseconds?: number };
   title?: string; brand?: string; features?: string[]; amount?: number; display?: string;
   savingsPercent?: number; availability?: string; url?: string; salesRank?: number | null;
   image?: { url: string; width: number; height: number };
@@ -28,6 +31,9 @@ export const updatedAt: string | null = live.updatedAt;
 export type SpecDef = { key: string; label: string; type: string; unit?: string; sort?: string; filter?: string; options?: { value: string }[] };
 
 export type Product = {
+  referencePrice?: number; referencePriceLabel?: string;
+  deal?: { startTime?: string; endTime?: string; accessType?: string; earlyAccessDurationInMilliseconds?: number };
+  availability?: string;
   asin: string;
   title: string;
   brand: string;
@@ -67,6 +73,10 @@ export function getProducts(subSlug: string): Product[] {
       amount: typeof l.amount === 'number' ? l.amount : null,
       display: l.display ?? null,
       savingsPercent: l.savingsPercent,
+      availability: l.availability,
+      referencePrice: l.referencePrice,
+      referencePriceLabel: l.referencePriceLabel,
+      deal: l.deal,
       salesRank: l.salesRank ?? null,
       specs: extractAll(sub.specs, l.title, l.features ?? []),
       tier: 0,
@@ -100,6 +110,10 @@ export function getProducts(subSlug: string): Product[] {
 
   cache.set(subSlug, products);
   return products;
+}
+
+export function getDeals(): Product[] {
+  return selectDeals(subs.flatMap((s) => getProducts(s.slug)), updatedAt, AMAZON.maxPriceAgeHours);
 }
 
 export function getPicks(subSlug: string) {
