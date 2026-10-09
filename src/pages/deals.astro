@@ -2,13 +2,13 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import DealCard from '../components/DealCard.astro';
 import { getDeals, updatedAt, formatDateTime, kategorien, DEMO } from '../lib/catalog';
-import { AMAZON, SITE } from '../config';
+import { AMAZON } from '../config';
 const deals = getDeals();
 const categories = kategorien.filter((k) => deals.some((p) => p.sub && getCategory(p.sub) === k.slug));
 import { subBySlug } from '../lib/catalog';
 function getCategory(slug: string) { return subBySlug[slug].kategorie; }
 ---
-<PageLayout title="Aktuelle Deals % bei Amazon" description={`Aktuelle Amazon-Angebote aus der Produktauswahl von ${SITE.name}: Rabatte in Prozent, Preise und verfügbare Aktionen im Überblick.`} wide noindex={DEMO}>
+<PageLayout title="Aktuelle Saugroboter Deals bei Amazon" description="Aktuelle Amazon-Angebote für Saugroboter und Saug-Wisch-Roboter: Rabatte in Prozent, Preise und verfügbare Aktionen aus der Saugradar-Produktauswahl." wide noindex={DEMO}>
   <section class="intro">
     <p class="lead">Passende Angebote aus unserer Produktauswahl, nach dem von Amazon gemeldeten Rabatt sortiert.</p>
     <p class="small muted">Der Prozentwert bezieht sich auf den von Amazon angegebenen Vergleichspreis. Ein Rabatt allein sagt nichts über die Eignung oder den bisherigen Tiefstpreis aus.</p>
