@@ -2,8 +2,9 @@
 import { subBySlug, subUrl, shortTitle, formatDateTime, type Product } from '../lib/catalog';
 import ProductImg from './ProductImg.astro';
 import PriceBlock from './PriceBlock.astro';
-interface Props { product: Product; eager?: boolean }
-const { product: p, eager = false } = Astro.props;
+interface Props { product: Product; eager?: boolean; headingLevel?: "h2" | "h3" }
+const { product: p, eager = false, headingLevel = "h2" } = Astro.props;
+const Heading = headingLevel;
 const sub = subBySlug[p.sub];
 const access = p.deal?.accessType?.replaceAll('_', '');
 const restricted = access === 'PRIMEEXCLUSIVE' || access === 'PRIMEEARLYACCESS';
@@ -19,7 +20,7 @@ const otherRestriction = access && access !== 'ALL' && !restricted;
   </a>
   <div class="body">
     <a href={subUrl(p.sub)} class="category">{sub.label}</a>
-    <h2><a href={p.url} rel="sponsored nofollow noopener" target="_blank" title={p.title}>{shortTitle(p.title, 100)}</a></h2>
+    <Heading class="title"><a href={p.url} rel="sponsored nofollow noopener" target="_blank" title={p.title}>{shortTitle(p.title, 100)}</a></Heading>
     {restricted && <p class="restriction">{access === 'PRIMEEXCLUSIVE' ? 'Nur für Prime-Mitglieder' : 'Prime-Vorabzugang möglich – Teilnahme bei Amazon prüfen'}</p>}
     {otherRestriction && <p class="restriction">Teilnahmebedingungen bei Amazon prüfen</p>}
     <div class="bottom">
@@ -39,9 +40,9 @@ const otherRestriction = access && access !== 'ALL' && !restricted;
   .image { background: white; padding: 16px; }
   .body { display: flex; flex-direction: column; flex: 1; padding: 4px 16px 18px; }
   .category { font-size: .8rem; font-weight: 600; text-decoration: none; }
-  h2 { margin: 8px 0 12px; font-size: 1rem; line-height: 1.4; }
-  h2 a { color: var(--text); text-decoration: none; }
-  h2 a:hover { color: var(--brand); }
+  .title { margin: 8px 0 12px; font-size: 1rem; line-height: 1.4; }
+  .title a { color: var(--text); text-decoration: none; }
+  .title a:hover { color: var(--brand); }
   .bottom { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
   .restriction, .ends, .reference { font-size: .76rem; color: var(--muted); margin: 0; }
   .restriction { margin-bottom: 12px; font-weight: 600; }
