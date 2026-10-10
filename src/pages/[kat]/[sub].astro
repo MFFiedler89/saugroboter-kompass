@@ -24,7 +24,8 @@ const h1 = d?.h1 ?? `${sub.label} im Vergleich`;
 const title = d?.title ?? `${sub.label} im Vergleich`;
 const description = d?.description ?? `${sub.label} im Vergleich: nach Preis, Preislage und Ausstattung. Mit Filter und Direktvergleich.`;
 const url = new URL(Astro.url.pathname, Astro.site).href;
-const showProducts = hasProducts(sub.slug);
+const strictSelection = ['saugroboter-ohne-app', 'saugroboter-ohne-kamera'].includes(sub.slug);
+const showProducts = strictSelection ? products.length > 0 : hasProducts(sub.slug);
 
 const siblings = subsOf(sub.kategorie).filter((s: any) => s.slug !== sub.slug);
 const guides = await getCollection('ratgeber', ({ data }) => !data.draft && data.pillar === sub.slug);
@@ -44,7 +45,7 @@ const schema = [
   },
 ];
 ---
-<BaseLayout title={title} description={description} type="article" schema={schema} publishDate={d?.publishDate} updatedDate={d?.updatedDate} noindex={DEMO || !showProducts}>
+<BaseLayout title={title} description={description} type="article" schema={schema} publishDate={d?.publishDate} updatedDate={d?.updatedDate} noindex={DEMO || (!showProducts && !strictSelection)}>
   <div class="container">
     <Breadcrumbs items={[{ label: kat.label, href: `/${kat.slug}/` }, { label: sub.label }]} />
     <header class="head">
@@ -62,7 +63,7 @@ const schema = [
         <ComparisonView sub={sub.slug} />
       </>
     ) : (
-      <p class="notice soon"><strong>Die Angebotsliste folgt in Kürze.</strong> Wir zeigen Preise und Ausstattung ausschließlich aus den offiziellen Amazon-Produktdaten und erfinden nichts dazu. Bis diese Anbindung steht, findest du hier die Kaufkriterien für {sub.label}.</p>
+      <p class="notice soon">{strictSelection ? <><strong>Aktuell keine eindeutig belegten Angebote in unserer Auswahl.</strong> Wir nehmen ein Modell hier nur auf, wenn die Angaben die gesuchte Eigenschaft ausdrücklich bestätigen. Fehlende Angaben reichen nicht. Nutze die Kaufhilfe unten oder entdecke unsere <a href="/saugroboter/">weiteren Saugroboter-Vergleiche</a>.</> : <><strong>Aktuell zu wenige Angebote für eine Vergleichsliste.</strong> Bis wieder genügend Produktdaten vorliegen, findest du unten die Kaufkriterien und weitere Vergleiche.</>}</p>
     )}
 
     {r && (
