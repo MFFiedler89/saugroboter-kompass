@@ -38,3 +38,14 @@ test('manufacturer-backed exact eufy models do not admit other variants', () => 
 test('other comparisons retain their catalogue', () => {
   assert.equal(eligibility('saugroboter-mit-absaugstation', 'LiDAR mit RGB-Kamera und WLAN'), true);
 });
+test('vacuum-only selection requires proof and excludes combination cleaners', () => {
+  for (const title of ['Roboter', 'ECOVACS DEEBOT T50 Omni Gen3', 'dreame D20 Pro Plus', 'XIAOMI H40']) {
+    assert.equal(eligibility('saugroboter-ohne-wischfunktion', title), false, title);
+  }
+  assert.equal(eligibility('saugroboter-ohne-wischfunktion', 'Roboter ohne Wischfunktion'), true);
+  assert.equal(eligibility('saugroboter-ohne-wischfunktion', 'Roboter ohne Wischfunktion', ['Wassertank']), false);
+  assert.equal(eligibility('saugroboter-ohne-wischfunktion', 'Nicht ohne Wischfunktion nutzbar'), false);
+  assert.equal(eligibility('saugroboter-ohne-wischfunktion', 'eufy Anker Saugroboter C10 mit automatischer Entleerung'), true);
+  assert.equal(eligibility('saugroboter-ohne-wischfunktion', 'eufy C10 Hybrid'), false);
+  assert.equal(eligibility('saugroboter-ohne-wischfunktion', 'eufy C10', ['mit Wischfunktion']), false);
+});
