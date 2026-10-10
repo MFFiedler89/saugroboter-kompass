@@ -3,6 +3,12 @@ import { SITE, NAV_SECONDARY } from '../config';
 import { kategorien, activeSubsOf, subUrl } from '../lib/catalog';
 import Icon from './Icon.astro';
 const path = Astro.url.pathname;
+const featured = [
+  { href: '/saugroboter/', label: 'Alle Saugroboter' },
+  { href: subUrl('saugroboter-mit-absaugstation'), label: 'Mit Absaugstation' },
+  { href: subUrl('saugroboter-mit-wischfunktion'), label: 'Mit Wischfunktion' },
+  { href: '/situationen/haushalt-mit-tieren/', label: 'Für Tierhaare' },
+];
 const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
 ---
 <header class="hdr">
@@ -17,6 +23,8 @@ const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
     <details class="mob">
       <summary aria-label="Menü öffnen"><Icon name="menu" /></summary>
       <div class="mob-panel">
+        <p class="menu-label">Modelle entdecken</p>
+        <div class="mobile-featured">{featured.map((n) => <a href={n.href}>{n.label} <span aria-hidden="true">→</span></a>)}</div>
         {kats.map((k: any) => (
           <div class="mob-k">
             <a href={`/${k.slug}/`} class="mk"><Icon name={k.icon} size={20} /> {k.label}</a>
@@ -27,22 +35,39 @@ const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
       </div>
     </details>
   </div>
-  <nav class="cats" aria-label="Kategorien">
+  <nav class="cats" aria-label="Produkte entdecken">
     <ul class="container">
-      {kats.map((k: any) => (
-        <li class="ci">
-          <a href={`/${k.slug}/`} aria-current={path.startsWith(`/${k.slug}/`) ? 'page' : undefined}><Icon name={k.icon} size={18} /> {k.label}</a>
-          {k.subs.length > 0 && (
-            <div class="drop card">
-              {k.subs.map((s: any) => <a href={subUrl(s.slug)}>{s.label}</a>)}
-              <a href={`/${k.slug}/`} class="all">Alle {k.label} →</a>
-            </div>
-          )}
-        </li>
+      {featured.map((n) => (
+        <li class="ci"><a href={n.href} aria-current={path === n.href ? 'page' : undefined}>{n.label} <span aria-hidden="true">→</span></a></li>
       ))}
+      <li class="ci more">
+        <details>
+          <summary>Weitere Vergleiche <span aria-hidden="true">▾</span></summary>
+          <div class="drop card">
+            {kats.map((k: any) => (
+              <div class="drop-group">
+                <a href={`/${k.slug}/`} class="all">Alle {k.label} →</a>
+                {k.subs.map((s: any) => <a href={subUrl(s.slug)}>{s.label} <span aria-hidden="true">→</span></a>)}
+              </div>
+            ))}
+          </div>
+        </details>
+      </li>
     </ul>
   </nav>
 </header>
+<script>
+  const menu = document.querySelector<HTMLDetailsElement>('.hdr .more details');
+  document.addEventListener('click', (event) => {
+    if (menu && event.target instanceof Node && !menu.contains(event.target)) menu.open = false;
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu?.open) {
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+    }
+  });
+</script>
 <style>
   .hdr { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
   .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
@@ -56,13 +81,22 @@ const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
   .sec a.deal-link { color: var(--brand); font-weight: 750; }
   .sec a:hover, .sec a[aria-current='page'] { color: var(--brand); }
   .cats { border-top: 1px solid var(--border); background: var(--surface); }
-  .cats ul { display: flex; list-style: none; margin: 0 auto; gap: 4px; }
+  .cats ul { display: flex; flex-wrap: wrap; list-style: none; margin: 0 auto; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
   .ci { position: relative; }
-  .ci > a { display: flex; align-items: center; gap: 7px; padding: 11px 12px; color: var(--text); text-decoration: none; font-weight: 600; font-size: .92rem; border-bottom: 2px solid transparent; }
+  .ci > a, .more summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 13px; color: var(--brand); text-decoration: none; font-weight: 650; font-size: .88rem; border: 1px solid var(--border); border-radius: 9px; background: var(--brand-soft); cursor: pointer; }
+  .more summary { list-style: none; background: var(--surface); }
+  .more summary::-webkit-details-marker { display: none; }
+  .more details[open] summary { border-color: var(--brand); }
+  .ci > a span, .more summary span { color: var(--accent-ink); }
   .ci > a :global(svg) { color: var(--accent-ink); }
-  .ci > a:hover, .ci > a[aria-current='page'] { border-bottom-color: var(--accent); color: var(--brand); }
+  .ci > a:hover, .ci > a[aria-current='page'], .more summary:hover { border-color: var(--brand); background: var(--accent-soft); }
   .drop { display: none; position: absolute; top: 100%; left: 0; min-width: 260px; padding: 8px; z-index: 60; flex-direction: column; }
-  .ci:hover .drop, .ci:focus-within .drop { display: flex; }
+  .more details[open] .drop { display: flex; }
+  .more .drop { left: auto; right: 0; width: 340px; max-height: calc(100vh - 140px); overflow-y: auto; }
+  .drop-group { display: flex; flex-direction: column; }
+  .menu-label { font-size: .8rem; font-weight: 750; color: var(--muted); margin: 8px 0; }
+  .mobile-featured { display: grid; gap: 8px; }
+  .mobile-featured a { display: flex; justify-content: space-between; gap: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--brand-soft); padding: 10px 12px; text-decoration: none; font-weight: 650; }
   .drop a { padding: 8px 12px; border-radius: 8px; color: var(--text); text-decoration: none; font-size: .92rem; }
   .drop a:hover { background: var(--brand-soft); color: var(--brand); }
   .drop .all { color: var(--brand); font-weight: 600; border-top: 1px solid var(--border); margin-top: 4px; border-radius: 0 0 8px 8px; }

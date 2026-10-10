@@ -1,0 +1,60 @@
+---
+import { getProducts, subUrl } from '../lib/catalog';
+import ProductImg from './ProductImg.astro';
+import Icon from './Icon.astro';
+const groups = [
+  { slug: 'saugroboter-mit-absaugstation', title: 'Mit Absaugstation', description: 'Staubbehälter automatisch entleeren lassen.', icon: 'robot' },
+  { slug: 'saugroboter-mit-wischfunktion', title: 'Mit Wischfunktion', description: 'Saugen und Wischen in einem Gerät.', icon: 'drop' },
+  { slug: 'saug-wisch-roboter-mit-station', title: 'Mit Komplettstation', description: 'Modelle mit Station für die Mopp-Pflege.', icon: 'box' },
+  { slug: 'wischroboter-mit-mopprolle', title: 'Mit Mopprolle', description: 'Walzen-Wischsysteme für Hartböden vergleichen.', icon: 'drop' },
+  { slug: 'saugroboter-ohne-app', title: 'Ohne App und WLAN', description: 'Geräte für eine Bedienung ohne Smartphone.', icon: 'robot' },
+  { slug: 'saugroboter-ohne-kamera', title: 'Ohne Kamera', description: 'Navigation und Ausstattung genauer vergleichen.', icon: 'robot' },
+];
+const used = new Set<string>();
+const tiles = groups.map((group) => {
+  const products = getProducts(group.slug);
+  const picture = products.find((p) => p.image && p.pick && !used.has(p.asin))
+    ?? products.find((p) => p.image && !used.has(p.asin));
+  if (picture) used.add(picture.asin);
+  return { ...group, picture, count: new Set(products.map((p) => p.asin)).size };
+});
+---
+<section class="explore" aria-labelledby="explore-heading">
+  <div class="heading">
+    <h2 id="explore-heading">Welche Saugroboter möchtest du entdecken?</h2>
+    <p class="muted">Wähle eine Ausstattung und entdecke die Modelle im passenden Vergleich.</p>
+  </div>
+  <div class="grid">
+    {tiles.map((tile) => (
+      <a class="tile card" href={subUrl(tile.slug)}>
+        <div class="image">
+          {tile.picture ? <ProductImg product={tile.picture} size={180} /> : <Icon name={tile.icon} size={60} />}
+        </div>
+        <div class="body">
+          <h3>{tile.title}</h3>
+          <p class="description">{tile.description}</p>
+          {tile.count > 0 && <p class="count">{tile.count} {tile.count === 1 ? 'Modell' : 'Modelle'} im Vergleich</p>}
+          <span class="action">Modelle entdecken <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+    ))}
+  </div>
+  <p class="note">Ein Modell kann zu mehreren Produktgruppen gehören.</p>
+</section>
+<style>
+  .explore { margin: 32px 0; }
+  .heading p { margin-top: 0; }
+  h2 { margin-bottom: 8px; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .tile { display: flex; flex-direction: column; overflow: hidden; color: var(--text); text-decoration: none; transition: border-color .15s, box-shadow .15s; }
+  .tile:hover { border-color: var(--brand); box-shadow: 0 6px 20px rgb(27 58 107 / .1); }
+  .image { display: grid; place-items: center; background: white; padding: 20px; min-height: 180px; color: var(--brand); }
+  .body { padding: 0 18px 20px; display: flex; flex-direction: column; flex: 1; }
+  h3 { color: var(--brand); font-size: 1.1rem; margin: 0 0 8px; }
+  .description { color: var(--muted); font-size: .88rem; margin: 0 0 12px; }
+  .count { color: var(--text); font-size: .82rem; font-weight: 650; margin: auto 0 12px; }
+  .action { display: flex; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 8px; background: var(--brand-soft); color: var(--brand); font-size: .86rem; font-weight: 750; }
+  .note { font-size: .78rem; color: var(--muted); margin-top: 12px; }
+  @media (max-width: 850px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 540px) { .grid { grid-template-columns: minmax(0, 1fr); } .tile { flex-direction: row; align-items: center; } .image { width: 110px; min-width: 110px; min-height: 0; padding: 12px; } .body { padding: 16px 12px 16px 0; } h3 { font-size: 1rem; } .description { font-size: .8rem; } .action { padding: 8px; font-size: .8rem; } }
+</style>
