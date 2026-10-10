@@ -3,6 +3,17 @@
 export function eligibility(subSlug, title = '', features = []) {
   const parts = [title, ...features].map((s) => String(s));
   const text = parts.join(' | ');
+  if (subSlug === 'saugroboter-ohne-wischfunktion') {
+    // eufy C10 specifications: Mop Type = No, checked 2026-10-10.
+    // https://www.eufy.com/products/t2292111
+    const verifiedC10 = /\beufy\b/i.test(title) && /\bC10\b/i.test(title)
+      && !/\b(?:hybrid|omni|pro|plus|max)\b/i.test(title);
+    const proof = /\bohne\s+(?:Wischfunktion|Wischmopp|Wischpad)\b|\bkeine\s+Wischfunktion\b|\breiner\s+Sauger\b/i;
+    const affirmative = parts.some((p) => proof.test(p)) && !/(?:nicht|nie)\s+ohne\s+Wisch/i.test(text);
+    const stripped = text.replace(new RegExp(proof.source, 'gi'), '');
+    const conflict = /wisch|mopp|\bmop\b|\bhybrid\b|\bomni\b|wassertank/i.test(stripped);
+    return (verifiedC10 || affirmative) && !conflict;
+  }
   if (subSlug === 'saugroboter-ohne-kamera') {
     const proof = /\bohne\s+(?:jegliche\s+)?kamera(?:s)?\b|\bkeine\s+kamera(?:s)?\b|\bkamerafrei\b/i;
     // RGB-/navigation-only exclusions do not prove absence of every image sensor.
