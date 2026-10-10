@@ -33,6 +33,21 @@ const filters = specs.filter((d) => d.filter).map((d) => {
   return { ...d, values: [] as (string | number)[] };
 }).filter((f) => f.filter === 'bool' ? products.some((p) => p.specs[f.key] === true) : f.values.length > 1);
 
+
+const quickPriority = ["anti_tangle","station","wischsystem","teppich","navigation"];
+const priorityOf = (key: string) => quickPriority.includes(key) ? quickPriority.indexOf(key) : quickPriority.length;
+const quick = [...filters].sort((a, b) => priorityOf(a.key) - priorityOf(b.key)).flatMap((f) => {
+  if (f.filter === 'bool') {
+    const n = products.filter((p) => p.specs[f.key] === true).length;
+    return n > 0 && n < products.length ? [{ key: f.key, mode: 'bool', value: 'true', label: f.label, count: n }] : [];
+  }
+  if (f.filter === 'select') return f.values.slice(0, 2).flatMap((value) => {
+    const n = products.filter((p) => String(p.specs[f.key]) === String(value)).length;
+    return n > 0 && n < products.length ? [{ key: f.key, mode: 'select', value: String(value), label: f.label + ': ' + formatSpec(f, value), count: n }] : [];
+  });
+  return [];
+}).slice(0, 6);
+
 const sorts = specs.filter((d) => d.sort);
 const uid = `cv-${sub.slug}`;
 
@@ -42,6 +57,16 @@ const compareData = products.map((p) => ({
 }));
 ---
 <section class="cv" id={uid} data-cv>
+  {quick.length > 0 && (
+    <div class="quick-select card" data-quick-root hidden>
+      <h3>Schneller zur passenden Auswahl</h3>
+      <p>Wähle ein Merkmal. Der Klick setzt andere Filter zurück; danach kannst du Preis und weitere Merkmale ergänzen.</p>
+      <div class="quick-options">
+        {quick.map((q) => <button type="button" data-quick-key={q.key} data-quick-mode={q.mode} data-quick-value={q.value} data-quick-count={q.count} aria-pressed="false">{q.label} <span>{q.count}</span></button>)}
+      </div>
+    </div>
+  )}
+
   <div class="toolbar">
     <details class="fpanel card" open>
       <summary><Icon name="filter" size={18} /> Filter <span class="active-n" data-active-n></span></summary>
@@ -171,6 +196,33 @@ const compareData = products.map((p) => ({
     const val = (t: HTMLElement, k: string) => JSON.parse(t.getAttribute('data-s-' + k) ?? 'null');
     const num = (s: string | undefined) => (s === undefined || s === '' ? NaN : Number(s));
 
+
+    const quickButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-quick-key]')];
+    const quickRoot = root.querySelector<HTMLElement>('[data-quick-root]');
+    if (quickRoot) quickRoot.hidden = false;
+    function syncQuick() {
+      const chosen = fEls.filter((el) => el instanceof HTMLInputElement ? el.checked : !!el.value);
+      quickButtons.forEach((button) => {
+        const selected = chosen.length === 1 && !pmin?.value && !pmax?.value && !brandEls.some((el) => el.checked)
+          && chosen[0].dataset.f === button.dataset.quickKey
+          && chosen[0].dataset.mode === button.dataset.quickMode
+          && (button.dataset.quickMode === 'bool' || chosen[0].value === button.dataset.quickValue);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+    }
+    quickButtons.forEach((button) => button.addEventListener('click', () => {
+      const wasSelected = button.getAttribute('aria-pressed') === 'true';
+      if (pmin) pmin.value = ''; if (pmax) pmax.value = '';
+      [...brandEls, ...fEls].forEach((el) => el instanceof HTMLInputElement ? el.checked = false : el.selectedIndex = 0);
+      if (!wasSelected) {
+        const target = fEls.find((el) => el.dataset.f === button.dataset.quickKey
+          && el.dataset.mode === button.dataset.quickMode
+          && (button.dataset.quickMode === 'bool' || el.value === button.dataset.quickValue));
+        if (target instanceof HTMLInputElement) target.checked = true;
+      }
+      apply();
+    }));
+
     function apply() {
       const lo = pmin?.value ? Number(pmin.value) : -Infinity;
       const hi = pmax?.value ? Number(pmax.value) : Infinity;
@@ -210,6 +262,7 @@ const compareData = products.map((p) => ({
       cols.forEach((c) => (c.hidden = !shown.has(c.dataset.col!)));
       count.innerHTML = visible === tiles.length ? `<strong>${tiles.length}</strong> Angebote` : `<strong>${visible}</strong> von ${tiles.length} Angeboten`;
       empty.hidden = visible > 0;
+      syncQuick();
     }
 
     [sortSel, pmin, pmax, ...brandEls, ...fEls].forEach((el) => el?.addEventListener(el instanceof HTMLInputElement && el.type === 'number' ? 'input' : 'change', apply));
@@ -267,6 +320,16 @@ const compareData = products.map((p) => ({
 </script>
 
 <style>
+  .quick-select { padding: 16px; margin-bottom: 16px; }
+  .quick-select[hidden] { display: none; }
+  .quick-select h3 { font-size: 1rem; margin: 0 0 6px; }
+  .quick-select p { color: var(--muted); font-size: .82rem; margin: 0 0 12px; max-width: 75ch; }
+  .quick-options { display: flex; flex-wrap: wrap; gap: 8px; }
+  .quick-options button { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--brand-soft); color: var(--brand); border-radius: 8px; padding: 9px 12px; font: inherit; font-size: .85rem; font-weight: 650; cursor: pointer; text-align: left; }
+  .quick-options button:hover, .quick-options button[aria-pressed='true'] { border-color: var(--brand); }
+  .quick-options button[aria-pressed='true'] { background: var(--brand); color: #fff; }
+  .quick-options button span { font-size: .74rem; opacity: .8; }
+
   .cv { margin: 8px 0 40px; }
   .toolbar { display: grid; gap: 12px; margin-bottom: 16px; }
   .fpanel { padding: 0 16px; }
