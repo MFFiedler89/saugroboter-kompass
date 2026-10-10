@@ -34,7 +34,9 @@ const filters = specs.filter((d) => d.filter).map((d) => {
 }).filter((f) => f.filter === 'bool' ? products.some((p) => p.specs[f.key] === true) : f.values.length > 1);
 
 
-const quick = filters.flatMap((f) => {
+const quickPriority = ["anti_tangle","station","wischsystem","teppich","navigation"];
+const priorityOf = (key: string) => quickPriority.includes(key) ? quickPriority.indexOf(key) : quickPriority.length;
+const quick = [...filters].sort((a, b) => priorityOf(a.key) - priorityOf(b.key)).flatMap((f) => {
   if (f.filter === 'bool') {
     const n = products.filter((p) => p.specs[f.key] === true).length;
     return n > 0 && n < products.length ? [{ key: f.key, mode: 'bool', value: 'true', label: f.label, count: n }] : [];
