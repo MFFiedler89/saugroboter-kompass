@@ -239,8 +239,8 @@ export const subs = [
     specs: SPECS,
     card: ['saugkraft', 'laufzeit', 'bauhoehe'],
     picks: [
-      { label: 'Für die meisten', why: 'beliebtestes Modell, das ohne App-Anbindung auskommt', filter: (p) => p.specs.app !== true },
-      { label: 'Preis-Tipp', why: 'günstigstes Modell ohne App-Pflicht', filter: (p) => p.specs.app !== true, sort: 'price' },
+      { label: 'Für die meisten', why: 'beliebtestes Modell der belegten Auswahl ohne App und WLAN', filter: () => true },
+      { label: 'Preis-Tipp', why: 'günstigstes Modell der belegten Auswahl ohne App und WLAN', filter: () => true, sort: 'price' },
     ],
   },
   {
@@ -252,8 +252,8 @@ export const subs = [
     specs: SPECS,
     card: ['navigation', 'saugkraft', 'station'],
     picks: [
-      { label: 'Für die meisten', why: 'beliebtestes Modell mit LiDAR-Navigation statt Kamera', filter: is('navigation', 'LiDAR') },
-      { label: 'Preis-Tipp', why: 'günstigstes Modell ohne Kameranavigation', filter: not('navigation', 'Kamera / KI'), sort: 'price' },
+      { label: 'Für die meisten', why: 'beliebtestes Modell mit ausdrücklich belegtem Verzicht auf Kameras', filter: () => true },
+      { label: 'Preis-Tipp', why: 'günstigstes Modell mit ausdrücklich belegtem Verzicht auf Kameras', filter: () => true, sort: 'price' },
     ],
   },
 

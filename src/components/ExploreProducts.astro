@@ -34,7 +34,7 @@ const tiles = groups.map((group) => {
           <h3>{tile.title}</h3>
           <p class="description">{tile.description}</p>
           {tile.count > 0 && <p class="count">{tile.count} {tile.count === 1 ? 'Modell' : 'Modelle'} im Vergleich</p>}
-          <span class="action">Modelle entdecken <span aria-hidden="true">→</span></span>
+          <span class="action">{tile.count > 0 ? 'Modelle entdecken' : 'Kaufhilfe lesen'} <span aria-hidden="true">→</span></span>
         </div>
       </a>
     ))}

@@ -3,6 +3,7 @@ import { subs, subBySlug, katBySlug, subsOf, kategorien } from '../data/taxonomy
 import { extractAll, formatSpec, specSortValue } from './extract.mjs';
 import { AMAZON } from '../config';
 import { selectDeals } from './deals.mjs';
+import { eligibility } from './eligibility.mjs';
 
 export const DEMO = process.env.DEMO === '1';
 
@@ -64,6 +65,7 @@ export function getProducts(subSlug: string): Product[] {
     if (hidden.has(asin)) continue;
     const l = live.items[asin];
     if (!l || !l.title) continue; // nicht (mehr) verfügbar
+    if (!eligibility(subSlug, l.title, l.features ?? [])) continue;
     products.push({
       asin,
       title: cleanTitle(l.title),
