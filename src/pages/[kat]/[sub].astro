@@ -24,7 +24,7 @@ const h1 = d?.h1 ?? `${sub.label} im Vergleich`;
 const title = d?.title ?? `${sub.label} im Vergleich`;
 const description = d?.description ?? `${sub.label} im Vergleich: nach Preis, Preislage und Ausstattung. Mit Filter und Direktvergleich.`;
 const url = new URL(Astro.url.pathname, Astro.site).href;
-const strictSelection = ['saugroboter-ohne-app', 'saugroboter-ohne-kamera'].includes(sub.slug);
+const strictSelection = ['saugroboter-ohne-app', 'saugroboter-ohne-kamera', 'saugroboter-ohne-wischfunktion'].includes(sub.slug);
 const showProducts = strictSelection ? products.length > 0 : hasProducts(sub.slug);
 
 const siblings = subsOf(sub.kategorie).filter((s: any) => s.slug !== sub.slug);
