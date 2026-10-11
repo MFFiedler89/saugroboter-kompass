@@ -3,7 +3,13 @@ const eq = (k,v) => p => p.specs[k] === v;
 const min = (k,n) => p => typeof p.specs[k] === 'number' && p.specs[k] >= n;
 const and = (...rules) => p => rules.every(r => r(p));
 const rule = (sub,label,match,reason,price=false) => ({sub,label,match,reason:typeof reason === 'function' ? reason : () => reason,price});
-const config = (note,...rules) => ({note,rules});
+// Recognise model families explicitly; bundle ASINs should not occupy two cards.
+const identity = p => {
+ const title=p.title ?? '';
+ const model=title.match(/\broborock\s+((?:qrevo\s+[a-z0-9]+(?:\s+pro)?|q\d+\s+[a-z0-9+]+|s\d+\s*(?:maxv|pro|ultra)?))/i);
+ return model ? `roborock:${model[1].toLowerCase().replace(/\s+/g,' ')}` : p.asin;
+};
+const config = (note,...rules) => ({note,rules,identity});
 export const situations = {
  'altbau-mit-tuerschwellen':config('Miss Höhe und Form deiner Schwellen. Die genannte Überwindung stammt aus Produktangaben und ist keine Garantie für jede Kante; bei fehlender Angabe vor dem Kauf nachfragen.',
   rule('saugroboter-mit-absaugstation','Mit Schwellenangabe',min('schwelle',0.5),p=>`Laut Produktangaben Hindernisse bis ${p.specs.schwelle} cm. Vergleiche diesen Wert mit deiner höchsten Türschwelle.`),
