@@ -1,0 +1,26 @@
+---
+import {getProducts,subUrl,shortTitle} from '../lib/catalog';
+import {situations} from '../lib/situation-rules.mjs';
+import {selectSituation} from '../lib/situation-selection.mjs';
+import ProductImg from './ProductImg.astro';
+import PriceBlock from './PriceBlock.astro';
+const {slug,subs=[]}=Astro.props;
+const config=situations[slug];
+if (!config) throw new Error(`Missing situation rules: ${slug}`);
+const selected=selectSituation(config,getProducts,subs);
+---
+<section class="situ-picks" aria-label="Modelle für deine Auswahl">
+  <h2>Modelle für deine Auswahl</h2>
+  <p class="context">{config.note}</p>
+  {selected.length ? <div class="situ-grid">{selected.map(({product:p,reason,label,verified},i)=><article class="situ-card card">
+    <p class="label">{label}</p>
+    <ProductImg product={p} size={120} eager={i===0} />
+    <h3><a href={p.url} rel="sponsored nofollow noopener" target="_blank">{shortTitle(p.title,85)}</a></h3>
+    <p class="reason"><strong>{verified?'Warum diese Auswahl:':'Vor dem Kauf:'}</strong> {reason}</p>
+    <div class="bottom"><PriceBlock product={p} compact showTier={false} /><a class="btn btn-amazon" href={p.url} rel="sponsored nofollow noopener" target="_blank">Bei Amazon prüfen <span class="ad">Anzeige</span></a><a class="compare-link" href={subUrl(p.sub)}>Im Vergleich ansehen →</a></div>
+  </article>)}</div> : <p class="notice">Aktuell liegen keine ausreichenden Produktdaten für diese Auswahl vor. Die Kaufkriterien unten helfen bei der Prüfung.</p>}
+  <p class="method small muted">Auswahl anhand der angegebenen Ausstattung; innerhalb eines Kriteriums nach Amazon-Verkaufsrang, bei Budget-Tipps nach Preis. Keine eigenen Praxistests. Fehlende Merkmale werden nicht als erfüllt gewertet. <a href="/so-vergleichen-wir/">So vergleichen wir</a>.</p>
+</section>
+<style>
+ .situ-picks{margin:22px 0 30px}.situ-picks h2{font-size:1.35rem;margin:0 0 10px}.context{font-size:.88rem;color:var(--muted);max-width:var(--prose)}.situ-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}.situ-card{padding:16px;display:flex;flex-direction:column;border-top:4px solid var(--brand);min-width:0}.label{color:var(--brand);font-weight:750;font-size:.9rem;margin:0 0 10px}.situ-card h3{font-size:1rem;line-height:1.4;margin:10px 0}.situ-card h3 a{color:var(--text);text-decoration:none}.reason{font-size:.87rem;line-height:1.5;margin:0 0 14px}.bottom{margin-top:auto;display:flex;flex-direction:column;gap:10px}.ad{font-size:.65rem;border:1px solid currentColor;border-radius:3px;padding:0 4px}.btn-amazon{gap:6px;flex-wrap:wrap}.compare-link{font-size:.85rem;text-align:center}.method{font-size:.78rem;margin:14px 0 0}
+</style>

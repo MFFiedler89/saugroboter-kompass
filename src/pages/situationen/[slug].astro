@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import AuthorBox from '../../components/AuthorBox.astro';
 import Disclosure from '../../components/Disclosure.astro';
+import SituationProducts from '../../components/SituationProducts.astro';
 import FAQ from '../../components/FAQ.astro';
 import TOC from '../../components/TOC.astro';
 import { mdxComponents } from '../../lib/mdx-components';
@@ -27,11 +28,15 @@ const schema = [{
 <BaseLayout title={d.title} description={d.description} type="article" schema={schema} publishDate={d.publishDate} updatedDate={d.updatedDate}>
   <div class="container">
     <Breadcrumbs items={[{ label: 'Situationen', href: '/situationen/' }, { label: d.navLabel }]} />
-    <article class="prose">
+    <article>
+    <div class="prose">
       <h1>{d.h1}</h1>
+      <p class="lead">{d.intro}</p>
+    </div>
+    <SituationProducts slug={entry.id} subs={d.subs} />
+    <div class="prose">
       <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} compact />
       <Disclosure />
-      <p class="lead">{d.intro}</p>
       {links.length > 0 && (
         <nav class="jump" aria-label="Passende Vergleiche">
           <span class="small muted">Passende Vergleiche:</span>
@@ -45,6 +50,7 @@ const schema = [{
       {others.length > 0 && (
         <section><h2>Weitere Situationen</h2><div class="others">{others.map((s) => <a href={`/situationen/${s.id}/`}>{s.data.navLabel}</a>)}</div></section>
       )}
+    </div>
     </article>
   </div>
 </BaseLayout>
