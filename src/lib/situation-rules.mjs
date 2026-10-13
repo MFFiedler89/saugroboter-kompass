@@ -12,7 +12,7 @@ const identity = p => {
 const config = (note,...rules) => ({note,rules,identity});
 export const situations = {
  'altbau-mit-tuerschwellen':config('Miss Höhe und Form deiner Schwellen. Die genannte Überwindung stammt aus Produktangaben und ist keine Garantie für jede Kante; bei fehlender Angabe vor dem Kauf nachfragen.',
-  rule('saugroboter-mit-absaugstation','Mit Schwellenangabe',min('schwelle',0.5),p=>`Laut Produktangaben Hindernisse bis ${p.specs.schwelle} cm. Vergleiche diesen Wert mit deiner höchsten Türschwelle.`),
+  rule('saugroboter-mit-absaugstation','Mit Schwellenangabe',min('schwelle',0.5),p=>(/dreame/i.test(`${p.brand||''} ${p.title}`)&&/\bX50\s+Ultra\b/i.test(p.title))?'Dreame nennt bis 4,2 cm für eine einzelne Schwelle; bis 6 cm gilt für gestufte Übergänge unter weiteren Bedingungen. Prüfe die Form deiner Schwelle in der Kaufhilfe unten.':`Maximalwert aus Produktangaben: bis ${p.specs.schwelle} cm. Prüfe, ob er für eine Einzelstufe oder einen gestuften Übergang gilt; eine passende Höhe allein garantiert die Überfahrt nicht.`),
   rule('saugroboter-mit-absaugstation','Karte für verwinkelte Räume',eq('navigation','LiDAR'),'LiDAR-Navigation ist angegeben und erleichtert die Raumplanung. Die Eignung für deine Türschwellen muss zusätzlich geprüft werden.')),
  'haushalt-mit-tieren':config('Anti-Tangle kann das Verwickeln von Haaren reduzieren. Tierkot und nasse Verschmutzungen vorher entfernen; eine sichere Erkennung ist damit nicht belegt.',
   rule('saugroboter-mit-absaugstation','Für Haare und weniger Entleeren',and(yes('anti_tangle'),p=>typeof p.specs.station==='string'),'Anti-Tangle und eine Station sind angegeben: weniger Haarverwicklung und Unterstützung beim Entleeren.'),
