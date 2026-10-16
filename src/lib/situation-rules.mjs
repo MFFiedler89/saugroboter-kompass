@@ -46,5 +46,5 @@ export const situations = {
   rule('saugroboter-mit-wischfunktion','Mit rotierenden Mopps',eq('wischsystem','Rotierende Mopps'),'Rotierende Mopps sind angegeben. Eine Alternative für freigegebene Hartbodenflächen.')),
  'buero-und-homeoffice':config('Kabel und Stuhlrollen bleiben Hindernisse. Ruhezeiten planen; LiDAR allein belegt weder Kameraverzicht noch eine bestimmte Lautstärke.',
   rule('saugroboter-ohne-kamera','Ohne Kamera',()=>true,'Aus der Auswahl mit ausdrücklich belegtem Kameraverzicht. Cloud- und App-Nutzung gesondert prüfen.'),
-  rule('saugroboter-mit-absaugstation','Mit kartierender Navigation',eq('navigation','LiDAR'),'LiDAR-Navigation ist angegeben. Das unterstützt planbare Raumreinigung; Kabel vorher wegräumen.')),
+  rule('saugroboter-mit-absaugstation','LiDAR und Absaugstation',eq('navigation','LiDAR'),'LiDAR und Absaugstation sind angegeben. Zeitpläne, Ruhemodus und Kameras am konkreten Modell getrennt prüfen; Kabel vorher wegräumen.')),
 };
