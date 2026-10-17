@@ -91,7 +91,7 @@ export function gesamt(stats: SubStat[]) {
   let mitPreis = 0;
   let guenstigster = Infinity;
   let teuerster = 0;
-  for (const s of subs) {
+  for (const s of subs.filter(s => s.kategorie !== 'polsterreiniger')) {
     for (const p of getProducts(s.slug)) {
       alleMarken.add(p.brand);
       produkte++;
@@ -106,7 +106,7 @@ export function gesamt(stats: SubStat[]) {
     produkte,
     mitPreis,
     vergleiche: stats.length,
-    kategorien: kategorien.length,
+    kategorien: kategorien.filter(k => k.slug !== 'polsterreiniger').length,
     marken: alleMarken.size,
     guenstigster: Number.isFinite(guenstigster) ? guenstigster : null,
     teuerster: teuerster || null,

@@ -16,7 +16,7 @@ export async function GET(context: APIContext) {
   L.push(`> ${SITE.description}`);
   L.push('');
   L.push(
-    `${SITE.name} ist ein unabhängiges Vergleichsportal für Saugroboter aus Deutschland. ` +
+    `${SITE.name} ist ein unabhängiges Vergleichsportal für Saugroboter und Polsterreiniger aus Deutschland. ` +
       'Die Vergleiche beruhen auf Herstellerangaben und Produktdaten, die mehrmals täglich automatisch aktualisiert werden, ' +
       'nicht auf erfundenen Praxistests. Merkmale, die in den Produktangaben nicht eindeutig stehen, bleiben leer. ' +
       'Die Auswahlkriterien sind offengelegt. Produktlinks sind Amazon-Partnerlinks und als Anzeige gekennzeichnet.',
@@ -31,7 +31,7 @@ export async function GET(context: APIContext) {
     L.push(`### ${k.label}`);
     L.push(`- [${k.label}](${url(`/${k.slug}/`)}): ${k.short}`);
     for (const s of subsOf(k.slug)) {
-      L.push(`- [${s.label}](${url(`/${k.slug}/${s.slug}/`)}): Aktueller Vergleich mit Preisen, Saugkraft, Wischsystem und Station.`);
+      L.push(`- [${s.label}](${url(s.url ?? `/${k.slug}/${s.slug}/`)}): Aktueller Vergleich mit Preisen und passender Ausstattung.`);
     }
     L.push('');
   }

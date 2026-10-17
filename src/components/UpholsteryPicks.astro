@@ -1,0 +1,40 @@
+---
+import { getProducts, shortTitle } from '../lib/catalog';
+import { reviewedUpholstery } from '../lib/upholstery.mjs';
+import ProductImg from './ProductImg.astro';
+import PriceBlock from './PriceBlock.astro';
+interface Props { purpose?: 'overview' | 'auto' | 'pet' | 'child-seat' }
+const { purpose = 'overview' } = Astro.props;
+const preferred = purpose === 'pet' ? ['B084PSXMQM'] : purpose === 'child-seat' ? ['B0FPGHCD96'] : purpose === 'auto' ? ['B0BQJS6NQ6', 'B0DBLD211L', 'B0FPGHCD96'] : ['B0FYQQWB6L', 'B0DBLD211L', 'B084PSXMQM'];
+const products = getProducts('polsterreiniger-geraete').filter(p => p.availability !== 'OUT_OF_STOCK');
+const selected = preferred.map(asin => products.find(p => p.asin === asin)).filter(Boolean).map(p => ({ p: p!, model: reviewedUpholstery(p!.asin, p!.title)! }));
+const heading = purpose === 'child-seat' ? 'Für das Autopolster unter dem Kindersitz' : purpose === 'pet' ? 'Gezielte Auswahl für Haustierflecken' : purpose === 'auto' ? 'Geräte für freigegebene textile Autositze' : 'Welche Bauart passt zu dir?';
+---
+<section class="upholstery" aria-label={heading}>
+  <h2>{heading}</h2>
+  {purpose === 'child-seat' && <p class="notice"><strong>Keine Empfehlung zum Nassreinigen des Kindersitzes.</strong> Das folgende Gerät ist für geeignetes Fahrzeugpolster nach dem Ausbau gedacht. Für Bezug, Gurte, Schloss und Schale gelten die Vorgaben des Kindersitzherstellers.</p>}
+  {selected.length ? <div class="up-grid">{selected.map(({ p, model }, i) => <article class="card up-card">
+    <ProductImg product={p} size={150} eager={i === 0} />
+    <h3><a href={p.url} rel="sponsored nofollow noopener" target="_blank">{shortTitle(p.title, 85)}</a></h3>
+    <p><strong>Warum diese Auswahl:</strong> {model.reason}</p>
+    <p class="small muted"><strong>Beachten:</strong> {model.limit}</p>
+    <div class="bottom"><PriceBlock product={p} compact showTier={false} />
+      <a class="btn btn-amazon" href={p.url} rel="sponsored nofollow noopener" target="_blank">Angebot bei Amazon prüfen <span class="ad">Anzeige</span></a>
+      <a class="source" href={model.source} target="_blank" rel="noopener">Herstellerinformationen ↗</a>
+    </div>
+  </article>)}</div> : <p class="notice">Für diese gezielte Auswahl ist aktuell kein Angebot mit passenden Produktdaten vorhanden. <a href="/polsterreiniger/">Weitere Polsterreiniger und Kaufkriterien ansehen</a>.</p>}
+  <p class="small muted">Auswahl nach dokumentierter Ausstattung, kein eigener Reinigungstest. Preise von Amazon; technische Vergleichsangaben aus Produktdaten und den verlinkten Herstellerquellen. <a href="/polsterreiniger/">Alle Geräte vergleichen →</a></p>
+</section>
+<style>
+  .upholstery { margin: 20px 0 30px; }
+  .upholstery h2 { margin-top: 0; font-size: 1.4rem; }
+  .up-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 16px; }
+  .up-card { padding: 18px; display: flex; flex-direction: column; min-width: 0; }
+  .up-card h3 { font-size: 1.05rem; line-height: 1.4; }
+  .up-card h3 a { color: var(--text); text-decoration: none; }
+  .up-card p { font-size: .9rem; }
+  .bottom { margin-top: auto; display: grid; gap: 10px; }
+  .btn-amazon { text-align: center; font-size: .85rem; padding: 11px 8px; flex-wrap: wrap; }
+  .ad { font-size: .65rem; border: 1px solid currentColor; border-radius: 4px; padding: 0 3px; }
+  .source { font-size: .8rem; }
+</style>

@@ -12,7 +12,7 @@ import { mdxComponents } from '../../lib/mdx-components';
 import { activeSubs, getProducts, hasProducts, katBySlug, subsOf, subUrl, DEMO } from '../../lib/catalog';
 
 export function getStaticPaths() {
-  return activeSubs().map((s: any) => ({ params: { kat: s.kategorie, sub: s.slug }, props: { sub: s } }));
+  return activeSubs().filter((s: any) => !s.url).map((s: any) => ({ params: { kat: s.kategorie, sub: s.slug }, props: { sub: s } }));
 }
 const { sub } = Astro.props as { sub: any };
 const kat = katBySlug[sub.kategorie];

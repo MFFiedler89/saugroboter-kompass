@@ -1,0 +1,39 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ComparisonView from '../../components/ComparisonView.astro';
+import UpholsteryPicks from '../../components/UpholsteryPicks.astro';
+import AuthorBox from '../../components/AuthorBox.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import FAQ from '../../components/FAQ.astro';
+import TOC from '../../components/TOC.astro';
+import { getProducts, DEMO } from '../../lib/catalog';
+import { mdxComponents } from '../../lib/mdx-components';
+const entry = (await getEntry('vergleiche', 'polsterreiniger-geraete'))!;
+const { Content, headings } = await render(entry);
+const d = entry.data;
+const products = getProducts('polsterreiniger-geraete');
+const schema = [{ '@context': 'https://schema.org', '@type': 'Article', headline: d.h1, description: d.description,
+  datePublished: d.publishDate.toISOString(), dateModified: (d.updatedDate ?? d.publishDate).toISOString(),
+  author: { '@id': new URL('/#org', Astro.site).href }, publisher: { '@id': new URL('/#org', Astro.site).href },
+  mainEntityOfPage: new URL('/polsterreiniger/', Astro.site).href, inLanguage: 'de-DE' },
+  { '@context': 'https://schema.org', '@type': 'ItemList', name: d.h1, numberOfItems: products.length,
+    itemListElement: products.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: p.title, url: p.url })) }];
+---
+<BaseLayout title={d.title} description={d.description} type="article" schema={schema} publishDate={d.publishDate} noindex={DEMO}>
+  <div class="container">
+    <Breadcrumbs items={[{ label: 'Polsterreiniger' }]} />
+    <h1>{d.h1}</h1>
+    <p class="lead">{d.intro} {products.length > 0 && <>{products.length} anhand ihrer Produktangaben ausgewählte Modelle.</>}</p>
+    <UpholsteryPicks />
+    <h2>Alle Polsterreiniger vergleichen</h2>
+    {products.length ? <ComparisonView sub="polsterreiniger-geraete" /> : <p class="notice">Aktuell fehlen verfügbare Produktdaten. Die Kaufhilfe unten zeigt dir, welche Eigenschaften du prüfen solltest.</p>}
+    <div class="prose">
+      <AuthorBox publishDate={d.publishDate} compact /><Disclosure />
+      <TOC headings={headings} /><Content components={mdxComponents} /><FAQ items={d.faq} />
+      <AuthorBox publishDate={d.publishDate} />
+    </div>
+  </div>
+</BaseLayout>
+<style>.lead { max-width: 850px; font-size: 1.1rem; color: var(--muted); }</style>
