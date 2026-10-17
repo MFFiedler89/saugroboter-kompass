@@ -13,15 +13,15 @@ export function nextScheduledCheck(updatedAt, minute = 17) {
 export function dealRefreshState(updatedAt, minute = 17, maxAgeHours = 24, now = Date.now()) {
   const timestamp = Date.parse(updatedAt || '');
   if (!Number.isFinite(timestamp) || timestamp > now || now - timestamp >= maxAgeHours * 3600000) {
-    return { label: 'Stand prüfen', state: 'unknown', next: null };
+    return { label: 'Preisstand unbestätigt', state: 'unknown', next: null };
   }
   const next = nextScheduledCheck(updatedAt, minute);
-  if (next === null) return { label: 'Stand prüfen', state: 'unknown', next: null };
-  if (now >= next) return { label: 'Prüfung fällig', state: 'due', next };
+  if (next === null) return { label: 'Preisstand unbestätigt', state: 'unknown', next: null };
+  if (now >= next) return { label: 'Preisupdate ausstehend', state: 'due', next };
   const total = Math.ceil((next - now) / 60000);
   const hours = String(Math.floor(total / 60)).padStart(2, '0');
   const minutes = String(total % 60).padStart(2, '0');
-  return { label: `Prüfung in ${hours}:${minutes}`, state: 'scheduled', next };
+  return { label: `Preisupdate in\n${hours} Std. ${minutes} Min.`, state: 'scheduled', next };
 }
 
 /** Re-read public snapshot metadata when due; never invent a successful refresh. */
@@ -31,7 +31,7 @@ export function mountDealRefresh(links) {
     const now = Date.now();
     let due = false;
     for (const link of links) {
-      const state = link.dataset.newSnapshot ? { label: 'Neu geprüft', state: 'available' } : dealRefreshState(link.dataset.updated, Number(link.dataset.minute), Number(link.dataset.maxAge), now);
+      const state = link.dataset.newSnapshot ? { label: 'Neue Preise verfügbar', state: 'available' } : dealRefreshState(link.dataset.updated, Number(link.dataset.minute), Number(link.dataset.maxAge), now);
       const label = link.querySelector('[data-deal-refresh-label]');
       if (label) label.textContent = state.label;
       link.dataset.refreshState = state.state;
