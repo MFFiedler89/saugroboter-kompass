@@ -12,14 +12,14 @@ test('does not change schedule when German daylight saving time ends', () => {
   assert.equal(nextScheduledCheck('2026-10-25T00:18:00Z'), at('2026-10-25T06:17:00Z'));
 });
 test('counts down in minutes and never resets a missed check', () => {
-  assert.equal(dealRefreshState('2026-10-17T06:20:00Z',17,24,at('2026-10-17T10:17:00Z')).label,'Prüfung in 02:00');
-  assert.equal(dealRefreshState('2026-10-17T06:20:00Z',17,24,at('2026-10-17T12:17:00Z')).label,'Prüfung fällig');
-  assert.equal(dealRefreshState('2026-10-17T06:20:00Z',17,24,at('2026-10-17T18:18:00Z')).label,'Prüfung fällig');
+  assert.equal(dealRefreshState('2026-10-17T06:20:00Z',17,24,at('2026-10-17T10:17:00Z')).label,'Preisupdate in\n02 Std. 00 Min.');
+  assert.equal(dealRefreshState('2026-10-17T06:20:00Z',17,24,at('2026-10-17T12:17:00Z')).label,'Preisupdate ausstehend');
+  assert.equal(dealRefreshState('2026-10-17T06:20:00Z',17,24,at('2026-10-17T18:18:00Z')).label,'Preisupdate ausstehend');
   assert.equal(dealRefreshState('2026-10-17T12:20:00Z',17,24,at('2026-10-17T12:21:00Z')).state,'scheduled');
 });
 test('missing, future and stale data never promise current deals', () => {
   for(const stamp of [null,'invalid','2026-10-18T06:00:00Z','2026-10-16T06:00:00Z']) {
-    assert.equal(dealRefreshState(stamp,17,24,at('2026-10-17T06:00:00Z')).label,'Stand prüfen');
+    assert.equal(dealRefreshState(stamp,17,24,at('2026-10-17T06:00:00Z')).label,'Preisstand unbestätigt');
   }
   assert.equal(dealRefreshState('2026-10-16T07:00:00Z',37,23,at('2026-10-17T06:00:00Z')).state,'unknown');
 });
@@ -35,9 +35,9 @@ test('new server snapshot prompts navigation without resetting an old page count
     globalThis.setInterval = () => 0;
     globalThis.fetch = async () => ({ ok: true, json: async () => ({ updatedAt: newStamp }) });
     mountDealRefresh([link]);
-    assert.equal(label.textContent, 'Prüfung fällig');
+    assert.equal(label.textContent, 'Preisupdate ausstehend');
     await new Promise(resolve => setImmediate(resolve));
-    assert.equal(label.textContent, 'Neu geprüft');
+    assert.equal(label.textContent, 'Neue Preise verfügbar');
     assert.equal(link.dataset.updated, oldStamp);
     assert.equal(link.dataset.newSnapshot, newStamp);
   } finally {
