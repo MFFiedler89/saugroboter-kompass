@@ -1,0 +1,23 @@
+---
+import { updatedAt } from '../lib/catalog';
+import { AMAZON } from '../config';
+import { dealRefreshState } from '../lib/deal-refresh.mjs';
+const status = dealRefreshState(updatedAt, 17, AMAZON.maxPriceAgeHours);
+---
+<a class="header-deals" href="/deals/" aria-label="Aktuelle Deals ansehen" title="Angebotsdaten werden planmäßig alle sechs Stunden geprüft. Der Countdown zeigt die nächste geplante Datenprüfung, keine Angebotsfrist." data-deal-refresh data-updated={updatedAt} data-minute="17" data-max-age={AMAZON.maxPriceAgeHours}>
+  <span class="percent" aria-hidden="true">%</span>
+  <span class="copy"><strong><span class="wide">Aktuelle </span>Deals</strong><span class="refresh" data-deal-refresh-label>{status.label}</span></span>
+</a>
+<script>
+  import { mountDealRefresh } from '../lib/deal-refresh.mjs';
+  mountDealRefresh([...document.querySelectorAll<HTMLElement>('[data-deal-refresh]')]);
+</script>
+<style>
+  .header-deals { display: inline-flex; flex-shrink: 0; align-items: center; gap: 9px; padding: 7px 12px; border: 1px solid var(--accent); border-radius: 10px; background: var(--accent-soft); color: var(--text); text-decoration: none; min-height: 44px; }
+  .header-deals:hover { border-color: var(--brand); background: var(--accent); color: var(--text); }
+  .percent { display: grid; place-items: center; background: var(--accent); color: var(--text); border-radius: 50%; width: 28px; height: 28px; font-size: 1.1rem; font-weight: 850; }
+  .copy { display: grid; gap: 1px; line-height: 1.2; }
+  strong { font-size: .86rem; }
+  .refresh { white-space: nowrap; font-size: .65rem; font-variant-numeric: tabular-nums; }
+  @media (max-width: 960px) { .header-deals { justify-self: end; gap: 6px; padding: 6px 8px; } .wide { display: none; } .percent { width: 23px; height: 23px; font-size: .95rem; } strong { font-size: .8rem; } .refresh { white-space: nowrap; font-size: .59rem; } }
+</style>
