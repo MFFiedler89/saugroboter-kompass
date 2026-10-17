@@ -4,6 +4,7 @@ import { extractAll, formatSpec, specSortValue } from './extract.mjs';
 import { AMAZON } from '../config';
 import { selectDeals } from './deals.mjs';
 import { eligibility } from './eligibility.mjs';
+import { reviewedUpholstery, upholsterySpecs } from './upholstery.mjs';
 
 export const DEMO = process.env.DEMO === '1';
 
@@ -66,6 +67,7 @@ export function getProducts(subSlug: string): Product[] {
     const l = live.items[asin];
     if (!l || !l.title) continue; // nicht (mehr) verfügbar
     if (!eligibility(subSlug, l.title, l.features ?? [])) continue;
+    if (sub.kategorie === 'polsterreiniger' && !reviewedUpholstery(asin, l.title)) continue;
     products.push({
       asin,
       title: cleanTitle(l.title),
@@ -80,7 +82,7 @@ export function getProducts(subSlug: string): Product[] {
       referencePriceLabel: l.referencePriceLabel,
       deal: l.deal,
       salesRank: l.salesRank ?? null,
-      specs: extractAll(sub.specs, l.title, l.features ?? []),
+      specs: sub.kategorie === 'polsterreiniger' ? upholsterySpecs(asin, l.title, l.features ?? [])! : extractAll(sub.specs, l.title, l.features ?? []),
       tier: 0,
       sub: subSlug,
     });
@@ -169,5 +171,5 @@ export function formatDateTime(iso: string | null) {
 }
 
 export { subs, subBySlug, katBySlug, subsOf, kategorien, formatSpec, specSortValue };
-export const subUrl = (slug: string) => `/${subBySlug[slug].kategorie}/${slug}/`;
+export const subUrl = (slug: string) => subBySlug[slug].url ?? `/${subBySlug[slug].kategorie}/${slug}/`;
 export const katUrl = (slug: string) => `/${slug}/`;

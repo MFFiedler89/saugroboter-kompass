@@ -82,7 +82,7 @@ export function extractAll(specDefs, title = '', features = []) {
   return Object.fromEntries(specDefs.map((d) => [d.key, extractSpec(d, text)]));
 }
 
-const fmtN = (n) => new Intl.NumberFormat('de-DE', { maximumFractionDigits: 1 }).format(n);
+const fmtN = (n, digits = 1) => new Intl.NumberFormat('de-DE', { maximumFractionDigits: digits }).format(n);
 
 export function formatSpec(def, v) {
   if (v === null || v === undefined) return 'k. A.';
@@ -91,7 +91,7 @@ export function formatSpec(def, v) {
     case 'bool': return v ? 'ja' : 'k. A.';
     case 'range': return `${fmtN(v[0])} bis ${fmtN(v[1])}${u}`;
     case 'dims': return `${fmtN(v.a)} × ${fmtN(v.b)}${u}`;
-    case 'number': return def.key === 'traglast' || def.key === 'belast' || def.key === 'schwelle' ? `bis ${fmtN(v)}${u}` : `${fmtN(v)}${u}`;
+    case 'number': return def.key === 'traglast' || def.key === 'belast' || def.key === 'schwelle' ? `bis ${fmtN(v)}${u}` : `${fmtN(v, def.precision ?? 1)}${u}`;
     default: return String(v);
   }
 }

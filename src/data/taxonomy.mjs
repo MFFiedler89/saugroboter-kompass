@@ -1,3 +1,4 @@
+import { upholsterySpecDefs } from '../lib/upholstery.mjs';
 // ─────────────────────────────────────────────────────────────────────────────
 // Taxonomie: Kategorien, Unterkategorien (= Vergleichsseiten) und wie die
 // Produkte automatisch gefunden und ausgewertet werden.
@@ -190,6 +191,7 @@ const S = {
 export const kategorien = [
   { slug: 'saugroboter', label: 'Saugroboter', short: 'Reine Sauger, Modelle mit Absaugstation und ohne App', icon: 'robot', order: 1 },
   { slug: 'wischroboter', label: 'Saug- und Wischroboter', short: 'Kombigeräte mit Wischpad, rotierenden Mopps oder Mopprolle', icon: 'drop', order: 2 },
+  { slug: 'polsterreiniger', label: 'Polsterreiniger', short: 'Geräte für Sofa, textile Autositze und punktuelle Flecken', icon: 'drop', order: 3 },
 ];
 
 // Gemeinsamer Satz Merkmale: Es ist überall dieselbe Produktart, nur anders gefiltert.
@@ -199,6 +201,12 @@ const SPECS = [S.saugkraft, S.wischsystem, S.station, S.antiTangle, S.navigation
 const NOISE = /ersatz|zubeh(ö|oe)r|filter\s*set|b(ü|ue)rsten?\s*set|staubbeutel|wischt(ü|ue)cher|pads?\s*\d|poolroboter|pool[- ]?reiniger|fensterroboter|fensterputz|m(ä|ae)hroboter|rasenm(ä|ae)her|handstaubsauger|akkusauger|stielstaubsauger|nass[- ]trocken[- ]sauger/i;
 
 export const subs = [
+  {
+    slug: 'polsterreiniger-geraete', kategorie: 'polsterreiniger', label: 'Kompakte Polsterreiniger', singular: 'Polsterreiniger', url: '/polsterreiniger/',
+    // Keep the reviewed shortlist; automatic product discovery must not admit sprays or unreviewed devices.
+    discover: { queries: [], price: [50, 600], include: /polsterreiniger|waschsauger/i, target: 5 },
+    specs: upholsterySpecDefs, card: ['betrieb', 'schlauch', 'frischwasser'], picks: [],
+  },
   // ── SAUGROBOTER ─────────────────────────────────────────────────────────
   {
     slug: 'saugroboter-mit-absaugstation', kategorie: 'saugroboter', label: 'Saugroboter mit Absaugstation', singular: 'Saugroboter',
