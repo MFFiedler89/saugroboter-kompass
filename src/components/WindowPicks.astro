@@ -1,0 +1,41 @@
+---
+import { getProducts, shortTitle } from '../lib/catalog';
+import { reviewedWindow } from '../lib/windows.mjs';
+import ProductImg from './ProductImg.astro';
+import PriceBlock from './PriceBlock.astro';
+interface Props { purpose?: 'overview' | 'shutters' | 'outside' }
+const { purpose = 'overview' } = Astro.props;
+const preferred = purpose === 'shutters' ? ['B0DQ8QPG2Z'] : purpose === 'outside' ? ['B0DQ8V4R88', 'B0DQ8QPG2Z'] : ['B0DQ8QPG2Z', 'B0DQ8PCY2V', 'B0DQ8V4R88'];
+const products = getProducts('fensterputzroboter-geraete').filter(p => p.availability !== 'OUT_OF_STOCK');
+const selected = preferred.map(asin => products.find(p => p.asin === asin)).filter(Boolean).map(p => ({ p: p!, model: reviewedWindow(p!.asin, p!.title)! }));
+const heading = purpose === 'shutters' ? 'Kompakte Bauart für enge Platzverhältnisse prüfen' : purpose === 'outside' ? 'Geräte für sicher zugängliche Außenscheiben' : 'Drei Bauarten für deine Fenster vergleichen';
+
+---
+<section class="upholstery" aria-label={heading}>
+  <h2>{heading}</h2>
+  <p class="notice"><strong>Vor dem Kauf:</strong> Du musst den Roboter sicher an die Scheibe setzen, befestigen und wieder abnehmen können. Ein Rollladen muss vollständig geöffnet bleiben; Gerätehöhe allein belegt keine Eignung. Herstelleranleitung und freie Kabelwege prüfen.</p>
+  {selected.length ? <div class="up-grid">{selected.map(({ p, model }, i) => <article class="card up-card">
+    <ProductImg product={p} size={150} eager={i === 0} />
+    <h3><a href={p.url} rel="sponsored nofollow noopener" target="_blank">{shortTitle(p.title, 85)}</a></h3>
+    <p><strong>Warum diese Auswahl:</strong> {model.reason}</p>
+    <p class="small muted"><strong>Beachten:</strong> {model.limit}</p>
+    <div class="bottom"><PriceBlock product={p} compact showTier={false} />
+      <a class="btn btn-amazon" href={p.url} rel="sponsored nofollow noopener" target="_blank">Angebot bei Amazon prüfen <span class="ad">Anzeige</span></a>
+      <a class="source" href={model.source} target="_blank" rel="noopener">Herstellerinformationen ↗</a><a class="source" href={model.manual} target="_blank" rel="noopener">Anleitung und Einsatzgrenzen ↗</a>
+    </div>
+  </article>)}</div> : <p class="notice">Für diese gezielte Auswahl ist aktuell kein Angebot mit passenden Produktdaten vorhanden. <a href="/fensterputzroboter/">Weitere Fensterputzroboter und Kaufkriterien ansehen</a>.</p>}
+  <p class="small muted">Bewusst kleine Startauswahl von drei ECOVACS-Modellen, kein vollständiger Marktvergleich und kein eigener Reinigungstest. Preise von Amazon; technische Vergleichsangaben aus Produktdaten und den verlinkten Herstellerquellen. <a href="/fensterputzroboter/">Alle Fensterputzroboter vergleichen →</a></p>
+</section>
+<style>
+  .upholstery { margin: 20px 0 30px; }
+  .upholstery h2 { margin-top: 0; font-size: 1.4rem; }
+  .up-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 16px; }
+  .up-card { padding: 18px; display: flex; flex-direction: column; min-width: 0; }
+  .up-card h3 { font-size: 1.05rem; line-height: 1.4; }
+  .up-card h3 a { color: var(--text); text-decoration: none; }
+  .up-card p { font-size: .9rem; }
+  .bottom { margin-top: auto; display: grid; gap: 10px; }
+  .btn-amazon { text-align: center; font-size: .85rem; padding: 11px 8px; flex-wrap: wrap; }
+  .ad { font-size: .65rem; border: 1px solid currentColor; border-radius: 4px; padding: 0 3px; }
+  .source { font-size: .8rem; }
+</style>

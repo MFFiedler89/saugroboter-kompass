@@ -5,6 +5,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import AuthorBox from '../../components/AuthorBox.astro';
 import Disclosure from '../../components/Disclosure.astro';
 import QuickAnswer from '../../components/QuickAnswer.astro';
+import WindowPicks from '../../components/WindowPicks.astro';
 import UpholsteryPicks from '../../components/UpholsteryPicks.astro';
 import FAQ from '../../components/FAQ.astro';
 import TOC from '../../components/TOC.astro';
@@ -43,8 +44,9 @@ const schema = [
   <div class="container">
     <Breadcrumbs items={[{ label: 'Ratgeber', href: '/ratgeber/' }, { label: d.h1 ?? d.title }]} />
     {d.productSelection && <header><h1>{d.h1 ?? d.title}</h1><UpholsteryPicks purpose={d.productSelection} /></header>}
+    {d.windowSelection && <header><h1>{d.h1 ?? d.title}</h1><WindowPicks purpose={d.windowSelection} /></header>}
     <article class="prose">
-      {!d.productSelection && <h1>{d.h1 ?? d.title}</h1>}
+      {!d.productSelection && !d.windowSelection && <h1>{d.h1 ?? d.title}</h1>}
       <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} compact />
       <Disclosure />
       {d.quickAnswer && <QuickAnswer text={d.quickAnswer} />}

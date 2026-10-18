@@ -3,7 +3,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const faq = z.array(z.object({ q: z.string(), a: z.string() })).default([]);
-const kat = z.enum(['saugroboter', 'wischroboter', 'polsterreiniger', 'allgemein']);
+const kat = z.enum(['saugroboter', 'wischroboter', 'polsterreiniger', 'fensterputzroboter', 'allgemein']);
 const base = {
   title: z.string().max(70),
   description: z.string().max(170),
@@ -33,7 +33,7 @@ const situationen = defineCollection({
 // Ratgeber
 const ratgeber = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/ratgeber' }),
-  schema: z.object({ ...base, h1: z.string().optional(), cluster: kat, pillar: z.string().optional(), quickAnswer: z.string().optional(), productSelection: z.enum(['auto', 'pet', 'child-seat']).optional(), faq }),
+  schema: z.object({ ...base, h1: z.string().optional(), cluster: kat, pillar: z.string().optional(), quickAnswer: z.string().optional(), windowSelection: z.enum(['overview', 'shutters', 'outside']).optional(), productSelection: z.enum(['auto', 'pet', 'child-seat']).optional(), faq }),
 });
 
 // Lexikon (/lexikon/lidar-navigation/)

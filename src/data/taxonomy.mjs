@@ -1,3 +1,4 @@
+import { windowSpecDefs } from '../lib/windows.mjs';
 import { upholsterySpecDefs } from '../lib/upholstery.mjs';
 // ─────────────────────────────────────────────────────────────────────────────
 // Taxonomie: Kategorien, Unterkategorien (= Vergleichsseiten) und wie die
@@ -191,6 +192,7 @@ const S = {
 export const kategorien = [
   { slug: 'saugroboter', label: 'Saugroboter', short: 'Reine Sauger, Modelle mit Absaugstation und ohne App', icon: 'robot', order: 1 },
   { slug: 'wischroboter', label: 'Saug- und Wischroboter', short: 'Kombigeräte mit Wischpad, rotierenden Mopps oder Mopprolle', icon: 'drop', order: 2 },
+  { slug: 'fensterputzroboter', label: 'Fensterputzroboter', short: 'Automatische Glasreinigung: Zugang, Bauhöhe und Stromversorgung', icon: 'drop', order: 4 },
   { slug: 'polsterreiniger', label: 'Polsterreiniger', short: 'Geräte für Sofa, textile Autositze und punktuelle Flecken', icon: 'drop', order: 3 },
 ];
 
@@ -201,6 +203,9 @@ const SPECS = [S.saugkraft, S.wischsystem, S.station, S.antiTangle, S.navigation
 const NOISE = /ersatz|zubeh(ö|oe)r|filter\s*set|b(ü|ue)rsten?\s*set|staubbeutel|wischt(ü|ue)cher|pads?\s*\d|poolroboter|pool[- ]?reiniger|fensterroboter|fensterputz|m(ä|ae)hroboter|rasenm(ä|ae)her|handstaubsauger|akkusauger|stielstaubsauger|nass[- ]trocken[- ]sauger/i;
 
 export const subs = [
+  { slug: 'fensterputzroboter-geraete', kategorie: 'fensterputzroboter', label: 'Fensterputzroboter', singular: 'Fensterputzroboter', url: '/fensterputzroboter/',
+    discover: { queries: [], price: [100, 1000], target: 3 },
+    specs: windowSpecDefs, card: ['betrieb', 'hoehe', 'station'], picks: [] },
   {
     slug: 'polsterreiniger-geraete', kategorie: 'polsterreiniger', label: 'Kompakte Polsterreiniger', singular: 'Polsterreiniger', url: '/polsterreiniger/',
     // Keep the reviewed shortlist; automatic product discovery must not admit sprays or unreviewed devices.

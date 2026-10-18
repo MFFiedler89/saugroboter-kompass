@@ -7,7 +7,7 @@ import { subStats, gesamt, euro, prozent } from '../lib/marktdaten';
 import { subUrl, katUrl, updatedAt, formatDateTime, kategorien } from '../lib/catalog';
 import { SITE } from '../config';
 
-const stats = subStats().filter(s => s.kategorie !== 'polsterreiniger');
+const stats = subStats().filter(s => ['saugroboter', 'wischroboter'].includes(s.kategorie));
 const g = gesamt(stats);
 const hatDaten = stats.length > 0 && g.mitPreis > 0;
 const stand = formatDateTime(updatedAt);
