@@ -9,7 +9,7 @@ import { kategorien, activeSubsOf, getProducts, subUrl } from '../../lib/catalog
 import { tint } from '../../lib/ui';
 
 export function getStaticPaths() {
-  return kategorien.filter((k: any) => k.slug !== 'polsterreiniger').map((k: any) => ({ params: { kat: k.slug }, props: { kat: k } }));
+  return kategorien.filter((k: any) => !['polsterreiniger', 'fensterputzroboter'].includes(k.slug)).map((k: any) => ({ params: { kat: k.slug }, props: { kat: k } }));
 }
 const { kat } = Astro.props as { kat: any };
 const entry = await getEntry('kategorien', kat.slug);

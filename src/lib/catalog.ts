@@ -4,6 +4,7 @@ import { extractAll, formatSpec, specSortValue } from './extract.mjs';
 import { AMAZON } from '../config';
 import { selectDeals } from './deals.mjs';
 import { eligibility } from './eligibility.mjs';
+import { reviewedWindow } from './windows.mjs';
 import { reviewedUpholstery, upholsterySpecs } from './upholstery.mjs';
 
 export const DEMO = process.env.DEMO === '1';
@@ -68,6 +69,7 @@ export function getProducts(subSlug: string): Product[] {
     if (!l || !l.title) continue; // nicht (mehr) verfügbar
     if (!eligibility(subSlug, l.title, l.features ?? [])) continue;
     if (sub.kategorie === 'polsterreiniger' && !reviewedUpholstery(asin, l.title)) continue;
+    if (sub.kategorie === 'fensterputzroboter' && !reviewedWindow(asin, l.title)) continue;
     products.push({
       asin,
       title: cleanTitle(l.title),
@@ -82,7 +84,7 @@ export function getProducts(subSlug: string): Product[] {
       referencePriceLabel: l.referencePriceLabel,
       deal: l.deal,
       salesRank: l.salesRank ?? null,
-      specs: sub.kategorie === 'polsterreiniger' ? upholsterySpecs(asin, l.title, l.features ?? [])! : extractAll(sub.specs, l.title, l.features ?? []),
+      specs: sub.kategorie === 'fensterputzroboter' ? reviewedWindow(asin, l.title)!.specs : sub.kategorie === 'polsterreiniger' ? upholsterySpecs(asin, l.title, l.features ?? [])! : extractAll(sub.specs, l.title, l.features ?? []),
       tier: 0,
       sub: subSlug,
     });

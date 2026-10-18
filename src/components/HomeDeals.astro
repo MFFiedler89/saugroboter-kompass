@@ -4,7 +4,7 @@ import { getDeals, updatedAt } from '../lib/catalog';
 import { AMAZON } from '../config';
 interface Props { title: string; description: string; prominent?: boolean }
 const { title, description, prominent = false } = Astro.props;
-const deals = getDeals().filter((p) => p.sub !== 'polsterreiniger-geraete').slice(0, 4);
+const deals = getDeals().filter((p) => !['polsterreiniger-geraete', 'fensterputzroboter-geraete'].includes(p.sub)).slice(0, 4);
 ---
 {deals.length > 0 && (
   <section class:list={['home-deals', { prominent }]} data-home-deals data-updated={updatedAt} data-max-age={AMAZON.maxPriceAgeHours} aria-labelledby="home-deals-heading">

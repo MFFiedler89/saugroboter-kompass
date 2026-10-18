@@ -10,6 +10,7 @@ const featured = [
   { href: subUrl('saugroboter-mit-wischfunktion'), label: 'Mit Wischfunktion' },
   { href: '/situationen/haushalt-mit-tieren/', label: 'Für Tierhaare' },
   { href: '/polsterreiniger/', label: 'Polsterreiniger' },
+  { href: '/fensterputzroboter/', label: 'Fensterputzroboter' },
 ];
 const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
 ---
@@ -114,7 +115,7 @@ const kats = kategorien.map((k: any) => ({ ...k, subs: activeSubsOf(k.slug) }));
     .mob summary { list-style: none; cursor: pointer; padding: 8px; border-radius: 8px; }
     .mob summary::-webkit-details-marker { display: none; }
     .mob[open] summary { background: var(--surface-2); }
-    .mob-panel { position: absolute; left: 0; right: 0; top: 60px; background: var(--surface); border-bottom: 1px solid var(--border); max-height: calc(100vh - 60px); overflow-y: auto; padding: 8px 16px 20px; box-shadow: 0 12px 30px rgb(0 0 0 / .1); }
+    .mob-panel { position: absolute; left: 0; right: 0; top: 100%; background: var(--surface); border-bottom: 1px solid var(--border); max-height: calc(100vh - 60px); overflow-y: auto; padding: 8px 16px 20px; box-shadow: 0 12px 30px rgb(0 0 0 / .1); }
     .mob-k { border-bottom: 1px solid var(--border); padding: 10px 0; }
     .mk { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); text-decoration: none; }
     .mk :global(svg) { color: var(--accent-ink); }

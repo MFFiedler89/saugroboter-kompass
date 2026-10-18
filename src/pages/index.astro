@@ -10,10 +10,10 @@ import { SITE } from '../config';
 import { kategorien, getProducts, activeSubs, subUrl, DEMO } from '../lib/catalog';
 import { tint } from '../lib/ui';
 
-const total = new Set(activeSubs().filter(s => s.kategorie !== 'polsterreiniger').flatMap(s => getProducts(s.slug).map(p => p.asin))).size;
+const total = new Set(activeSubs().filter(s => ['saugroboter', 'wischroboter'].includes(s.kategorie)).flatMap(s => getProducts(s.slug).map(p => p.asin))).size;
 const seasonMonth = new Date().getUTCMonth();
 const showWinter = seasonMonth >= 9 || seasonMonth <= 1;
-const nSubs = activeSubs().filter(s => s.kategorie !== 'polsterreiniger').length;
+const nSubs = activeSubs().filter(s => ['saugroboter', 'wischroboter'].includes(s.kategorie)).length;
 const situationen = (await getCollection('situationen', ({ data }) => !data.draft)).sort((a, b) => a.data.navLabel.localeCompare(b.data.navLabel));
 const posts = (await getCollection('ratgeber', ({ data }) => !data.draft)).sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()).slice(0, 6);
 const katLabel = Object.fromEntries([...kategorien.map((k: any) => [k.slug, k.label]), ['allgemein', 'Grundlagen']]);
@@ -65,6 +65,13 @@ const schema = [
       <h2 id="polster-heading">Flecken auf Sofa oder Autositzen?</h2>
       <p>Saugroboter reinigen den Boden. Für freigegebene textile Polster findest du hier eine eigene Auswahl kompakter Waschsauger.</p>
       <a class="btn btn-ghost" href="/polsterreiniger/">Polsterreiniger vergleichen →</a>
+    </section>
+
+    <section class="card" style="padding:24px" aria-labelledby="window-heading">
+      <h2 id="window-heading">Fenster putzen lassen – passt ein Roboter zu deinen Scheiben?</h2>
+      <p>Geräte für Glasflächen vergleichen. Bei Rollläden zählt der freie Platz; bei Außenfenstern zuerst der sichere Zugang zum Ansetzen und Abnehmen.</p>
+      <a class="btn btn-ghost" href="/fensterputzroboter/">Fensterputzroboter vergleichen →</a>
+      <p class="small"><a href="/ratgeber/fensterputzroboter-rollladen/">Fenster mit Rollläden</a> · <a href="/ratgeber/fenster-aussen-reinigen-schwer-erreichbar/">Schwer erreichbare Außenscheiben</a></p>
     </section>
 
     {showWinter && <section class="card" style="padding:24px" aria-labelledby="winter-heading">

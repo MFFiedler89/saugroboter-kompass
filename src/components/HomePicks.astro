@@ -16,7 +16,7 @@ type Karte = { sub: string; label: string; icon: string; anzahl: number; p: Prod
 
 const karten: Karte[] = [];
 const usedAsins = new Set<string>();
-for (const k of kategorien.filter(k => k.slug !== 'polsterreiniger') as any[]) {
+for (const k of kategorien.filter(k => ['saugroboter', 'wischroboter'].includes(k.slug)) as any[]) {
   for (const s of subsOf(k.slug) as any[]) {
     const liste = getProducts(s.slug);
     if (liste.length < 3) continue;

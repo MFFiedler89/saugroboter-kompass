@@ -13,7 +13,7 @@ export const SITE = {
   author: {
     name: 'Redaktion Saugradar',
     role: 'Redaktion',
-    bio: 'Saugradar vergleicht Saugroboter und Polsterreiniger nach offengelegten Kriterien. Preise und Produktangaben kommen mehrmals täglich direkt von Amazon, die Auswahlregeln stehen an jeder Empfehlung. Es gibt keine erfundenen Tests und keine gekauften Platzierungen.',
+    bio: 'Saugradar vergleicht Saugroboter, Polsterreiniger und Fensterputzroboter nach offengelegten Kriterien. Preise und Produktangaben kommen mehrmals täglich direkt von Amazon, die Auswahlregeln stehen an jeder Empfehlung. Es gibt keine erfundenen Tests und keine gekauften Platzierungen.',
   },
   // Betreiber für Impressum. Die Seite wird privat betrieben, daher keine Firma.
   // TODO Sven: Angaben prüfen, bevor die Seite online geht.
