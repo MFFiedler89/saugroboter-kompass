@@ -2,22 +2,23 @@
 import DealCard from './DealCard.astro';
 import { getDeals, updatedAt } from '../lib/catalog';
 import { AMAZON } from '../config';
-interface Props { title: string; description: string; prominent?: boolean }
-const { title, description, prominent = false } = Astro.props;
-const deals = getDeals().filter((p) => !['polsterreiniger-geraete', 'fensterputzroboter-geraete'].includes(p.sub)).slice(0, 4);
+interface Props { title: string; description: string; prominent?: boolean; offset?: number; limit?: number; scope?: 'robots' | 'cleaning'; eager?: boolean }
+const { title, description, prominent = false, offset = 0, limit = 4, scope = 'robots', eager = false } = Astro.props;
+const deals = getDeals().filter((p) => scope === 'cleaning' ? ['polsterreiniger-geraete', 'fensterputzroboter-geraete'].includes(p.sub) : !['polsterreiniger-geraete', 'fensterputzroboter-geraete'].includes(p.sub)).slice(offset, offset + limit);
+const headingId = `home-deals-${scope}-${offset}`;
 ---
 {deals.length > 0 && (
-  <section class:list={['home-deals', { prominent }]} data-home-deals data-updated={updatedAt} data-max-age={AMAZON.maxPriceAgeHours} aria-labelledby="home-deals-heading">
+  <section class:list={['home-deals', { prominent }]} data-home-deals data-updated={updatedAt} data-max-age={AMAZON.maxPriceAgeHours} aria-labelledby={headingId}>
     <div class="heading">
       <div>
         <p class="eyebrow"><span aria-hidden="true">%</span> Angebote bei Amazon</p>
-        <h2 id="home-deals-heading">{title}</h2>
+        <h2 id={headingId}>{title}</h2>
         <p class="description">{description}</p>
       </div>
       <a class="all" href="/deals/">Alle aktuellen Deals ansehen <span aria-hidden="true">→</span></a>
     </div>
     <div class="grid">
-      {deals.map((product) => <DealCard product={product} headingLevel="h3" />)}
+      {deals.map((product, i) => <DealCard eager={eager && i < 4} product={product} headingLevel="h3" />)}
     </div>
     <p class="note">Rabatte gegenüber dem von Amazon angegebenen Vergleichspreis. Preise und Aktionsbedingungen bitte bei Amazon prüfen. {AMAZON.disclosure}</p>
   </section>
