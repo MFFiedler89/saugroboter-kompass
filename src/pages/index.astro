@@ -2,9 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ExploreProducts from '../components/ExploreProducts.astro';
-import HeroArt from '../components/HeroArt.astro';
 import Icon from '../components/Icon.astro';
-import HomePicks from '../components/HomePicks.astro';
 import HomeDeals from '../components/HomeDeals.astro';
 import { SITE } from '../config';
 import { kategorien, getProducts, activeSubs, subUrl, DEMO } from '../lib/catalog';
@@ -40,6 +38,7 @@ const schema = [
 ];
 ---
 <BaseLayout title={SITE.name} description={SITE.description} schema={schema}>
+  <div class="container"><HomeDeals title="Aktuelle Saugroboter-Deals" description="Reduzierte Saugroboter und Saug-Wisch-Roboter aus unserer Produktauswahl." prominent eager /></div>
   <section class="hero">
     <div class="container hgrid">
       <div>
@@ -52,15 +51,16 @@ const schema = [
           <a class="btn btn-ghost light" href="/rechner/flaeche/">Passt eine Akkuladung?</a>
         </div>
       </div>
-      <div class="art"><HeroArt /></div>
     </div>
   </section>
   {DEMO && <p class="demo">Vorschau mit Beispieldaten, keine echten Produkte.</p>}
 
   <div class="container">
-    <HomeDeals title="Aktuelle Saugroboter-Deals" description="Reduzierte Saugroboter und Saug-Wisch-Roboter aus unserer Produktauswahl." prominent />
+
     <ExploreProducts />
-    <HomePicks />
+    <HomeDeals offset={4} title="Weitere Saugroboter-Angebote" description="Weitere reduzierte Modelle entdecken und direkt bei Amazon prüfen." />
+
+
     <section class="card" style="padding:24px" aria-labelledby="polster-heading">
       <h2 id="polster-heading">Flecken auf Sofa oder Autositzen?</h2>
       <p>Saugroboter reinigen den Boden. Für freigegebene textile Polster findest du hier eine eigene Auswahl kompakter Waschsauger.</p>
@@ -74,6 +74,8 @@ const schema = [
       <p class="small"><a href="/ratgeber/fensterputzroboter-rollladen/">Fenster mit Rollläden</a> · <a href="/ratgeber/fenster-aussen-reinigen-schwer-erreichbar/">Schwer erreichbare Außenscheiben</a></p>
     </section>
 
+    <HomeDeals scope="cleaning" title="Deals für Polster und Fenster" description="Reduzierte Polsterreiniger und Fensterputzroboter für weitere Aufgaben im Haushalt." />
+
     {showWinter && <section class="card" style="padding:24px" aria-labelledby="winter-heading">
       <p class="small muted">Passend zu Herbst und Winter</p>
       <h2 id="winter-heading">Flur sauber halten bei Schnee und nassen Schuhen</h2>
@@ -86,10 +88,15 @@ const schema = [
         <h2>Für welche Wohnung?</h2>
         <p class="muted">Katze im Haus, Hochflorteppich, Altbau mit Türschwellen oder einfach wenig Platz für eine Station: Hier findest du, was in deiner Lage zählt.</p>
         <div class="sits">
-          {situationen.map((s) => <a class="sit" href={`/situationen/${s.id}/`}><strong>{s.data.navLabel}</strong><span class="small muted">{s.data.teaser}</span></a>)}
+          {situationen.slice(0, 6).map((s) => <a class="sit" href={`/situationen/${s.id}/`}><strong>{s.data.navLabel}</strong><span class="small muted">{s.data.teaser}</span></a>)}
         </div>
+        {situationen.length > 6 && <details class="more-situations"><summary>Weitere Situationen und Kaufhilfen</summary><div class="sits">
+          {situationen.slice(6).map((s) => <a class="sit" href={`/situationen/${s.id}/`}><strong>{s.data.navLabel}</strong><span class="small muted">{s.data.teaser}</span></a>)}
+        </div></details>}
       </section>
     )}
+
+    <HomeDeals offset={8} limit={8} title="Noch mehr Saugroboter-Deals" description="Weitere Angebote aus unserer Auswahl – mit Produktbild, Preis und direktem Amazon-Link." />
 
     <section>
       <h2>Rechner</h2>
@@ -129,14 +136,17 @@ const schema = [
   </div>
 </BaseLayout>
 <style>
-  .hero { background: radial-gradient(ellipse at 78% 22%, #2a5699 0%, #1b3a6b 48%, #0e1c33 100%); color: #fff; padding: 56px 0 48px; overflow: hidden; }
-  .hgrid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 32px; align-items: center; }
+  .more-situations { margin-top: 16px; }
+  .more-situations summary { cursor: pointer; font-weight: 700; color: var(--brand); padding: 10px 0; }
+  .more-situations[open] summary { margin-bottom: 10px; }
+  .hero { background: radial-gradient(ellipse at 78% 22%, #2a5699 0%, #1b3a6b 48%, #0e1c33 100%); color: #fff; padding: 28px 0; overflow: hidden; }
+  .hgrid { display: grid; grid-template-columns: 1fr; gap: 32px; align-items: center; }
   .kicker { text-transform: uppercase; letter-spacing: .12em; font-weight: 700; font-size: .8rem; color: var(--accent-pale); margin: 0; }
   .hero h1 { color: #fff; font-size: clamp(2.1rem, 5vw, 3.4rem); margin: .3em 0 .35em; }
   .hero h1 em { font-style: normal; color: var(--accent-hover); }
-  .sub { font-size: 1.15rem; color: #d3dcee; max-width: 560px; }
+  .sub { font-size: 1.15rem; color: #d3dcee; max-width: 900px; }
   .sub strong { color: #fff; }
-  .trust { display: flex; gap: 8px; align-items: flex-start; font-size: .92rem; color: #c3cfe6; max-width: 560px; }
+  .trust { display: flex; gap: 8px; align-items: flex-start; font-size: .92rem; color: #c3cfe6; max-width: 900px; }
   .trust :global(svg) { flex: 0 0 auto; color: var(--accent); margin-top: 3px; }
   .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
   .btn-ghost.light { color: #fff; border-color: #7e9bc9; }
