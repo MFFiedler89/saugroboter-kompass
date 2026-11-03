@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ExploreProducts from '../components/ExploreProducts.astro';
 import Icon from '../components/Icon.astro';
 import HomeDeals from '../components/HomeDeals.astro';
+import HomeBuyingGuide from '../components/HomeBuyingGuide.astro';
 import { SITE } from '../config';
 import { kategorien, getProducts, activeSubs, subUrl, DEMO } from '../lib/catalog';
 import { tint } from '../lib/ui';
@@ -42,10 +43,10 @@ const schema = [
   <section class="hero">
     <div class="container hgrid">
       <div>
-        <p class="kicker">Dein Zuhause putzt sich selbst</p>
+        <p class="kicker">Passend zu deinem Zuhause</p>
         <h1>Finde deinen <em>perfekten</em> Saugroboter.</h1>
         <p class="sub">Sag uns, wie du wohnst. Wir zeigen dir die Geräte, die dazu passen, {total > 0 ? <>aus <strong>{total} Geräten</strong> in {nSubs} Vergleichen</> : <>sobald die Angebotslisten stehen</>}.</p>
-        <p class="trust"><Icon name="check" size={18} /> Saugkraft, Wischsystem und Station kommen aus den Amazon-Produktangaben, nicht aus einem Werbetext. Was dort nicht steht, bleibt leer.</p>
+        <p class="trust"><Icon name="check" size={18} /> Wir vergleichen dokumentierte Ausstattung und Angebote. Die Angaben stammen aus Produktdaten und Herstellerunterlagen, nicht aus eigenen Reinigungstests.</p>
         <div class="cta">
           <a class="btn btn-amazon" href="/saugroboter/">Saugroboter vergleichen</a>
           <a class="btn btn-ghost light" href="/rechner/flaeche/">Passt eine Akkuladung?</a>
@@ -58,6 +59,7 @@ const schema = [
   <div class="container">
 
     <ExploreProducts />
+    <HomeBuyingGuide />
     <HomeDeals offset={4} title="Weitere Saugroboter-Angebote" description="Weitere reduzierte Modelle entdecken und direkt bei Amazon prüfen." />
 
 
@@ -124,6 +126,7 @@ const schema = [
       </section>
     )}
 
+    <HomeBuyingGuide part="method" />
     <section class="quick">
       <h2>Schnellzugriff</h2>
       <div class="ql">

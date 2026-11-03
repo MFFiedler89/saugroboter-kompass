@@ -1,0 +1,35 @@
+---
+const { part = 'guide' } = Astro.props;
+---
+{part === 'guide' ? <section class="buying-guide" aria-labelledby="robot-choice">
+  <p class="small muted">Erst die Wohnung, dann das Modell</p>
+  <h2 id="robot-choice">Welcher Saugroboter passt zu deinem Zuhause?</h2>
+  <p class="lead">Ein hoher Saugkraftwert allein beantwortet das nicht. Boden, Teppiche, Haare und die Wege zwischen deinen Räumen entscheiden darüber, welche Ausstattung dir im Alltag hilft. Miss kritische Stellen vor dem Kauf und prüfe die Angaben für das konkrete Modell.</p>
+  <div class="guide-grid">
+    <article class="card"><h3>Hartboden, Parkett oder Laminat</h3><p>Zum trockenen Saugen zählen unter anderem Bürsten, Schmutzaufnahme und die Erreichbarkeit der Flächen. Fürs Wischen gilt zuerst die Pflegefreigabe des Bodenherstellers. Wasserregelung und Moppanhebung ersetzen diese Freigabe nicht.</p><p><strong>Prüfe:</strong> Feuchtigkeitsvorgaben, trockene Reinigungsmodi und Bereiche, die nicht gewischt werden sollen.</p><a href="/situationen/parkett-und-laminat/">Kaufhilfe für Parkett und Laminat →</a></article>
+    <article class="card"><h3>Teppiche und gemischte Böden</h3><p>Teppichhöhe, Fransen und leichte Läufer können den Betrieb beeinflussen. Bei einem Saug-Wisch-Roboter muss der nasse Mopp vom Teppich fernbleiben. Eine angegebene Hubhöhe ist keine Garantie für trockenen Kontakt auf jedem Teppich.</p><p><strong>Prüfe:</strong> Teppichregeln, Sperrbereiche und Herstellergrenzen für dein Modell.</p><a href="/wischroboter/saugroboter-mit-wischfunktion/">Saugroboter mit Wischfunktion vergleichen →</a></article>
+    <article class="card"><h3>Tierhaare und lange Haare</h3><p>Haare landen im Behälter, können sich aber auch an Bürsten und Achsen sammeln. Schau dir die Bürstenkonstruktion, die Reinigung und verfügbare Ersatzteile an. Eine Absaugstation reduziert das manuelle Behälterleeren; sie übernimmt nicht die gesamte Gerätepflege.</p><p><strong>Prüfe:</strong> Pflegezugang, Beutelbedarf und laufende Kosten.</p><a href="/ratgeber/tierhaare-saugroboter/">Modelle für Tierhaare vergleichen →</a></article>
+    <article class="card"><h3>Türschwellen, Möbel und Stationsplatz</h3><p>Miss Höhe und Form der Übergänge sowie die niedrigste Stelle unter Möbeln. Eine beworbene Kletterhöhe hängt von den Bedingungen ab. Auch die Station braucht Platz und Zugang für Behälter, Beutel oder Wassertanks.</p><p><strong>Prüfe:</strong> Schwellenprofil, Gerätehöhe und die Aufstellabstände aus der Anleitung.</p><a href="/situationen/altbau-mit-tuerschwellen/">Kaufhilfe für Türschwellen →</a></article>
+  </div>
+  <div class="guide-note"><h3>Wie viel Station brauchst du?</h3><p>Ein Gerät ohne Station spart Stellfläche, verlangt aber mehr Handarbeit. Eine Absaugstation leert den Staubbehälter; eine Komplettstation kann je nach Modell zusätzlich Mopps waschen und trocknen. Frischwasser nachfüllen, Schmutzwasser entleeren und Teile reinigen bleibt Teil der Pflege.</p><a href="/wischroboter/saug-wisch-roboter-mit-station/">Komplettstationen vergleichen →</a> · <a href="/rechner/folgekosten/">Folgekosten berechnen →</a></div>
+</section> : <section class="buying-guide method" aria-labelledby="robot-method">
+  <p class="small muted">So entsteht unsere Auswahl</p><h2 id="robot-method">Was Saugradar prüft und was die Daten aussagen</h2>
+  <p>Der Betreiber verantwortet die Vergleiche und Kaufhilfen. Wer dahintersteht und wie du Fehler melden kannst, steht im <a href="/impressum/">Impressum</a>. Wir vergleichen dokumentierte Ausstattung und verfügbare Angebote; wir führen keine eigenen Reinigungstests durch.</p>
+  <div class="guide-grid method-grid"><article class="card"><h3>Quellen und offene Angaben</h3><p>Produktdaten stammen aus Amazon-Angeboten; für gezielte Kaufhilfen ergänzen wir verlinkte Herstellerunterlagen. Fehlende Merkmale bleiben als unbekannt gekennzeichnet. Unsere Auswahl deckt nicht den gesamten Markt ab.</p></article><article class="card"><h3>Passende Funktion statt größter Zahl</h3><p>Herstellerwerte zur Saugkraft oder Kletterhöhe sind kein eigener Leistungsnachweis von Saugradar. Empfehlungen nennen ihre Auswahlgründe und Grenzen. Bodenfreigaben und die konkrete Wohnsituation musst du zusätzlich abgleichen.</p></article><article class="card"><h3>Preise und Finanzierung</h3><p>Preise tragen einen Abrufzeitpunkt und können sich ändern. Amazon-Links sind Werbung; als Amazon-Partner verdient der Betreiber an qualifizierten Verkäufen. Hersteller können keine Platzierung kaufen.</p></article></div>
+  <a href="/so-vergleichen-wir/">Datenquellen, Auswahlregeln und Finanzierung im Detail →</a>
+</section>}
+<style>
+  .buying-guide { margin: 32px 0; padding: 28px 0; }
+  .buying-guide h2 { max-width: 850px; }
+  .lead { max-width: 900px; font-size: 1.08rem; }
+  .guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 24px 0; }
+  .guide-grid article { padding: 22px; min-width: 0; }
+  .guide-grid h3 { margin-top: 0; }
+  .guide-grid p { line-height: 1.65; }
+  .guide-grid a, .guide-note a, .method a { overflow-wrap: anywhere; }
+  .guide-note { background: var(--accent-soft); border-radius: var(--radius); padding: 24px; }
+  .guide-note h3 { margin-top: 0; }
+  .method { border-top: 1px solid var(--border); }
+  .method-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  @media (max-width: 720px) { .guide-grid { grid-template-columns: 1fr; } .buying-guide { padding: 16px 0; } .guide-grid article, .guide-note { padding: 20px; } }
+</style>
