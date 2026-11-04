@@ -1,3 +1,4 @@
+import { reviewedFloorCare } from './floor-care.mjs';
 const yes = k => p => p.specs[k] === true;
 const eq = (k,v) => p => p.specs[k] === v;
 const min = (k,n) => p => typeof p.specs[k] === 'number' && p.specs[k] >= n;
@@ -35,9 +36,14 @@ export const situations = {
   rule('saugroboter-mit-wischfunktion','Für geeignete Hartböden',p=>['Rotierende Mopps','Mopprolle'].includes(p.specs.wischsystem),p=>`${p.specs.wischsystem} sind angegeben. Bodenfreigabe und Umgang mit Streusalz prüfen.`)),
  'mehrere-etagen':config('Kein Roboter fährt Treppen hinauf. Mehrere speicherbare Karten, Gewicht und Nutzung ohne Station auf einer anderen Etage beim Hersteller prüfen.',
   rule('saugroboter-mit-absaugstation','Kartierende Navigation',eq('navigation','LiDAR'),'LiDAR-Navigation ist angegeben. Mehrere speicherbare Etagenkarten sind damit noch nicht belegt und müssen zusätzlich geprüft werden.')),
- 'parkett-und-laminat':config('Die Freigabe deines Bodenherstellers hat Vorrang. Wischsystem allein belegt keine geregelte Wassermenge oder Eignung für unversiegeltes Holz.',
-  rule('saugroboter-ohne-wischfunktion','Trocken reinigen',eq('wischsystem','Ohne Wischfunktion'),'Ohne Wischfunktion laut Produktangaben: eine Möglichkeit, empfindliche Flächen ohne zusätzliches Wischwasser zu reinigen.'),
-  rule('saugroboter-mit-wischfunktion','Teppiche beim Wischen beachten',yes('teppich'),'Teppicherkennung ist angegeben. Wasserdosierung, No-Mop-Zonen und Bodenfreigabe zusätzlich prüfen.')),
+ 'parkett-und-laminat':{
+  ...config('Diese Kandidaten haben dokumentierte Möglichkeiten zur Wasserregelung. Das ist keine Freigabe für deinen Boden. Kläre zuerst Bodenart, Oberfläche und Pflegevorgaben.',
+   rule('saugroboter-mit-wischfunktion','Wasserfluss in 30 Stufen',p=>reviewedFloorCare(p)?.id==='qrevo-s-pro',p=>reviewedFloorCare(p).reason),
+   rule('saugroboter-mit-wischfunktion','Wasserdurchfluss per App',p=>reviewedFloorCare(p)?.id==='q10-s5',p=>reviewedFloorCare(p).reason)),
+  allowFallback:false,
+  evidence:reviewedFloorCare,
+  method:'Für diese Seite prüfen wir Modell und Angebotskennung gegen die verlinkten Herstellerunterlagen. Farb- und Setvarianten derselben Modellfamilie erscheinen nur einmal. Nur aktuell verfügbare Kandidaten aus unserer Liste; keine vollständige Marktübersicht und keine eigenen Praxistests.',
+ },
  'erstes-mal-saugroboter':config('Vor dem Kauf Bodenart, Möbelhöhe, Schwellen und Platz für die Station prüfen. Die Auswahl zeigt verschiedene Ausstattungswege, keine universellen Testsieger.',
   rule('saugroboter-mit-absaugstation','Weniger selbst entleeren',p=>typeof p.specs.station==='string','Eine Entleerungsstation ist angegeben. Sinnvoll, wenn du das manuelle Entleeren reduzieren möchtest.'),
   rule('saugroboter-mit-wischfunktion','Auch Hartboden wischen',p=>['Rotierende Mopps','Mopprolle','Wischpad'].includes(p.specs.wischsystem),p=>`${p.specs.wischsystem} laut Produktangaben. Für freigegebene Böden; Pflegeaufwand mit einplanen.`)),

@@ -15,7 +15,7 @@ export function selectSituation(config, getProducts, fallbackSubs = []) {
   // Give each use case a place before filling remaining cards.
   for (const {rule,pool} of pools) add(pool.find(p => !used.has(identity(p))),rule);
   for (const {rule,pool} of pools) for (const p of pool) add(p,rule);
-  if (!selected.length) {
+  if (!selected.length && config.allowFallback !== false) {
     for (const sub of fallbackSubs) {
       for (const p of getProducts(sub).filter(p => p.availability !== 'OUT_OF_STOCK')) {
         add(p,{label:'Eignung noch prüfen',reason:()=>'Aus einem thematisch verwandten Vergleich. Die entscheidenden Merkmale für diese Situation sind in unseren Produktdaten nicht ausreichend belegt.'},false);
