@@ -56,6 +56,8 @@ const schema = [
       {DEMO && <p class="notice"><strong>Vorschau mit Beispieldaten.</strong> Im Live-Betrieb stehen hier echte Amazon-Angebote.</p>}
     </header>
 
+    {sub.slug === 'saugroboter-mit-wischfunktion' && <aside class="notice head"><strong>Vor der Produktauswahl:</strong> Bodenfreigabe, Teppichstrategie und Stationspflege prüfen. Die Auswahl beruht auf Produktangaben, nicht auf eigenen Wischtests. <a href="#welches-wischsystem-passt-zu-deinem-alltag">Zur Kaufhilfe mit Modellunterschieden ↓</a></aside>}
+
     {showProducts ? (
       <>
         <PicksBox sub={sub.slug} />
