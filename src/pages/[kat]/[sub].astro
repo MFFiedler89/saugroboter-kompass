@@ -22,7 +22,7 @@ const products = getProducts(sub.slug);
 const d = entry?.data;
 const h1 = d?.h1 ?? `${sub.label} im Vergleich`;
 const title = d?.title ?? `${sub.label} im Vergleich`;
-const description = d?.description ?? `${sub.label} im Vergleich: nach Preis, Preislage und Ausstattung. Mit Filter und Direktvergleich.`;
+const description = d?.description ?? `${sub.label} im Vergleich: nach Preis und Ausstattung. Mit Filter und Direktvergleich.`;
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const strictSelection = ['saugroboter-ohne-app', 'saugroboter-ohne-kamera', 'saugroboter-ohne-wischfunktion'].includes(sub.slug);
 const showProducts = strictSelection ? products.length > 0 : hasProducts(sub.slug);
@@ -50,7 +50,7 @@ const schema = [
     <Breadcrumbs items={[{ label: kat.label, href: `/${kat.slug}/` }, { label: sub.label }]} />
     <header class="head">
       <h1>{h1}</h1>
-      <p class="lead">{d?.intro ?? `Hier vergleichst du ${sub.label} nach Preis, Preislage und Ausstattung laut Produktangaben.`}</p>
+      <p class="lead">{d?.intro ?? `Hier vergleichst du ${sub.label} nach Preis und Ausstattung laut Produktangaben.`}</p>
       {d && <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} compact />}
       <Disclosure />
       {DEMO && <p class="notice"><strong>Vorschau mit Beispieldaten.</strong> Im Live-Betrieb stehen hier echte Amazon-Angebote.</p>}

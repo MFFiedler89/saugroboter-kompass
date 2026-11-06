@@ -10,8 +10,9 @@ const products = getProducts('fensterputzroboter-geraete').filter(p => p.availab
 const selected = preferred.map(asin => products.find(p => p.asin === asin)).filter(Boolean).map(p => ({ p: p!, model: reviewedWindow(p!.asin, p!.title)! }));
 const heading = purpose === 'shutters' ? 'Kompakte Bauart für enge Platzverhältnisse prüfen' : purpose === 'outside' ? 'Geräte für sicher zugängliche Außenscheiben' : 'Drei Bauarten für deine Fenster vergleichen';
 
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
-<section class="upholstery" aria-label={heading}>
+<section data-amazon-updated={amazonSnapshot} class="upholstery" aria-label={heading}>
   <h2>{heading}</h2>
   <p class="notice"><strong>Vor dem Kauf:</strong> Du musst den Roboter sicher an die Scheibe setzen, befestigen und wieder abnehmen können. Ein Rollladen muss vollständig geöffnet bleiben; Gerätehöhe allein belegt keine Eignung. Herstelleranleitung und freie Kabelwege prüfen.</p>
   {selected.length ? <div class="up-grid">{selected.map(({ p, model }, i) => <article class="card up-card">

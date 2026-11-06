@@ -1,6 +1,7 @@
 // Baut zur Build-Zeit aus Taxonomie + ASIN-Listen + Live-Daten die Produktlisten.
 import { subs, subBySlug, katBySlug, subsOf, kategorien } from '../data/taxonomy.mjs';
 import { extractAll, formatSpec, specSortValue } from './extract.mjs';
+import { isFresh } from './amazon-freshness.mjs';
 import { AMAZON } from '../config';
 import { selectDeals } from './deals.mjs';
 import { eligibility } from './eligibility.mjs';
@@ -58,6 +59,7 @@ const withTag = (url: string | undefined, asin: string) => url ?? `https://${AMA
 const cache = new Map<string, Product[]>();
 
 export function getProducts(subSlug: string): Product[] {
+  if (!isFresh(updatedAt)) return [];
   if (cache.has(subSlug)) return cache.get(subSlug)!;
   const sub = subBySlug[subSlug];
   const list = lists[subSlug] ?? { asins: [] };
@@ -90,13 +92,7 @@ export function getProducts(subSlug: string): Product[] {
     });
   }
 
-  // Preislage: Position innerhalb der Kategorie in 5 Stufen
-  const prices = products.map((p) => p.amount).filter((x): x is number => x !== null).sort((a, b) => a - b);
-  for (const p of products) {
-    if (p.amount === null || prices.length < 3) continue;
-    const idx = prices.findIndex((x) => x >= p.amount!);
-    p.tier = Math.min(5, Math.floor((idx / prices.length) * 5) + 1);
-  }
+  // Relative price ratings are paused pending clarification of the API licence.
 
   // Beliebtheit (Amazon-Verkaufsrang) als Standard-Sortierung
   products.sort((a, b) => (a.salesRank ?? 1e12) - (b.salesRank ?? 1e12));

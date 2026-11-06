@@ -14,9 +14,10 @@ if (filter) {
   list = list.filter((p) => String(p.specs[k] === true ? 'ja' : p.specs[k]) === v);
 }
 const picksFirst = [...list.filter((p) => p.pick), ...list.filter((p) => !p.pick)].slice(0, limit);
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
 {picksFirst.length > 0 && (
-  <aside class="pt card">
+  <aside data-amazon-updated={amazonSnapshot} class="pt card">
     <div class="head">
       <p class="t">{title ?? `Beliebte ${s.label}`}</p>
       <a href={subUrl(sub)} class="all">Alle {getProducts(sub).length} vergleichen →</a>

@@ -35,7 +35,10 @@ try {
   if (missing.length) console.warn(`⚠️  Nicht mehr verfügbar (${missing.length}): ${missing.join(', ')}`);
   if (errors.length) console.warn('⚠️  API-Hinweise:', JSON.stringify(errors).slice(0, 600));
 } catch (err) {
-  console.error('❌ Aktualisierung fehlgeschlagen – vorhandene Daten bleiben erhalten:', err.message || err);
-  if (!existsSync(OUT)) writeFileSync(OUT, JSON.stringify({ updatedAt: null, items: {} }));
+  console.error('❌ Aktualisierung fehlgeschlagen – abgelaufene Daten werden verworfen:', err.message || err);
+  let previous;
+  try { previous = JSON.parse(readFileSync(OUT, 'utf8')); } catch {}
+  const age = Date.now() - Date.parse(previous?.updatedAt || '');
+  if (!Number.isFinite(age) || age < 0 || age >= 23 * 3600000) writeFileSync(OUT, JSON.stringify({ updatedAt: null, items: {} }));
   process.exit(process.env.STRICT_PRICES ? 1 : 0);
 }

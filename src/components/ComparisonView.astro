@@ -55,8 +55,9 @@ const compareData = products.map((p) => ({
   asin: p.asin, title: shortTitle(p.title, 70), brand: p.brand, url: p.url, img: p.image?.url ?? null, price: p.display, amount: p.amount,
   specs: Object.fromEntries(specs.map((d) => [d.key, { t: formatSpec(d, p.specs[d.key]), v: typeof p.specs[d.key] === 'number' ? p.specs[d.key] : Array.isArray(p.specs[d.key]) ? (p.specs[d.key] as number[])[1] : p.specs[d.key] === true ? 1 : null }])),
 }));
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
-<section class="cv" id={uid} data-cv>
+<section data-amazon-updated={amazonSnapshot} class="cv" id={uid} data-cv>
   {quick.length > 0 && (
     <div class="quick-select card" data-quick-root hidden>
       <h3>Schneller zur passenden Auswahl</h3>
@@ -150,7 +151,6 @@ const compareData = products.map((p) => ({
       </thead>
       <tbody>
         <tr><th scope="row" class="sticky">Preis</th>{products.map((p) => <td data-col={p.asin}><PriceBlock product={p} compact showTier={false} /></td>)}</tr>
-        <tr><th scope="row" class="sticky">Preislage</th>{products.map((p) => <td data-col={p.asin}>{p.tier ? ['','günstig','eher günstig','mittel','eher teuer','teuer'][p.tier] : 'k. A.'}</td>)}</tr>
         {specs.map((d) => (
           <tr><th scope="row" class="sticky">{d.label}</th>{products.map((p) => <td data-col={p.asin} class:list={{ unk: p.specs[d.key] === null }}>{formatSpec(d, p.specs[d.key])}</td>)}</tr>
         ))}

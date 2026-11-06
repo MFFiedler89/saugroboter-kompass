@@ -71,7 +71,6 @@ export async function GET(context: APIContext) {
 
   L.push('## Nachschlagen');
   L.push('');
-  L.push(`- [Marktdaten Saugroboter](${url('/marktdaten/')}): Preisspannen, Medianpreise, Anbietervielfalt und Ausstattungsanteile über alle Produktgruppen, täglich aktualisiert. Zitierfähig unter CC BY 4.0.`);
   L.push(`- [So vergleichen wir](${url('/so-vergleichen-wir/')}): Methodik, Datenquellen und welche Merkmale bewusst fehlen.`);
   L.push(`- [Lexikon](${url('/lexikon/')}): Begriffe rund um Saugroboter kurz erklärt.`);
   L.push(`- [Über uns](${url('/ueber-uns/')})`);

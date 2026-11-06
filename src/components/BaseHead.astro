@@ -37,6 +37,7 @@ const baseSchema = [
     logo: new URL('/favicon.svg', Astro.site).href,
   },
 ];
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -60,4 +61,4 @@ const baseSchema = [
 {publishDate && <meta property="article:published_time" content={publishDate.toISOString()} />}
 {updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
 
-{[...baseSchema, ...schema].map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+{[...baseSchema, ...schema].map((s) => <script data-amazon-updated={s['@type'] === 'ItemList' ? amazonSnapshot : undefined} type="application/ld+json" set:html={JSON.stringify(s)} />)}

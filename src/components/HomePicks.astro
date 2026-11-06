@@ -27,9 +27,10 @@ for (const k of kategorien.filter(k => ['saugroboter', 'wischroboter'].includes(
     break;
   }
 }
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
 {karten.length >= 2 && (
-  <section class="hp" aria-label={title}>
+  <section data-amazon-updated={amazonSnapshot} class="hp" aria-label={title}>
     <div class="head">
       <h2>{title}</h2>
       <p class="muted">Aus jeder Kategorie ein Angebot, das unseren Kriterien entspricht. Preise mit Zeitstempel, Ausstattung laut Produktangaben.</p>

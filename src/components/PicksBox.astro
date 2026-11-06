@@ -6,9 +6,10 @@ import ProductImg from './ProductImg.astro';
 interface Props { sub: string; title?: string }
 const { sub, title = 'Unsere Empfehlungen je Anwendungsfall' } = Astro.props;
 const picks = getPicks(sub).slice(0, 3);
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
 {picks.length > 0 && (
-  <section class="picks" aria-label={title}>
+  <section data-amazon-updated={amazonSnapshot} class="picks" aria-label={title}>
     <h2 class="h">{title}</h2>
     <div class="grid">
       {picks.map((p, i) => (

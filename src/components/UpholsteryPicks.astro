@@ -9,8 +9,9 @@ const preferred = purpose === 'pet' ? ['B084PSXMQM'] : purpose === 'child-seat' 
 const products = getProducts('polsterreiniger-geraete').filter(p => p.availability !== 'OUT_OF_STOCK');
 const selected = preferred.map(asin => products.find(p => p.asin === asin)).filter(Boolean).map(p => ({ p: p!, model: reviewedUpholstery(p!.asin, p!.title)! }));
 const heading = purpose === 'child-seat' ? 'Für das Autopolster unter dem Kindersitz' : purpose === 'pet' ? 'Gezielte Auswahl für Haustierflecken' : purpose === 'auto' ? 'Geräte für freigegebene textile Autositze' : 'Welche Bauart passt zu dir?';
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
-<section class="upholstery" aria-label={heading}>
+<section data-amazon-updated={amazonSnapshot} class="upholstery" aria-label={heading}>
   <h2>{heading}</h2>
   {purpose === 'child-seat' && <p class="notice"><strong>Keine Empfehlung zum Nassreinigen des Kindersitzes.</strong> Das folgende Gerät ist für geeignetes Fahrzeugpolster nach dem Ausbau gedacht. Für Bezug, Gurte, Schloss und Schale gelten die Vorgaben des Kindersitzherstellers.</p>}
   {selected.length ? <div class="up-grid">{selected.map(({ p, model }, i) => <article class="card up-card">

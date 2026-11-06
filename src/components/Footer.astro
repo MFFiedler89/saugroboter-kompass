@@ -9,7 +9,7 @@ const consentActive = CONSENT.categories.some((c) => !c.required);
   <div class="container grid">
     <div>
       <p class="brand">{SITE.name}</p>
-      <p class="small muted">{SITE.tagline}. Preise mit Zeitstempel, Ausstattung laut Produktangaben, Preislage im Vergleich zur Kategorie.</p>
+      <p class="small muted">{SITE.tagline}. Preise mit Zeitstempel, Ausstattung laut Produktangaben.</p>
     </div>
     <div>
       <p class="h">Kategorien</p>
@@ -23,7 +23,6 @@ const consentActive = CONSENT.categories.some((c) => !c.required);
       <p class="h">Planen und Wissen</p>
       <ul>
         {NAV_SECONDARY.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
-        <li><a href="/marktdaten/">Marktdaten</a></li>
         <li><a href="/so-vergleichen-wir/">So vergleichen wir</a></li>
         <li><a href="/ueber-uns/">Über uns</a></li>
         <li><a href="/impressum/">Impressum</a></li>
@@ -34,7 +33,8 @@ const consentActive = CONSENT.categories.some((c) => !c.required);
   </div>
   <div class="container legal muted">
     <p><strong>Werbehinweis:</strong> {AMAZON.disclosure} Links zu Amazon sind Affiliate-Links, gekennzeichnet mit „Anzeige“. Für dich ändert sich der Preis dadurch nicht.</p>
-    <p>Preise inkl. MwSt., zzgl. Versand, Stand der letzten Aktualisierung. Maßgeblich ist der Preis auf Amazon.de zum Kaufzeitpunkt.</p>
+    <p id="amazon-price-note">Preise inkl. MwSt., zzgl. Versand. Preise und Verfügbarkeit entsprechen dem angegebenen Stand und können sich ändern. Für den Kauf gelten die Angaben zu Preis und Verfügbarkeit, die zum Kaufzeitpunkt auf Amazon.de angezeigt werden.</p>
+    <p class="amazon-content-note">BESTIMMTE INHALTE, DIE AUF DIESER WEBSITE ANGEZEIGT WERDEN, STAMMEN VON AMAZON. DIESE INHALTE WERDEN „WIE BESEHEN“ BEREITGESTELLT UND KÖNNEN JEDERZEIT GEÄNDERT ODER ENTFERNT WERDEN.</p>
     <p>© {year} {SITE.name}</p>
   </div>
 </footer>

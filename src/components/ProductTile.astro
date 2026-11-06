@@ -14,8 +14,9 @@ const data: Record<string, string> = {
 };
 for (const d of sub.specs) data[`data-s-${d.key}`] = JSON.stringify(specSortValue(d, p.specs[d.key]) ?? (d.type === 'enum' ? p.specs[d.key] : null));
 for (const d of sub.specs.filter((d: any) => d.type === 'enum')) data[`data-s-${d.key}`] = JSON.stringify(p.specs[d.key] ?? null);
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
-<article class="tile card" {...data} data-tile>
+<article data-amazon-updated={amazonSnapshot} class="tile card" {...data} data-tile>
   {p.pick && <span class="pick">{p.pick.label}</span>}
   <a href={p.url} rel="sponsored nofollow noopener" target="_blank" class="imgwrap" tabindex="-1" aria-hidden="true"><ProductImg product={p} eager={eager} /></a>
   <div class="body">

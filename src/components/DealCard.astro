@@ -9,8 +9,9 @@ const sub = subBySlug[p.sub];
 const access = p.deal?.accessType?.replaceAll('_', '');
 const restricted = access === 'PRIMEEXCLUSIVE' || access === 'PRIMEEARLYACCESS';
 const otherRestriction = access && access !== 'ALL' && !restricted;
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
-<article class="deal card" data-deal data-category={sub.kategorie} data-discount={p.savingsPercent} data-amount={p.amount} data-deal-access={p.deal?.accessType} data-deal-early={p.deal?.earlyAccessDurationInMilliseconds} data-deal-start={p.deal?.startTime} data-deal-end={p.deal?.endTime}>
+<article data-amazon-updated={amazonSnapshot} class="deal card" data-deal data-category={sub.kategorie} data-discount={p.savingsPercent} data-amount={p.amount} data-deal-access={p.deal?.accessType} data-deal-early={p.deal?.earlyAccessDurationInMilliseconds} data-deal-start={p.deal?.startTime} data-deal-end={p.deal?.endTime}>
   <div class="deal-top">
     <span class="discount">−{p.savingsPercent} %</span>
     <span class="kind">{p.deal ? 'Amazon-Aktion' : 'Preisreduzierung'}</span>

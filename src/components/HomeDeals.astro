@@ -6,9 +6,10 @@ interface Props { title: string; description: string; prominent?: boolean; offse
 const { title, description, prominent = false, offset = 0, limit = 4, scope = 'robots', eager = false } = Astro.props;
 const deals = getDeals().filter((p) => scope === 'cleaning' ? ['polsterreiniger-geraete', 'fensterputzroboter-geraete'].includes(p.sub) : !['polsterreiniger-geraete', 'fensterputzroboter-geraete'].includes(p.sub)).slice(offset, offset + limit);
 const headingId = `home-deals-${scope}-${offset}`;
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
 {deals.length > 0 && (
-  <section class:list={['home-deals', { prominent }]} data-home-deals data-updated={updatedAt} data-max-age={AMAZON.maxPriceAgeHours} aria-labelledby={headingId}>
+  <section data-amazon-updated={amazonSnapshot} class:list={['home-deals', { prominent }]} data-home-deals data-updated={updatedAt} data-max-age={AMAZON.maxPriceAgeHours} aria-labelledby={headingId}>
     <div class="heading">
       <div>
         <p class="eyebrow"><span aria-hidden="true">%</span> Angebote bei Amazon</p>

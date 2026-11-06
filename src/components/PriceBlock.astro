@@ -3,7 +3,7 @@ import { updatedAt, formatDateTime, type Product } from '../lib/catalog';
 interface Props { product: Product; compact?: boolean; showTier?: boolean }
 const { product: p, compact = false, showTier = true } = Astro.props;
 const has = p.display && updatedAt;
-const tierLabel = ['', 'günstig', 'eher günstig', 'mittel', 'eher teuer', 'teuer'][p.tier];
+
 ---
 <div class:list={['pb', { compact }]} data-price-updated={has ? updatedAt : undefined}>
   {has ? (
@@ -12,21 +12,13 @@ const tierLabel = ['', 'günstig', 'eher günstig', 'mittel', 'eher teuer', 'teu
         <span class="amount">{p.display}</span>
         {p.savingsPercent ? <span class="save">−{p.savingsPercent} %</span> : null}
       </div>
-      <span class="stamp">Stand: {formatDateTime(updatedAt)}*</span>
+      <span class="stamp">Stand: {formatDateTime(updatedAt)} · <a href="#amazon-price-note">Preishinweis</a></span>
       <span class="fallback">Aktuellen Preis bei Amazon prüfen</span>
     </>
   ) : (
     <span class="fallback show">Aktuellen Preis bei Amazon prüfen</span>
   )}
-  {showTier && p.tier > 0 && (
-    <div class="tier" title={`Preislage in dieser Kategorie: ${tierLabel}`}>
-      <span class="tl">Preislage</span>
-      <span class="bars" aria-label={`Preislage: ${tierLabel}`}>
-        {[1, 2, 3, 4, 5].map((i) => <i class:list={{ on: i <= p.tier }} />)}
-      </span>
-      <span class="tv">{tierLabel}</span>
-    </div>
-  )}
+
 </div>
 <style>
   .pb { display: flex; flex-direction: column; gap: 2px; }

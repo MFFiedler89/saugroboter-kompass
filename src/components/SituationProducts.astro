@@ -8,8 +8,9 @@ const {slug,subs=[]}=Astro.props;
 const config=situations[slug];
 if (!config) throw new Error(`Missing situation rules: ${slug}`);
 const selected=selectSituation(config,getProducts,subs).map(entry=>({...entry,evidence:config.evidence?.(entry.product)}));
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
-<section class="situ-picks" aria-label="Modelle für deine Auswahl">
+<section data-amazon-updated={amazonSnapshot} class="situ-picks" aria-label="Modelle für deine Auswahl">
   <h2>Modelle für deine Auswahl</h2>
   <p class="context">{config.note}</p>
   {selected.length ? <div class="situ-grid">{selected.map(({product:p,reason,label,verified,evidence},i)=><article class="situ-card card">

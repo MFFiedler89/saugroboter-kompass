@@ -18,8 +18,9 @@ const tiles = groups.map((group) => {
   if (picture) used.add(picture.asin);
   return { ...group, picture, count: new Set(products.map((p) => p.asin)).size };
 });
+import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
-<section class="explore" aria-labelledby="explore-heading">
+<section data-amazon-updated={amazonSnapshot} class="explore" aria-labelledby="explore-heading">
   <div class="heading">
     <h2 id="explore-heading">Welche Saugroboter möchtest du entdecken?</h2>
     <p class="muted">Wähle eine Ausstattung und entdecke die Modelle im passenden Vergleich.</p>

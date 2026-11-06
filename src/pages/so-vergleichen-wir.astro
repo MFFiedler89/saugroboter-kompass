@@ -8,7 +8,7 @@ import { AMAZON, SITE } from '../config';
   <h2>Woher die Daten kommen</h2>
   <ul>
     <li><strong>Preis, Bild, Titel und Produktmerkmale</strong> stammen direkt von Amazon (Amazon Creators API). Sie werden bei jeder Aktualisierung neu abgerufen, mehrmals täglich.</li>
-    <li><strong>Jeder Preis hat einen Zeitstempel.</strong> Ist ein Preis älter als {AMAZON.maxPriceAgeHours} Stunden, blenden wir ihn automatisch aus.</li>
+    <li><strong>Jeder Preis hat einen Zeitstempel.</strong> Nach spätestens 23 Stunden ohne erfolgreichen Abruf werden die Amazon-Produktdaten ausgeblendet; Rechner und redaktionelle Kaufhilfen bleiben verfügbar.</li>
     <li><strong>Ausstattung laut Produktangaben:</strong> Merkmale wie Saugkraft, Wischsystem oder Station lesen wir aus Titel und Produktbeschreibung des Herstellers. Was dort nicht eindeutig steht, zeigen wir als „k. A.“ (keine Angabe). Wir raten nichts dazu.</li>
   </ul>
 
@@ -22,10 +22,7 @@ import { AMAZON, SITE } from '../config';
   <h2>Was die Saugkraft in Pascal aussagt</h2>
   <p>Weniger, als die Zahl vermuten lässt. Es gibt für Saugroboter keine verbindliche Messnorm für Pascal, die Werte verschiedener Hersteller sind deshalb nicht sauber vergleichbar. Außerdem gilt der genannte Wert immer für die stärkste Stufe. Wir zeigen die Zahl, weil sie in fast jedem Produkttitel steht und innerhalb einer Marke eine Rangfolge ergibt. Wir behaupten nicht, dass mehr Pascal automatisch sauberer heißt.</p>
 
-  <h2>Preislage</h2>
-  <p>Die Preislage zeigt, wo ein Angebot preislich innerhalb seiner Vergleichsseite liegt, in fünf Stufen von „günstig“ bis „teuer“. Sie sagt nichts über die Qualität, hilft aber beim Einordnen.</p>
-
-  <h2>Beliebtheit</h2>
+<h2>Beliebtheit</h2>
   <p>Die Standard-Sortierung „Beliebtheit“ basiert auf dem Verkaufsrang bei Amazon. Viel gekaufte Produkte stehen weiter oben. Du kannst jederzeit nach Preis oder Ausstattung umsortieren.</p>
 
   <h2>Wie Empfehlungen entstehen</h2>

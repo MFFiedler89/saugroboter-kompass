@@ -18,7 +18,7 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      filter: (page) => !/\/(impressum|datenschutz)\/$/.test(page),
+      filter: (page) => !/\/(impressum|datenschutz|marktdaten)\/$/.test(page),
       i18n: { defaultLocale: 'de', locales: { de: 'de-DE' } },
     }),
   ],
