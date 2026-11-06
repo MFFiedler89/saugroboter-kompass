@@ -33,7 +33,6 @@ const schema = [{
       <h1>{d.h1}</h1>
       <p class="lead">{d.intro}</p>
     </div>
-    <SituationProducts slug={entry.id} subs={d.subs} />
     <div class="prose">
       <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} compact />
       <Disclosure />
@@ -45,6 +44,9 @@ const schema = [{
       )}
       <TOC headings={headings} />
       <Content components={mdxComponents} />
+    </div>
+    <SituationProducts slug={entry.id} subs={d.subs} />
+    <div class="prose">
       <FAQ items={d.faq} />
       <AuthorBox publishDate={d.publishDate} updatedDate={d.updatedDate} />
       {others.length > 0 && (
