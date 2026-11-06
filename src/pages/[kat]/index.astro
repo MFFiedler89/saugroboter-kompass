@@ -1,5 +1,7 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content';
+import ReaderGuide from '../../components/ReaderGuide.astro';
+import ReaderProductLink from '../../components/ReaderProductLink.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Icon from '../../components/Icon.astro';
@@ -39,9 +41,12 @@ const schema = [{
     </div>
   </section>
   <div class="container">
+    <ReaderGuide guideKey={kat.slug} part="intro" />
+    {rendered && <div class="prose text" data-reader-article><rendered.Content components={{...mdxComponents, ProductTeaser: ReaderProductLink}} /></div>}
+    <ReaderGuide guideKey={kat.slug} part="decision" />
     {subs.length > 0 ? (
-      <section>
-        <h2>Vergleiche in {kat.label}</h2>
+      <section id="modelle" data-reader-products>
+        <h2>Welche Bauart möchtest du genauer kennenlernen?</h2>
         <div class="subs">
           {subs.map((s: any) => (
             <a class="sub card" href={subUrl(s.slug)}>
@@ -58,12 +63,12 @@ const schema = [{
 
     {featured.length > 0 && (
       <section>
-        <h2>Beliebte Angebote</h2>
+        <h2>Modelle nach der Kaufhilfe entdecken</h2>
         <div class="grid">{featured.map((p: any, i: number) => <ProductTile product={p} eager={i < 2} />)}</div>
       </section>
     )}
 
-    {rendered && <div class="prose text"><rendered.Content components={mdxComponents} /></div>}
+
 
     {guides.length > 0 && (
       <section>

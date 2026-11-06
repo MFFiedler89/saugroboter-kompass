@@ -1,5 +1,6 @@
 ---
 import { getEntry, render } from 'astro:content';
+import ReaderGuide from '../../components/ReaderGuide.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ComparisonView from '../../components/ComparisonView.astro';
@@ -25,15 +26,18 @@ const schema = [{ '@context': 'https://schema.org', '@type': 'Article', headline
   <div class="container">
     <Breadcrumbs items={[{ label: 'Polsterreiniger' }]} />
     <h1>{d.h1}</h1>
-    <p class="lead">{d.intro} {products.length > 0 && <>{products.length} anhand ihrer Produktangaben ausgewählte Modelle.</>}</p>
-    <UpholsteryPicks />
-    <h2>Alle Polsterreiniger vergleichen</h2>
-    {products.length ? <ComparisonView sub="polsterreiniger-geraete" /> : <p class="notice">Aktuell fehlen verfügbare Produktdaten. Die Kaufhilfe unten zeigt dir, welche Eigenschaften du prüfen solltest.</p>}
+    <p class="lead">{d.intro}</p>
     <div class="prose">
       <AuthorBox publishDate={d.publishDate} compact /><Disclosure />
-      <TOC headings={headings} /><Content components={mdxComponents} /><FAQ items={d.faq} />
+      <ReaderGuide guideKey="polsterreiniger-geraete" part="intro" /><TOC headings={headings} /><div data-reader-article><Content components={mdxComponents} /></div><ReaderGuide guideKey="polsterreiniger-geraete" part="decision" />
       <AuthorBox publishDate={d.publishDate} />
     </div>
+    <section id="modelle" data-reader-products><h2>Passende Modelle zu diesen Kriterien</h2>
+    <UpholsteryPicks />
+    <h2>Alle Polsterreiniger vergleichen</h2>
+    {products.length ? <ComparisonView sub="polsterreiniger-geraete" /> : <p class="notice">Aktuell fehlen verfügbare Produktdaten. Die Kaufhilfe oben zeigt dir, welche Eigenschaften du prüfen solltest.</p>}
+    </section>
+    <div class="prose"><FAQ items={d.faq} /></div>
   </div>
 </BaseLayout>
 <style>.lead { max-width: 850px; font-size: 1.1rem; color: var(--muted); }</style>

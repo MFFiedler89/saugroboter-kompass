@@ -1,0 +1,7 @@
+---
+import { subBySlug, subUrl } from '../lib/catalog';
+interface Props { sub: string; title?: string; limit?: number; filter?: string }
+const { sub, title } = Astro.props;
+---
+{subBySlug[sub] && <p class="reader-related"><a href={subUrl(sub)}>{title ?? `${subBySlug[sub].label}: Kaufhilfe und Auswahl`} →</a></p>}
+<style>.reader-related { padding: 12px 0; border-block: 1px solid var(--border); }</style>

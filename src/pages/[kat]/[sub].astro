@@ -1,5 +1,7 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content';
+import ReaderGuide from '../../components/ReaderGuide.astro';
+import ReaderProductLink from '../../components/ReaderProductLink.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import AuthorBox from '../../components/AuthorBox.astro';
@@ -58,22 +60,30 @@ const schema = [
 
     {sub.slug === 'saugroboter-mit-wischfunktion' && <aside class="notice head"><strong>Vor der Produktauswahl:</strong> Bodenfreigabe, Teppichstrategie und Stationspflege prüfen. Die Auswahl beruht auf Produktangaben, nicht auf eigenen Wischtests. <a href="#welches-wischsystem-passt-zu-deinem-alltag">Zur Kaufhilfe mit Modellunterschieden ↓</a></aside>}
 
+    <ReaderGuide guideKey={sub.slug} part="intro" />
+
+    {r && (
+      <div class="prose" data-reader-article>
+        <TOC headings={[{depth:2,slug:"fuer-wen",text:"Für wen ist das sinnvoll?"},...r.headings,{depth:2,slug:"vorteile-und-grenzen",text:"Vorteile und Grenzen"},{depth:2,slug:"deine-auswahl",text:"Deine Auswahlhilfe"},{depth:2,slug:"modelle",text:"Passende Modelle"}]} />
+        <r.Content components={{...mdxComponents, ProductTeaser: ReaderProductLink, PicksBox: ReaderProductLink}} />
+      </div>
+    )}
+    <ReaderGuide guideKey={sub.slug} part="decision" />
+    <section id="modelle" class="reader-models" aria-labelledby="reader-models-title" data-reader-products>
+      <h2 id="reader-models-title">Passende Modelle zu diesen Kriterien</h2>
+      <p class="muted">Gleiche die dokumentierte Ausstattung mit deinen Anforderungen ab. Die Auswahl beruht auf Produktangaben und den erläuterten Regeln, nicht auf eigenen Praxistests.</p>
     {showProducts ? (
       <>
         <PicksBox sub={sub.slug} />
-        <h2 class="vh">Alle {products.length} Angebote</h2>
+        <h3 class="vh">Modelle im Detail vergleichen</h3>
         <ComparisonView sub={sub.slug} />
       </>
     ) : (
-      <p class="notice soon">{strictSelection ? <><strong>Aktuell keine eindeutig belegten Angebote in unserer Auswahl.</strong> Wir nehmen ein Modell hier nur auf, wenn die Angaben die gesuchte Eigenschaft ausdrücklich bestätigen. Fehlende Angaben reichen nicht. Nutze die Kaufhilfe unten oder entdecke unsere <a href="/saugroboter/">weiteren Saugroboter-Vergleiche</a>.</> : <><strong>Aktuell zu wenige Angebote für eine Vergleichsliste.</strong> Bis wieder genügend Produktdaten vorliegen, findest du unten die Kaufkriterien und weitere Vergleiche.</>}</p>
+      <p class="notice soon">{strictSelection ? <><strong>Aktuell keine eindeutig belegten Angebote in unserer Auswahl.</strong> Wir nehmen ein Modell hier nur auf, wenn die Angaben die gesuchte Eigenschaft ausdrücklich bestätigen. Fehlende Angaben reichen nicht. Nutze die Kaufhilfe oben oder entdecke unsere <a href="/saugroboter/">weiteren Saugroboter-Vergleiche</a>.</> : <><strong>Aktuell zu wenige Angebote für eine Vergleichsliste.</strong> Bis wieder genügend Produktdaten vorliegen, bleiben die Kaufkriterien oben und weitere Vergleiche verfügbar.</>}</p>
     )}
 
-    {r && (
-      <div class="prose">
-        <TOC headings={r.headings} />
-        <r.Content components={mdxComponents} />
-      </div>
-    )}
+    </section>
+
     <div class="prose">
       {d && <FAQ items={d.faq} />}
 
@@ -93,6 +103,8 @@ const schema = [
   </div>
 </BaseLayout>
 <style>
+  .reader-models { margin: 40px 0; padding-top: 28px; border-top: 1px solid var(--border); scroll-margin-top: 140px; }
+  .reader-models > p { max-width: var(--prose); }
   .head { max-width: var(--prose); }
   .lead { font-size: 1.12rem; color: #333c4c; }
   .vh { margin-top: 1.2em; }

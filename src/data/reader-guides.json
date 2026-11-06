@@ -1,0 +1,122 @@
+{
+  "saugroboter": {
+    "fit": "Für Haushalte, die regelmäßig trockenen Schmutz auf zugänglichen Bodenflächen aufnehmen lassen möchten.",
+    "benefit": "Zeitpläne und automatische Fahrten können die laufende Bodenpflege erleichtern.",
+    "limit": "Treppen, enge Stellen, herumliegende Kabel und die Gerätepflege bleiben Aufgaben im Haushalt.",
+    "checks": [
+      "Bodenarten und Teppiche notieren",
+      "Türschwellen und Platz unter Möbeln messen",
+      "Stationsplatz und Pflegeaufwand festlegen"
+    ]
+  },
+  "wischroboter": {
+    "fit": "Für freigegebene Hartböden, auf denen zusätzlich zum Saugen gewischt werden soll.",
+    "benefit": "Wischfunktion und Stationspflege lassen sich nach dem eigenen Alltag auswählen.",
+    "limit": "Ein Wischsystem ersetzt keine Bodenfreigabe. Teppiche und empfindliche Oberflächen brauchen passende Einstellungen.",
+    "checks": [
+      "Pflegeanleitung des Bodens prüfen",
+      "Teppichbereiche und Sperrzonen planen",
+      "Moppwäsche und Trocknung im konkreten Modell abgleichen"
+    ]
+  },
+  "saugroboter-mit-absaugstation": {
+    "fit": "Wenn du den kleinen Staubbehälter seltener von Hand leeren möchtest und einen festen Stationsplatz hast.",
+    "benefit": "Die Station übernimmt das Absaugen des Roboterbehälters.",
+    "limit": "Beutelwechsel, Bürstenreinigung und Stationspflege bleiben nötig; zusätzliche Stellfläche und mögliche Beutelkosten kommen dazu.",
+    "checks": [
+      "Aufstellabstände laut Anleitung messen",
+      "Beuteltyp und Ersatzteilversorgung prüfen",
+      "Geräusch und Zeitpunkt der Entleerung bedenken"
+    ]
+  },
+  "saugroboter-ohne-wischfunktion": {
+    "fit": "Wenn du hauptsächlich trockenen Schmutz entfernen lassen möchtest oder deine Böden nicht feucht gereinigt werden sollen.",
+    "benefit": "Eine reine Sauglösung erspart dir die Planung von Wasserbehälter und Mopp-Pflege.",
+    "limit": "Du musst feucht zu reinigende Bereiche weiterhin separat behandeln. Ohne Wischfunktion sagt noch nichts über App oder Station aus.",
+    "checks": [
+      "Reinen Saugmodus eindeutig bestätigen",
+      "Station oder manuelles Leeren wählen",
+      "Bürsten und Bodenfreigaben prüfen"
+    ]
+  },
+  "saugroboter-ohne-app": {
+    "fit": "Wenn die Grundfunktionen ohne Smartphone, App-Konto oder WLAN bedienbar sein sollen.",
+    "benefit": "Tasten oder eine mitgelieferte Fernbedienung können für einfache Abläufe genügen.",
+    "limit": "Karten, Zeitpläne oder Sperrzonen können trotzdem eine App voraussetzen. Die Betriebsarten müssen getrennt geprüft werden.",
+    "checks": [
+      "Einrichtung ohne App bestätigen",
+      "Gewünschte Funktionen einzeln in der Anleitung suchen",
+      "Bedienung nach Stromausfall und Reset prüfen"
+    ]
+  },
+  "saugroboter-ohne-kamera": {
+    "fit": "Wenn du ein Modell ohne bildaufnehmende Kamera suchst und seine Navigation bewusst auswählen möchtest.",
+    "benefit": "Die Auswahl lässt sich auf die gewünschte Sensortechnik eingrenzen.",
+    "limit": "Ohne Kamera bedeutet weder ohne App noch ohne Datenübertragung. LiDAR allein beweist keine kamerafreie Ausstattung.",
+    "checks": [
+      "Kameraausschluss für die genaue Variante belegen",
+      "Sensoren und Navigation getrennt prüfen",
+      "App-Zwang und Datenschutzeinstellungen abgleichen"
+    ]
+  },
+  "saugroboter-mit-wischfunktion": {
+    "fit": "Wenn dein Boden feuchtes Wischen erlaubt und du diese Aufgabe regelmäßig unterstützen lassen möchtest.",
+    "benefit": "Du kannst zwischen einfachen Wischtüchern, rotierenden Mopps und Walzensystemen wählen.",
+    "limit": "Moppanhebung und Sperrzonen müssen zu deinen Teppichen passen; die Pflege verschwindet auch mit einer Station nicht.",
+    "checks": [
+      "Bodenfreigabe zuerst klären",
+      "Wischsystem und Teppichstrategie vergleichen",
+      "Zugang zu Tanks und Mopps einplanen"
+    ]
+  },
+  "saug-wisch-roboter-mit-station": {
+    "fit": "Wenn du Moppwäsche oder Trocknung automatisieren möchtest und Platz für die Station hast.",
+    "benefit": "Je nach Ausstattung übernimmt die Station mehrere wiederkehrende Pflegeschritte.",
+    "limit": "Frischwasser, Schmutzwasser, Reinigungsmittel und Station müssen weiterhin betreut werden. Nicht jede Station leistet dasselbe.",
+    "checks": [
+      "Welche Arbeitsschritte automatisiert werden einzeln prüfen",
+      "Tankentnahme und Freiraum messen",
+      "Verbrauchsmaterial und laufende Kosten kalkulieren"
+    ]
+  },
+  "wischroboter-mit-mopprolle": {
+    "fit": "Wenn du eine Walzen-Wischlösung für dafür geeignete Hartböden suchst.",
+    "benefit": "Die Bauform unterscheidet sich von einem einfachen mitgezogenen Wischtuch.",
+    "limit": "Walze, Abstreifer und Wasserführung brauchen Reinigung. Die Bauform allein belegt keine bessere Reinigungsleistung.",
+    "checks": [
+      "Frisch- und Schmutzwasserführung vergleichen",
+      "Walzenentnahme und Ersatzteile prüfen",
+      "Regeln für Teppiche und Kanten nachlesen"
+    ]
+  },
+  "saugroboter-ab-20000-pa": {
+    "fit": "Wenn du Geräte mit einer bestimmten dokumentierten Saugkraftangabe eingrenzen möchtest.",
+    "benefit": "Du kannst den genannten Herstellerwert zusammen mit der übrigen Ausstattung betrachten.",
+    "limit": "Pascal-Werte verschiedener Marken sind kein einheitlicher Leistungstest und keine Garantie für saubere Teppiche.",
+    "checks": [
+      "Bürstenkonstruktion vor der größten Zahl prüfen",
+      "Laufzeit im gewünschten Modus bedenken",
+      "Teppichfreigabe und Hindernisse abgleichen"
+    ]
+  },
+  "polsterreiniger-geraete": {
+    "fit": "Wenn freigegebene Textilpolster nass gereinigt werden dürfen und du das Gerät sicher einsetzen kannst.",
+    "benefit": "Waschsauger führen Reinigungsflüssigkeit zu und saugen sie wieder ab.",
+    "limit": "Nicht jedes Polster, jeder Fleck oder Kindersitz darf so behandelt werden. Restfeuchte und Trocknungszeit bleiben zu beachten.",
+    "checks": [
+      "Material- und Pflegefreigabe lesen",
+      "Steckdose oder Akkulaufzeit sowie Schlauchreichweite planen",
+      "Düsen, Tanks und Reinigung nach dem Einsatz vergleichen"
+    ]
+  },
+  "fensterputzroboter-geraete": {
+    "fit": "Wenn du geeignete Glasflächen sicher erreichen, das Gerät sichern und wieder abnehmen kannst.",
+    "benefit": "Ein Gerät kann die Bearbeitung zugänglicher, freigegebener Scheiben unterstützen.",
+    "limit": "Es löst keinen unsicheren Zugang. Rahmen, Rollläden, Mindestflächen und Sicherung begrenzen den Einsatz.",
+    "checks": [
+      "Sicheren Zugang und Befestigung klären",
+      "Glasmaße und Herstellerfreigaben prüfen",
+      "Freiraum zu Rollläden sowie Kabelwege messen"
+    ]
+  }
+}
