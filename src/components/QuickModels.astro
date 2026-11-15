@@ -1,0 +1,78 @@
+---
+import { getPicks, getProducts, shortTitle, cardSpecs, subBySlug, subUrl, updatedAt } from '../lib/catalog';
+import ProductImg from './ProductImg.astro';
+import PriceBlock from './PriceBlock.astro';
+
+interface Props { sub?: string; subs?: string[]; title?: string; inline?: boolean; filter?: string; id?: string }
+const { sub, subs = [], title = 'Eine erste Modellauswahl', inline = false, filter, id } = Astro.props;
+const slugs = sub ? [sub] : subs;
+const seen = new Set<string>();
+const choices = slugs.flatMap(slug => {
+  let candidates = getPicks(slug);
+  if (filter) {
+    const [key, value] = filter.split('=');
+    candidates = getProducts(slug).filter(p => String(p.specs[key] === true ? 'ja' : p.specs[key]) === value);
+  }
+  return (sub ? candidates : candidates.slice(0, 1)).filter(p => {
+    if (seen.has(p.asin)) return false;
+    seen.add(p.asin); return true;
+  });
+}).slice(0, inline ? 1 : 3);
+const neutralLabel = (p: typeof choices[number]) => {
+  const label = p.pick?.label;
+  if (label === 'Für die meisten') return 'Nach Ausstattung ausgewählt';
+  if (label === 'Maximale Stabilität') return 'Mit dreistufigem Gestell';
+  if (label === 'Für lange Arbeitstage') return 'Mit Sitztiefenverstellung';
+  if (label === 'Für schwere Menschen') return 'Belastbarkeit ab 150 kg';
+  return label ?? subBySlug[p.sub].label;
+};
+---
+{choices.length > 0 && (
+  <section id={id} class:list={['quick-models', { inline }]} data-amazon-updated={updatedAt} data-quick-models aria-label={title}>
+    <h2>{title}</h2>
+    {!inline && <p class="intro">Modelle und Ausstattung auf einen Blick. Die Kaufhilfe darunter erklärt, worauf du bei der Auswahl achten solltest.</p>}
+    <div class="choices">
+      {choices.map(p => {
+        const specs = cardSpecs(p.sub, p).filter((s: any) => s.known).slice(0, 2);
+        return <article class="choice" data-model-asin={p.asin}>
+          <a class="picture" href={p.url} rel="sponsored nofollow noopener" target="_blank" aria-label={`${p.title} bei Amazon ansehen – Anzeige`}><ProductImg product={p} size={150} eager={!inline} /></a>
+          <div class="copy">
+            <p class="eyebrow">{sub ? neutralLabel(p) : subBySlug[p.sub].label}</p>
+            <h3>{shortTitle(p.title.split(/[|,]/)[0].trim(), 62)}</h3>
+            {specs.length > 0 && <p class="specs">{specs.map((s: any) => `${s.label}: ${s.text}`).join(' · ')}</p>}
+            {p.pick && <p class="reason"><strong>Auswahlgrund:</strong> {p.pick.why.replace(/^beliebtest\w*\s+/i, '').replace(/^günstigst\w*\s+/i, '')}.</p>}
+            <PriceBlock product={p} compact />
+            <a class="btn btn-amazon model-link" href={p.url} rel="sponsored nofollow noopener" target="_blank" data-product-placement={inline ? 'article' : 'early'}>Bei Amazon ansehen ↗ <span class="ad">Anzeige</span></a>
+          </div>
+        </article>;
+      })}
+    </div>
+    <p class="foot">Ausstattung laut Produktangaben; die Hinweise zur Passform sind Auswahlkriterien, keine eigenen Modelltests. <a href="/so-vergleichen-wir/">So wählen wir aus</a>. {sub && <a href={inline ? subUrl(sub) : '#modelle'} data-models-jump>{inline ? 'Zur ausführlichen Kaufhilfe' : 'Alle Modelle und Details vergleichen'} →</a>}</p>
+  </section>
+)}
+{inline && choices.length === 0 && sub && subBySlug[sub] && <p><a href={subUrl(sub)}>{title} →</a></p>}
+<style>
+  .quick-models { margin: 26px 0 34px; padding: 22px 0; border-block: 1px solid var(--border); scroll-margin-top: 140px; }
+  h2 { font-size: 1.35rem; margin: 0 0 8px; }
+  .intro { max-width: 740px; margin: 0 0 18px; color: var(--muted); font-size: .92rem; }
+  .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .choice { min-width: 0; display: flex; flex-direction: column; gap: 14px; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+  .picture { display: block; width: 100%; height: 150px; }
+  .picture :global(.pimg), .picture :global(.ph) { width: 100%; height: 150px !important; }
+  .copy { min-width: 0; width: 100%; display: flex; flex-direction: column; flex: 1; }
+  .copy p { font-size: .82rem; line-height: 1.55; margin: 8px 0; }
+  .copy .eyebrow { margin: 0 0 5px; font-size: .75rem; font-weight: 700; color: var(--brand); }
+  h3 { font-size: .96rem; line-height: 1.4; margin: 0 0 8px; overflow-wrap: anywhere; }
+  .specs, .limit, .foot { color: var(--muted); }
+  .model-link { display: flex; justify-content: center; gap: 6px; margin-top: 12px; font-size: .85rem; min-height: 44px; text-decoration: none; }
+  .copy :global(.pb) { margin-top: auto; padding-top: 8px; }
+  .ad { font-size: .68rem; }
+  .foot { margin: 18px 0 0; font-size: .75rem; line-height: 1.6; }
+  .inline { max-width: var(--prose); padding: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .inline h2 { font-size: 1.05rem; margin-bottom: 14px; }
+  .inline .choice { gap: 18px; flex-direction: row; padding: 0; border: 0; }
+  .inline .picture { flex: 0 0 110px; width: 110px; }
+  .inline .choices { display: block; }
+  @media(max-width: 700px) { .choices { grid-template-columns: 1fr; gap: 14px; } .choice { flex-direction: row; padding: 14px; } .picture { flex: 0 0 100px; width: 100px; height: 120px; } .picture :global(.pimg), .picture :global(.ph) { height: 120px !important; } .quick-models { padding-block: 18px; } }
+  @media(max-width: 380px) { .choice, .inline .choice { flex-direction: column; } .picture, .inline .picture { width: 100%; flex-basis: auto; } }
+</style>

@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ExploreProducts from '../components/ExploreProducts.astro';
 import Icon from '../components/Icon.astro';
+import QuickModels from '../components/QuickModels.astro';
 import HomeDeals from '../components/HomeDeals.astro';
 import HomeBuyingGuide from '../components/HomeBuyingGuide.astro';
 import { SITE } from '../config';
@@ -44,7 +45,9 @@ const schema = [
         <h1>Wie viel Saugroboter braucht <em>dein Zuhause?</em></h1>
         <p class="sub">Prüfe zuerst, welche Fläche gereinigt werden soll und wie viel Akkulaufzeit dafür einzuplanen ist. Unsere Rechner helfen dir, deinen Bedarf und die laufenden Kosten einzuschätzen.</p>
         <div class="cta">
-          <a class="btn btn-amazon" href="/rechner/flaeche/">Fläche und Akku berechnen</a>
+          <a class="btn btn-amazon" href="#erste-modelle">Modelle entdecken ↓</a>
+          <a class="btn btn-ghost light" href="/deals/">Aktuelle Angebote ansehen</a>
+          <a class="btn btn-ghost light" href="/rechner/flaeche/">Fläche und Akku berechnen</a>
           <a class="btn btn-ghost light" href="/rechner/folgekosten/">Folgekosten abschätzen</a>
         </div>
         <p class="trust"><Icon name="check" size={18} /> Kostenlose Modellrechnungen mit deinen Angaben. Raumaufteilung, Hindernisse und Reinigungsstufe beeinflussen das Ergebnis im Alltag.</p>
@@ -54,6 +57,8 @@ const schema = [
   {DEMO && <p class="demo">Vorschau mit Beispieldaten, keine echten Produkte.</p>}
 
   <div class="container">
+    <QuickModels subs={["saugroboter-mit-absaugstation", "saugroboter-mit-wischfunktion", "saug-wisch-roboter-mit-station"]} id="erste-modelle" title="Saugroboter auf einen Blick" />
+    <HomeDeals title="Aktuelle Saugroboter-Deals" description="Reduzierte Saugroboter und Saug-Wisch-Roboter aus unserer Produktauswahl." />
 
     <section class="home-tools" aria-labelledby="home-tools-title">
       <h2 id="home-tools-title">Dein Zuhause in Zahlen</h2>
@@ -64,7 +69,6 @@ const schema = [
     </section>
     <HomeBuyingGuide />
     <ExploreProducts />
-    <HomeDeals title="Aktuelle Saugroboter-Deals" description="Reduzierte Saugroboter und Saug-Wisch-Roboter aus unserer Produktauswahl." />
     <HomeDeals offset={4} title="Weitere Saugroboter-Angebote" description="Weitere reduzierte Modelle entdecken und direkt bei Amazon prüfen." />
 
 

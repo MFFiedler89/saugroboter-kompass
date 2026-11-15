@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content';
+import QuickModels from '../../components/QuickModels.astro';
 import ReaderGuide from '../../components/ReaderGuide.astro';
 import ReaderProductLink from '../../components/ReaderProductLink.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -60,6 +61,8 @@ const schema = [
 
     {sub.slug === 'saugroboter-mit-wischfunktion' && <aside class="notice head"><strong>Vor der Produktauswahl:</strong> Bodenfreigabe, Teppichstrategie und Stationspflege prüfen. Die Auswahl beruht auf Produktangaben, nicht auf eigenen Wischtests. <a href="#welches-wischsystem-passt-zu-deinem-alltag">Zur Kaufhilfe mit Modellunterschieden ↓</a></aside>}
 
+    <nav aria-label="Direkt zum Bereich">{showProducts && <a class="btn btn-ghost" href="#erste-modelle">Modelle ansehen ↓</a>} <a href="#fuer-wen">Kaufhilfe lesen ↓</a> · <a href="#modelle">Zum vollständigen Vergleich ↓</a></nav>
+    {showProducts && <QuickModels sub={sub.slug} id="erste-modelle" title="Modelle auf einen Blick" />}
     <ReaderGuide guideKey={sub.slug} part="intro" />
 
     {r && (
