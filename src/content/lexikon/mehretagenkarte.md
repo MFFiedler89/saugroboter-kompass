@@ -17,7 +17,9 @@ Mit [LiDAR-Navigation](/lexikon/lidar-navigation/) funktioniert die Erkennung zu
 
 Geräte mit reiner [Gyroskop-Navigation](/lexikon/gyroskop-navigation/) können das nicht. Sie speichern keine Karte und fahren in jeder Etage ein neues Muster ab.
 
-## Woran es praktisch scheitert
+<span id="woran-es-praktisch-scheitert"></span>
+
+## Station und Laden auf mehreren Etagen einplanen
 
 Nicht an der Karte, sondern an der Station. Ohne Dock in der zweiten Etage fährt das Gerät nach dem Durchgang nicht zurück und bleibt stehen, wo der Akku endet. Ein zweites Dock ist nicht bei jedem Hersteller einzeln erhältlich und nicht bei jedem Modell frei koppelbar.
 

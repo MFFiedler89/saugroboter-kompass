@@ -23,7 +23,9 @@ Geräte mit [Gyroskop-Navigation](/lexikon/gyroskop-navigation/) fahren ebenfall
 
 Die älteste und einfachste Variante: Das Gerät fährt geradeaus, bis es anstößt, dreht in einem beliebigen Winkel ab und fährt weiter. Über genug Zeit deckt das statistisch den Raum ab, dauert aber ein Vielfaches und lässt sich nicht nachvollziehen. In aktuellen Modellen kommt das kaum noch vor.
 
-## Was das praktisch bedeutet
+<span id="was-das-praktisch-bedeutet"></span>
+
+## Flächenabdeckung und Reinigung einer einzelnen Stelle unterscheiden
 
 Die Abdeckung ist bei Bahnen zuverlässiger als bei Zufall, das ist der Hauptunterschied. Für die Reinigungsqualität an einer einzelnen Stelle spielt das Muster dagegen kaum eine Rolle, dort zählen Bürste und Saugleistung.
 

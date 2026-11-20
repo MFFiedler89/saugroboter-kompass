@@ -9,11 +9,15 @@ subs: [saugroboter-ohne-wischfunktion, saugroboter-ohne-app]
 
 Die Saugöffnung eines Roboters sitzt mittig unter dem Gerät und erreicht die Wand nie. Die Seitenbürste schließt diese Lücke: Sie dreht sich am Rand und schiebt Staub von der Kante nach innen.
 
-## Eine oder zwei
+<span id="eine-oder-zwei"></span>
+
+## Eine, zwei oder ausfahrbare Seitenbürsten?
 
 Zwei Seitenbürsten wirken gründlicher, bringen bei einem runden Gerät aber wenig zusätzlichen Nutzen, weil der Roboter Kanten ohnehin nur auf einer Seite entlangfährt. Sinnvoller ist ein ausfahrbarer Arm, der sich in Ecken herausschiebt. Das ist inzwischen bei vielen mittleren und oberen Modellen zu finden und steht dann meist auch im Produkttitel.
 
-## Der Nachteil
+<span id="der-nachteil"></span>
+
+## Verstreute Krümel und aufgewickelte Haare an der Seitenbürste
 
 Eine schnell drehende Seitenbürste schleudert leichten Schmutz weg, statt ihn einzusammeln. Bei grobem Krümelgut auf Hartboden sieht man das. Gute Geräte drosseln die Bürste deshalb auf freier Fläche und drehen sie nur an Kanten hoch.
 

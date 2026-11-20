@@ -15,7 +15,9 @@ HEPA ist in der Norm EN 1822 definiert und in Klassen von H13 aufwärts untertei
 
 In Produkttexten steht häufig nur "HEPA-Filter" oder "HEPA-ähnlich", ohne Klasse. Das ist keine geschützte Aussage und sagt entsprechend wenig.
 
-## Was im Alltag mehr zählt
+<span id="was-im-alltag-mehr-zählt"></span>
+
+## Filterklasse, Gehäusedichtung und Entleerung zusammen prüfen
 
 Ein guter Filter bringt nichts, wenn das Gehäuse an anderer Stelle Luft durchlässt. Für Allergiker ist deshalb die Kombination entscheidend: dichtes Gehäuse, Filter mit angegebener Klasse und eine Absaugstation mit geschlossenem Beutel, damit beim Entleeren nichts aufwirbelt.
 

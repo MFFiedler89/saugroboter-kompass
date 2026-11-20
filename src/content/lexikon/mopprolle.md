@@ -15,6 +15,8 @@ Ein einfaches Wischpad wird einmal befeuchtet und zieht danach über die gesamte
 
 Gegenüber rotierenden Mopps, also zwei runden Scheiben unter dem Gerät, hat die Rolle den Vorteil einer durchgehenden Kontaktfläche ohne Lücke in der Mitte. Dafür sind rotierende Mopps bei eingetrockneten Flecken oft im Vorteil, weil sie mit Druck arbeiten.
 
-## Worauf du achten solltest
+<span id="worauf-du-achten-solltest"></span>
+
+## Mopprolle: Reinigung, Trocknung und Teppichschutz prüfen
 
 Eine Mopprolle braucht eine Station, die sie nach dem Einsatz reinigt und trocknet. Ohne Trocknung riecht eine feuchte Walze nach ein, zwei Tagen. In den Produktangaben steht die Rolle meist klar benannt, oft zusammen mit einem Markennamen für das System. Wie viel Wasser das Gerät tatsächlich aufträgt, steht dagegen selten dabei.

@@ -9,7 +9,9 @@ subs: [saugroboter-mit-wischfunktion, saug-wisch-roboter-mit-station]
 
 Ein einfaches [Wischpad](/lexikon/wischpad/) wird unter dem Gerät hergezogen. Es nimmt Staub und Frisches auf, erzeugt aber kaum Reibung. Beim Vibrationswischen schwingt die Platte mit dem Tuch schnell vor und zurück, oft einige tausend Mal pro Minute. Damit entsteht mechanische Wirkung, die ein geschlepptes Tuch nicht hat.
 
-## Was es leistet
+<span id="was-es-leistet"></span>
+
+## Welche Verschmutzungen Vibrationswischen lösen kann
 
 Gegen leicht Angetrocknetes ist der Unterschied zum passiven Pad deutlich. Ein Tropfen Kaffee vom Morgen oder ein Fleck vom Vortag gehen damit eher weg.
 

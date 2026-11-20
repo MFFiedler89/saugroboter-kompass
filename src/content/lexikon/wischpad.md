@@ -9,11 +9,15 @@ subs: [saugroboter-mit-wischfunktion, saug-wisch-roboter-mit-station]
 
 Beim Wischpad hängt ein Mikrofasertuch an einer Halterung unter dem Roboter. Ein kleiner Tank gibt dosiert Wasser ab, das Tuch zieht beim Fahren darüber. Mehr passiert nicht: Es gibt keinen Anpressdruck und keine Rotation.
 
-## Wofür das reicht
+<span id="wofür-das-reicht"></span>
+
+## Wischpads für Staubfilm und leichte Verschmutzung
 
 Für Staubfilm und leichte Verschmutzung auf Hartboden funktioniert das gut. Wer täglich wischen lässt, hält den Boden damit ohne Aufwand in einem ordentlichen Zustand. Für eingetrocknete Flecken, klebrige Stellen oder Fugen reicht es nicht, dafür fehlt der mechanische Druck.
 
-## Der kritische Punkt
+<span id="der-kritische-punkt"></span>
+
+## Schmutziges Wischpad wechseln und Teppiche aussparen
 
 Das Tuch wird während der Fahrt nicht gereinigt. Was es im Flur aufnimmt, nimmt es ins Wohnzimmer mit. Bei großen Flächen zeigt sich das am Ende der Runde deutlich. Wer das vermeiden will, braucht ein System, das sich zwischendurch selbst auswäscht.
 

@@ -9,13 +9,17 @@ subs: [saugroboter-mit-absaugstation, saugroboter-ohne-kamera]
 
 LiDAR steht für Light Detection and Ranging. Ein kleiner Laser dreht sich mehrmals pro Sekunde und misst, wie lange das Licht bis zur nächsten Wand und zurück braucht. Daraus entsteht ein Grundriss, in dem der Roboter seine eigene Position kennt. Das ist der Grund, warum ein Gerät mit LiDAR in geraden Bahnen fährt statt zufällig durch den Raum zu stoßen.
 
-## Was das im Alltag bedeutet
+<span id="was-das-im-alltag-bedeutet"></span>
+
+## Kartierung, Raumauswahl und Rückkehr zur Station
 
 Ein Roboter mit Karte weiß, wo er schon war. Er arbeitet die Fläche systematisch ab, findet zurück zur Station und kann nach dem Laden an der Abbruchstelle weitermachen. Außerdem lassen sich in der App einzelne Räume auswählen und Sperrflächen einzeichnen.
 
 LiDAR funktioniert im Dunkeln genauso gut wie bei Tageslicht, weil der Laser sein eigenes Licht mitbringt. Das ist der praktische Vorteil gegenüber rein kamerabasierten Verfahren.
 
-## Die Grenzen
+<span id="die-grenzen"></span>
+
+## Grenzen von LiDAR: Bauhöhe und flache Hindernisse
 
 Der Laserturm sitzt meist als kleiner Aufbau oben auf dem Gerät und macht es um rund zwei Zentimeter höher. Genau diese Zentimeter entscheiden darüber, ob der Roboter noch unter das Sofa kommt. Flache Geräte ohne Turm navigieren deshalb anders, oft über Kamera oder Gyroskop.
 

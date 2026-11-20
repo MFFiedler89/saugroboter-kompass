@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content';
+import { headingsFor } from '../../lib/headings';
 import QuickModels from '../../components/QuickModels.astro';
 import ReaderGuide from '../../components/ReaderGuide.astro';
 import ReaderProductLink from '../../components/ReaderProductLink.astro';
@@ -19,6 +20,7 @@ export function getStaticPaths() {
 }
 const { sub } = Astro.props as { sub: any };
 const kat = katBySlug[sub.kategorie];
+const sectionHeadings = headingsFor(sub.slug);
 const entry = await getEntry('vergleiche', sub.slug);
 const r = entry ? await render(entry) : null;
 const products = getProducts(sub.slug);
@@ -62,23 +64,23 @@ const schema = [
     {sub.slug === 'saugroboter-mit-wischfunktion' && <aside class="notice head"><strong>Vor der Produktauswahl:</strong> Bodenfreigabe, Teppichstrategie und Stationspflege prüfen. Die Auswahl beruht auf Produktangaben, nicht auf eigenen Wischtests. <a href="#welches-wischsystem-passt-zu-deinem-alltag">Zur Kaufhilfe mit Modellunterschieden ↓</a></aside>}
 
     <nav aria-label="Direkt zum Bereich">{showProducts && <a class="btn btn-ghost" href="#erste-modelle">Modelle ansehen ↓</a>} <a href="#fuer-wen">Kaufhilfe lesen ↓</a> · <a href="#modelle">Zum vollständigen Vergleich ↓</a></nav>
-    {showProducts && <QuickModels sub={sub.slug} id="erste-modelle" title="Modelle auf einen Blick" />}
+    {showProducts && <QuickModels sub={sub.slug} id="erste-modelle" title={sectionHeadings.early} />}
     <ReaderGuide guideKey={sub.slug} part="intro" />
 
     {r && (
       <div class="prose" data-reader-article>
-        <TOC headings={[{depth:2,slug:"fuer-wen",text:"Für wen ist das sinnvoll?"},...r.headings,{depth:2,slug:"vorteile-und-grenzen",text:"Vorteile und Grenzen"},{depth:2,slug:"deine-auswahl",text:"Deine Auswahlhilfe"},{depth:2,slug:"modelle",text:"Passende Modelle"}]} />
+        <TOC headings={[{depth:2,slug:"fuer-wen",text:sectionHeadings.fit},...r.headings,{depth:2,slug:"vorteile-und-grenzen",text:"Vorteile und Grenzen"},{depth:2,slug:"deine-auswahl",text:sectionHeadings.checklist},{depth:2,slug:"modelle",text:sectionHeadings.products}]} />
         <r.Content components={{...mdxComponents, ProductTeaser: ReaderProductLink, PicksBox: ReaderProductLink}} />
       </div>
     )}
     <ReaderGuide guideKey={sub.slug} part="decision" />
     <section id="modelle" class="reader-models" aria-labelledby="reader-models-title" data-reader-products>
-      <h2 id="reader-models-title">Passende Modelle zu diesen Kriterien</h2>
+      <h2 id="reader-models-title">{sectionHeadings.products}</h2>
       <p class="muted">Gleiche die dokumentierte Ausstattung mit deinen Anforderungen ab. Die Auswahl beruht auf Produktangaben und den erläuterten Regeln, nicht auf eigenen Praxistests.</p>
     {showProducts ? (
       <>
-        <PicksBox sub={sub.slug} />
-        <h3 class="vh">Modelle im Detail vergleichen</h3>
+        <PicksBox sub={sub.slug} headingLevel="h3" />
+        <p class="vh"><strong>Modelle filtern und vergleichen</strong></p>
         <ComparisonView sub={sub.slug} />
       </>
     ) : (
@@ -92,7 +94,7 @@ const schema = [
 
       {(guides.length > 0 || sits.length > 0 || terms.length > 0 || siblings.length > 0) && (
         <section class="rel">
-          <h2>Weiterlesen</h2>
+          <h2>Weitere Kaufhilfen, Wohnsituationen und Fachbegriffe</h2>
           <div class="relg">
             {guides.length > 0 && <div><p class="rh">Ratgeber</p><ul>{guides.map((g) => <li><a href={`/ratgeber/${g.id}/`}>{g.data.h1 ?? g.data.title}</a></li>)}</ul></div>}
             {sits.length > 0 && <div><p class="rh">Passende Situationen</p><ul>{sits.map((s) => <li><a href={`/situationen/${s.id}/`}>{s.data.navLabel}</a></li>)}</ul></div>}

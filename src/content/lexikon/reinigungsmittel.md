@@ -9,7 +9,9 @@ subs: [saugroboter-mit-wischfunktion, saug-wisch-roboter-mit-station]
 
 Die kurze Antwort: nur, wenn der Hersteller es ausdrücklich erlaubt, und dann sparsam.
 
-## Warum Hersteller so zurückhaltend sind
+<span id="warum-hersteller-so-zurückhaltend-sind"></span>
+
+## Schaum und Rückstände im Wassersystem vermeiden
 
 Ein Wischroboter führt Wasser durch dünne Schläuche, Ventile und eine Pumpe. Schaumbildner, Öle und Rückstände setzen diese Wege zu, und das ist der häufigste Grund, warum ein Wassersystem irgendwann nicht mehr dosiert.
 
@@ -23,7 +25,9 @@ Auf glatten Flächen bildet jedes Mittel, das nicht vollständig aufgenommen wir
 
 Besonders auffällig ist das auf [Fliesen](/situationen/fliesen-und-fugen/) und auf dunklem Hartboden. Auf [Parkett und Laminat](/situationen/parkett-und-laminat/) kommt hinzu, dass manche Mittel die Oberflächenbehandlung angreifen.
 
-## Was in der Praxis funktioniert
+<span id="was-in-der-praxis-funktioniert"></span>
+
+## Wasser und freigegebene Reiniger nach Geräteanleitung einsetzen
 
 Für den täglichen Durchgang reicht klares Wasser. Ein Roboter wischt Staub und Frisches weg, und dafür braucht es keine Chemie.
 

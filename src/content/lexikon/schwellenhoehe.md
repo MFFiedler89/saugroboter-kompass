@@ -9,11 +9,15 @@ subs: [saugroboter-ohne-wischfunktion, saugroboter-mit-absaugstation]
 
 Die meisten Saugroboter schaffen Kanten von etwa zwei Zentimetern. Das reicht für eine Teppichkante und für die flachen Übergangsschienen in Neubauten. Im Altbau sieht es anders aus: Dort sitzen gern Holzschwellen, die deutlich höher sind, und eine einzelne davon trennt den Roboter dauerhaft vom halben Wohnbereich.
 
-## Warum die Angabe oft fehlt
+<span id="warum-die-angabe-oft-fehlt"></span>
+
+## Schwellenhöhe in Produktangaben und Vergleichstabellen
 
 Hersteller nennen die Schwellenhöhe längst nicht immer, und wenn, dann verstreut irgendwo in den Produktmerkmalen. In unseren Tabellen steht sie deshalb als Spalte, aber nicht als Filter: Wir zeigen den Wert, wo er dasteht, und lassen das Feld sonst leer, statt zu schätzen.
 
-## Was du vorher messen solltest
+<span id="was-du-vorher-messen-solltest"></span>
+
+## Türschwellen von der tieferen Seite aus messen
 
 Leg ein Lineal an deine höchste Schwelle und miss von der tieferen Seite aus. Rechne einen halben Zentimeter Reserve dazu, denn ein Roboter nimmt Kanten nicht immer gerade, und mit vollem Staubbehälter wird er schwerer.
 

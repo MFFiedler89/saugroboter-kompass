@@ -11,7 +11,9 @@ Die meisten Saugroboter brauchen mehrere Stunden für eine volle Ladung. Das kli
 
 Wichtig wird die Ladezeit erst dann, wenn eine Ladung nicht für die ganze Fläche reicht.
 
-## Der Zusammenhang mit großer Fläche
+<span id="der-zusammenhang-mit-großer-fläche"></span>
+
+## Ladepausen und Wiederaufnahme auf großen Flächen
 
 Reicht der Akku nicht aus, fährt das Gerät zur Station, lädt und setzt dort fort, wo es aufgehört hat. Diese [Wiederaufnahme](/lexikon/wiederaufnahme/) ist die eigentlich entscheidende Funktion bei großen Wohnungen.
 
@@ -27,7 +29,9 @@ Ob bei dir überhaupt zwischengeladen werden muss, rechnet der [Flächenrechner]
 
 **Die Temperatur.** Sehr kalte oder sehr warme Umgebung verlangsamt den Ladevorgang. Eine Station im ungeheizten Flur im Winter ist dafür ein typischer Fall.
 
-## Zur Akkupflege
+<span id="zur-akkupflege"></span>
+
+## Saugroboter-Akku laden und bei längeren Pausen lagern
 
 Saugroboter-Akkus mögen es, in der Station zu stehen. Die Ladeelektronik schaltet ab, sobald voll ist, dauerhaftes Stehen schadet also nicht.
 

@@ -9,13 +9,17 @@ subs: [saugroboter-mit-absaugstation, saugroboter-mit-wischfunktion]
 
 Die angegebene Akkulaufzeit gilt für die sparsamste Stufe auf freier Fläche. In einer großen Wohnung mit Teppich und vielen Hindernissen reicht sie oft nicht für einen vollständigen Durchgang. Dann entscheidet eine einzige Funktion darüber, ob die Wohnung jemals ganz sauber wird.
 
-## Der Unterschied
+<span id="der-unterschied"></span>
+
+## Reinigung mit und ohne Wiederaufnahme nach dem Laden
 
 Ein Gerät **ohne** Wiederaufnahme fährt bei leerem Akku zur Station, lädt und wartet dort auf den nächsten geplanten Start. Was es nicht geschafft hat, bleibt liegen. Beim nächsten Lauf beginnt es wieder von vorn, und derselbe Bereich bleibt dauerhaft ungereinigt.
 
 Ein Gerät **mit** Wiederaufnahme merkt sich die Position in der Karte, lädt so weit auf, wie es braucht, und fährt dann zurück zur Abbruchstelle.
 
-## Warum es selten im Titel steht
+<span id="warum-es-selten-im-titel-steht"></span>
+
+## Wiederaufnahme in der Produktbeschreibung prüfen
 
 Hersteller bewerben lieber Saugkraft und Station. Die Wiederaufnahme steht meist erst weiter unten in der Beschreibung, oft unter einem anderen Namen. Deshalb taucht sie in unseren Tabellen nicht als Filter auf: Was nicht zuverlässig in den Produktangaben steht, raten wir nicht dazu.
 

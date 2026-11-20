@@ -3,14 +3,15 @@
 import { getPicks, shortTitle, cardSpecs } from '../lib/catalog';
 import PriceBlock from './PriceBlock.astro';
 import ProductImg from './ProductImg.astro';
-interface Props { sub: string; title?: string }
-const { sub, title = 'Unsere Empfehlungen je Anwendungsfall' } = Astro.props;
+interface Props { sub: string; title?: string; headingLevel?: "h2" | "h3" }
+const { sub, title = 'Modellauswahl nach dokumentierter Ausstattung', headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
 const picks = getPicks(sub).slice(0, 3);
 import { updatedAt as amazonSnapshot } from '../lib/catalog';
 ---
 {picks.length > 0 && (
   <section data-amazon-updated={amazonSnapshot} class="picks" aria-label={title}>
-    <h2 class="h">{title}</h2>
+    <Heading class="h">{title}</Heading>
     <div class="grid">
       {picks.map((p, i) => (
         <article class="pk card">

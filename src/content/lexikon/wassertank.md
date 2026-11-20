@@ -9,7 +9,9 @@ subs: [saug-wisch-roboter-mit-station, saugroboter-mit-wischfunktion]
 
 Beim Wischen gibt es zwei Bauweisen. Einfache Kombigeräte tragen einen kleinen Tank im Roboter, meist zwischen 200 und 400 Millilitern. Komplettstationen haben zusätzlich große Tanks für Frisch- und Schmutzwasser, oft mehrere Liter, und füllen den Roboter zwischendurch selbst nach.
 
-## Was das für die Reichweite heißt
+<span id="was-das-für-die-reichweite-heißt"></span>
+
+## Tankgröße und Nachfüllen auf großen Wischflächen
 
 Ein kleiner Tank im Roboter reicht für eine überschaubare Fläche. Danach fährt das Gerät entweder trocken weiter oder bricht ab. Bei einer Komplettstation kehrt der Roboter mitten im Durchgang zurück, wäscht das Tuch aus, füllt nach und fährt weiter. Das ist der Grund, warum solche Geräte auf großen Flächen deutlich gleichmäßiger wischen.
 

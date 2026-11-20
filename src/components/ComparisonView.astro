@@ -132,7 +132,7 @@ import { updatedAt as amazonSnapshot } from '../lib/catalog';
   <p class="empty" data-empty hidden>Keine Angebote passen zu deinen Filtern. <button type="button" class="linkbtn" data-reset>Filter zurücksetzen</button></p>
   {updatedAt && <p class="small muted note">* Preise inkl. MwSt., zzgl. Versand, Stand {formatDateTime(updatedAt)}. Preise und Verfügbarkeit können sich seitdem geändert haben. „Beliebtheit“ basiert auf dem Amazon-Verkaufsrang. Ausstattung laut Produktangaben, „k. A.“ = nicht angegeben.</p>}
 
-  <h2 id="tabelle">Vergleichstabelle: {sub.label}</h2>
+  <h3 id="tabelle">Vergleichstabelle: {sub.label}</h3>
   <div class="tablewrap card">
     <table class="ct">
       <thead>
@@ -165,7 +165,7 @@ import { updatedAt as amazonSnapshot } from '../lib/catalog';
     <button type="button" class="btn btn-amazon" data-open>Direkt vergleichen</button>
   </div>
   <dialog class="dlg" data-dialog aria-label="Direktvergleich">
-    <div class="dlg-head"><h2>Direktvergleich</h2><button type="button" class="close" data-close aria-label="Schließen">✕</button></div>
+    <div class="dlg-head"><h3>Direktvergleich der ausgewählten Modelle</h3><button type="button" class="close" data-close aria-label="Schließen">✕</button></div>
     <div class="dlg-body" data-dialog-body></div>
   </dialog>
   <script type="application/json" data-json set:html={JSON.stringify({ products: compareData, specs: specs.map((d) => ({ key: d.key, label: d.label, higher: d.sort === 'desc' || d.sort === 'max' || d.type === 'bool' })) })} />
@@ -382,7 +382,7 @@ import { updatedAt as amazonSnapshot } from '../lib/catalog';
   .dlg { border: 0; border-radius: 16px; padding: 0; width: min(980px, calc(100% - 24px)); max-height: 90vh; box-shadow: 0 20px 60px rgb(0 0 0 / .3); }
   .dlg::backdrop { background: rgb(10 16 28 / .55); }
   .dlg-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: #fff; z-index: 2; }
-  .dlg-head h2 { margin: 0; font-size: 1.2rem; }
+  .dlg-head h3 { margin: 0; font-size: 1.2rem; }
   .close { background: var(--surface-2); border: 0; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; }
   .dlg-body { padding: 12px 20px 20px; overflow: auto; }
   .dlg-body :global(.g) { display: grid; grid-template-columns: minmax(100px, .7fr) repeat(var(--n), minmax(130px, 1fr)); font-size: .88rem; }

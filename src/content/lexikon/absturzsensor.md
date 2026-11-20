@@ -9,7 +9,9 @@ subs: [saugroboter-mit-absaugstation, saugroboter-ohne-kamera]
 
 An der Unterseite jedes Saugroboters sitzen mehrere kleine Infrarotsensoren. Sie senden Licht nach unten und messen, wie schnell es zurückkommt. Bleibt die Antwort aus, weil dort kein Boden ist, stoppt das Gerät und dreht ab. Das funktioniert zuverlässig und gehört zur Grundausstattung, auch bei einfachen Modellen.
 
-## Warum sie trotzdem versagen können
+<span id="warum-sie-trotzdem-versagen-können"></span>
+
+## Wann Absturzsensoren Stufen falsch erkennen
 
 **Staub auf der Linse.** Der häufigste Fall. Ein verstaubter Sensor meldet dauerhaft eine Stufe, und das Gerät bleibt mitten im Raum stehen oder weigert sich zu starten. Ein trockenes Tuch über die Unterseite löst das.
 
@@ -23,6 +25,8 @@ Der Sensor ist eine Sicherung, kein Ersatz für Planung. Bei einem offenen Trepp
 
 Geräte ohne Karte lassen sich stattdessen mit einer physischen Barriere oder, bei älteren Modellen, mit einem magnetischen Begrenzungsstreifen aussperren.
 
-## Zur Wartung
+<span id="zur-wartung"></span>
+
+## Absturzsensoren regelmäßig reinigen
 
 Die Absturzsensoren sind das Bauteil, das bei der Wartung am häufigsten vergessen wird. Sie gehören bei jeder Runde mit abgewischt, zusammen mit den Kontakten und den Rädern.

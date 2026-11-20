@@ -1,26 +1,28 @@
 ---
 import guides from '../data/reader-guides.json';
+import { headingsFor } from '../lib/headings';
 interface Props { guideKey: string; part: 'intro' | 'decision' }
 const { guideKey, part } = Astro.props;
+const headings = headingsFor(guideKey);
 const guide = (guides as Record<string, {fit:string;benefit:string;limit:string;checks:string[]}>)[guideKey];
 if (!guide) throw new Error(`Missing reader guide: ${guideKey}`);
 ---
 {part === 'intro' ? (
   <section class="reader-guide" id="fuer-wen" aria-labelledby="reader-fit-title" data-reader-intro>
-    <h2 id="reader-fit-title">Für wen ist das sinnvoll?</h2>
+    <h2 id="reader-fit-title">{headings.fit}</h2>
     <p>{guide.fit}</p>
   </section>
 ) : (
   <div class="reader-guide" data-reader-decision>
     <section id="vorteile-und-grenzen" aria-labelledby="reader-tradeoff-title">
-      <h2 id="reader-tradeoff-title">Vorteile und Grenzen abwägen</h2>
+      <h2 id="reader-tradeoff-title">{headings.tradeoffs}</h2>
       <div class="tradeoffs">
         <div><h3>Was dafür spricht</h3><p>{guide.benefit}</p></div>
         <div><h3>Was du bedenken solltest</h3><p>{guide.limit}</p></div>
       </div>
     </section>
     <section id="deine-auswahl" aria-labelledby="reader-check-title">
-      <h2 id="reader-check-title">Deine Auswahlhilfe vor dem Kauf</h2>
+      <h2 id="reader-check-title">{headings.checklist}</h2>
       <p>Halte diese Punkte für deinen Bedarf fest. Danach kannst du konkrete Modelle gezielt abgleichen.</p>
       <ol>{guide.checks.map(check => <li>{check}</li>)}</ol>
       <p class="small muted">Wenn die vorhandene Ausstattung deinen Bedarf bereits erfüllt, ist ein Neukauf nicht allein wegen zusätzlicher Funktionen nötig.</p>

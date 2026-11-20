@@ -9,7 +9,9 @@ subs: [saugroboter-ab-20000-pa, saugroboter-mit-absaugstation]
 
 Fast jeder Saugroboter hat mehrere Leistungsstufen, meist drei bis vier, von leise bis Turbo. Sie regeln die Drehzahl des Saugmotors und damit drei Dinge gleichzeitig: Saugleistung, Geräusch und Akkuverbrauch.
 
-## Welche Stufe wann
+<span id="welche-stufe-wann"></span>
+
+## Saugstufe nach Boden und Verschmutzung wählen
 
 **Niedrig** reicht auf Hartboden für den täglichen Eintrag, also Staub, Krümel und Haare, die obenauf liegen. Wer jeden Tag fahren lässt, kommt damit in den meisten Räumen aus.
 

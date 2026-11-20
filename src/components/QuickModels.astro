@@ -52,6 +52,7 @@ const neutralLabel = (p: typeof choices[number]) => {
     <p class="foot">Ausstattung laut Produktangaben; die Hinweise zur Passform sind Auswahlkriterien, keine eigenen Modelltests. <a href="/so-vergleichen-wir/">So wählen wir aus</a>. {sub && <a href={inline ? subUrl(sub) : '#modelle'} data-models-jump>{inline ? 'Zur ausführlichen Kaufhilfe' : 'Alle Modelle und Details vergleichen'} →</a>}</p>
   </section>
 )}
+{choices.length === 0 && id && <p id={id} class="notice">Aktuell liegen für diese erste Modellauswahl keine ausreichend aktuellen Produktdaten vor. Die Kaufhilfen und Vergleiche darunter bleiben verfügbar.</p>}
 {inline && choices.length === 0 && sub && subBySlug[sub] && <p><a href={subUrl(sub)}>{title} →</a></p>}
 <style>
   .quick-models { margin: 26px 0 34px; padding: 22px 0; border-block: 1px solid var(--border); scroll-margin-top: 140px; }

@@ -43,13 +43,13 @@ const schema = [{
   </section>
   <div class="container">
     <nav aria-label="Direkt zum Bereich"><a class="btn btn-ghost" href="#erste-modelle">Modelle ansehen ↓</a> <a href="#fuer-wen">Kaufhilfe lesen ↓</a></nav>
-    <QuickModels subs={subs.map((s: any) => s.slug)} id="erste-modelle" title="Modellbeispiele für unterschiedliche Anforderungen" />
+    <QuickModels subs={subs.map((s: any) => s.slug)} id="erste-modelle" title={`${kat.label}: Modelle auf einen Blick`} />
     <ReaderGuide guideKey={kat.slug} part="intro" />
     {rendered && <div class="prose text" data-reader-article><rendered.Content components={{...mdxComponents, ProductTeaser: ReaderProductLink}} /></div>}
     <ReaderGuide guideKey={kat.slug} part="decision" />
     {subs.length > 0 ? (
       <section id="modelle" data-reader-products>
-        <h2>Welche Bauart möchtest du genauer kennenlernen?</h2>
+        <h2>{kat.label}: Bauarten und Funktionen vergleichen</h2>
         <div class="subs">
           {subs.map((s: any) => (
             <a class="sub card" href={subUrl(s.slug)}>
@@ -66,7 +66,7 @@ const schema = [{
 
     {featured.length > 0 && (
       <section>
-        <h2>Modelle nach der Kaufhilfe entdecken</h2>
+        <h2>{kat.label}: ausgewählte Modelle und Angebote</h2>
         <div class="grid">{featured.map((p: any, i: number) => <ProductTile product={p} eager={i < 2} />)}</div>
       </section>
     )}

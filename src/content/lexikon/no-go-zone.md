@@ -9,12 +9,16 @@ subs: [saugroboter-mit-absaugstation, saugroboter-ohne-app]
 
 Sobald ein Roboter eine Karte der Wohnung hat, kannst du darin Flächen markieren, die er auslassen soll. Typische Kandidaten sind der Futternapf, ein Kabelgewirr unter dem Schreibtisch, eine Vase auf dem Boden oder der Bereich um das Katzenklo.
 
-## Varianten
+<span id="varianten"></span>
+
+## No-Go-Zone, No-Mop-Zone und virtuelle Wand unterscheiden
 
 Eine **No-Go-Zone** sperrt die Fläche komplett. Eine **No-Mop-Zone** erlaubt das Saugen, verbietet aber das Wischen, was für Teppiche und Holzdielen sinnvoll ist. Eine **virtuelle Wand** ist eine Linie statt einer Fläche und eignet sich für offene Durchgänge.
 
 Geräte ohne App und ohne Karte arbeiten stattdessen mit Magnetband, das du auf den Boden klebst. Das funktioniert zuverlässig, sieht aber dauerhaft sichtbar aus und lässt sich nicht mal eben verschieben.
 
-## Was du realistisch erwarten darfst
+<span id="was-du-realistisch-erwarten-darfst"></span>
+
+## Sperrzonen nach neuer Kartierung und bei Kartenfehlern prüfen
 
 Sperrzonen gelten nur, solange die Karte stimmt. Wird die Wohnung neu kartiert, etwa nach einem Umzug der Station oder einem Zurücksetzen, sind die Zonen weg und müssen neu eingezeichnet werden. Manche Geräte speichern mehrere Karten für mehrere Etagen, dann gilt das pro Karte.
